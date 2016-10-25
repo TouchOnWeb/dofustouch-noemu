@@ -12,7 +12,7 @@ DofusTouch No-Emu fonctionne sur :
 
 ## Installation :
 ```sh
-$ git clone https://github.com/scapain/DofusTouch-NoEmu.git
+$ git clone https://github.com/scapain/dofustouch-noemu.git
 $ npm install -d
 $ npm install electron -g
 ```
