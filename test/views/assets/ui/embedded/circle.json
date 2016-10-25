@@ -1,0 +1,1 @@
+{"1":{"id":1,"isGraphic":true,"x":-43,"y":-21.5,"w":86,"h":43,"sx":1,"sy":1,"sw":104,"sh":52},"2":{"id":2,"isAnim":true,"children":[{"id":1,"frames":[0,0],"matrices":[[1,0,0,1,0,0]],"colors":[[1,1,1,1,0,0,0,0]]}],"duration":1,"className":"circle"}}
