@@ -72,7 +72,34 @@ class Updater {
 
     static startUpdate (i) {
 
+<<<<<<< HEAD
         Updater.toSaveFilePath = `${__dirname}/../update.tar.gz`;
+=======
+        switch (os.platform()) {
+            case 'win32':
+                Updater.dataFile = Updater.responseBody.files.win32;
+                break;
+            case 'win64':
+                Updater.dataFile = Updater.responseBody.files.win64;
+                break;
+            case 'linux':
+                Updater.dataFile = Updater.responseBody.files.linux;
+            break;
+            case 'darwin':
+                Updater.dataFile = Updater.responseBody.files.darwin;
+                break;
+            default:
+                dialog.showMessageBox({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'L\'architechture de votre ordinateur n\'est pas supporté : '+os.platform(),
+                    buttons: ['Fermer']
+                });
+                return;
+        }
+
+        Updater.toSaveFilePath = `${__dirname}/update.zip`;
+>>>>>>> eee817a1a1a472be20827df899f677dfafab2e03
 
         var winUpdate = new BrowserWindow({
             width: 700,
@@ -87,7 +114,11 @@ class Updater {
         });
 
         winUpdate.on('closed', () => {
+<<<<<<< HEAD
             winUpdate = null
+=======
+            win = null
+>>>>>>> eee817a1a1a472be20827df899f677dfafab2e03
         });
 
         winUpdate.loadURL(Emulator.dirView('updater.html'));

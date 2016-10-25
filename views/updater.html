@@ -30,7 +30,7 @@ window.$ = window.jQuery = require('jquery');
 <script src="./assets/js/UpdaterClient.js"></script>
 <script>
 $(function() {
-    updaterClient = new UpdaterClient(updater.responseBody,  updater.toSaveFilePath, updater.startGame)
+    let updaterClient = new UpdaterClient(updater.responseBody,  updater.toSaveFilePath, updater.startGame)
     updaterClient.start();
 });
 </script>
