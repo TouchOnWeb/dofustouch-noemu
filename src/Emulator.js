@@ -1,4 +1,5 @@
 const {app, BrowserWindow, Menu, ipcMain} = require('electron');
+const pkg = require('./../package.json');
 
 class Emulator {
 
@@ -19,10 +20,10 @@ class Emulator {
         win.loadURL(Emulator.dirView('index.html'), {userAgent: 'Mozilla/5.0 (Linux; Android 6.0; FEVER Build/MRA58K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.124 Mobile Safari/537.36'});
 
         if (this.gameWindows.length > 0)
-            win.webContents.setAudioMuted(true);
+        win.webContents.setAudioMuted(true);
 
         if (this.devMode)
-            win.webContents.openDevTools();
+        win.webContents.openDevTools();
 
         win.on('closed', () => {
             delete Emulator.gameWindows[Emulator.gameWindows.indexOf(win)];
@@ -250,7 +251,6 @@ class Emulator {
                     ]
                 }
             )
-
         }
 
 
@@ -262,7 +262,7 @@ class Emulator {
         this.devMode = true;
         this.mainWindow = null;
         this.gameWindows = [];
-        this.version = '1.0.1';
+        this.version = pkg.version;
         this.webSite = 'http://dofustouch.no-emu.com';
 
         require('./Updater').init( () => {

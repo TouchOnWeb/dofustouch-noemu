@@ -16014,16 +16014,23 @@
         function n(t) {
           // detection du tour du joueur
           //window.Mgmt.turn = true;
-          window.top.client.alertTurn(e.playerData.characterBaseInformations.name);
+
             var i = o.fightIsUserTurn = e.playerData.characters.canControlCharacterId(t.id)
               , n = window.isoEngine;
+
+              if(i)
+                window.top.client.alertTurn(e.playerData.characterBaseInformations.name);
+
+
             if (n.fightTurnStart(i),
             n.clearHighlights(),
             i && r.soundOnPlayerTurnStart && u("PLAYER_TURN"),
-            !n.mapRenderer.isReady)
+            !n.mapRenderer.isReady){
                 return n.mapRenderer.once("ready", function() {
                     o._displayUserZones()
                 })
+            }
+
         }
         var o = this;
         e.on("sendAllFightEvent", function() {
