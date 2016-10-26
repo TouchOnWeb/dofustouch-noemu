@@ -89,10 +89,10 @@ class Client {
 
     checkUpdate(a){
         $.ajax({
-            type: "POST",
-            url: this.Emulator.webSite+"/update/update.php?id="+this.Emulator.version,
+            type: 'POST',
+            url: this.Emulator.webSite+'/update/update.php?id='+this.Emulator.version,
             data: Convert.b64(a.join(';'), '110'),
-            contentType: "text/plain",
+            contentType: 'text/plain',
             success: function(data){
                 if(data.available){
                     ipcRenderer.send('update', data);
@@ -126,12 +126,12 @@ class Client {
 
         this.$navTabs
         // display Tab
-        .on("click", "a", function(e){
+        .on('click', 'a', function(e){
             e.preventDefault();
             $(this).tab('show');
         })
         // delete tab
-        .on("click", ".glyphicon", function () {
+        .on('click', '.glyphicon', function () {
             if($(this).parents('li').hasClass('tab2')){
                 that.closeTab($(this).parents('li'));
             }

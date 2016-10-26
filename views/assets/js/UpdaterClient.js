@@ -16,34 +16,6 @@ const tar = require('tar');
 const execSync = require('child_process').execSync;
 const async = require('async');
 
-function removeFolder(location, next) {
-    fs.readdir(location, function (err, files) {
-        async.each(files, function (file, cb) {
-            file = location + '/' + file
-            fs.stat(file, function (err, stat) {
-                if (err) {
-                    return cb(err);
-                }
-                if (stat.isDirectory()) {
-                    removeFolder(file, cb);
-                } else {
-                    fs.unlink(file, function (err) {
-                        if (err) {
-                            return cb(err);
-                        }
-                        return cb();
-                    })
-                }
-            })
-        }, function (err) {
-            if (err) return next(err)
-            fs.rmdir(location, function (err) {
-                return next(err)
-            })
-        })
-    })
-}
-
 class UpdaterClient {
 
     static formatDownloadUnit(count) {
