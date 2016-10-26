@@ -11,9 +11,9 @@ app.on('ready', function () {
 });
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
+    //if (process.platform !== 'darwin') {
         app.quit();
-    }
+    //}
 });
 
 app.on('activate', () => {

@@ -262,23 +262,13 @@ class Emulator {
         this.devMode = true;
         this.mainWindow = null;
         this.gameWindows = [];
-        this.version = '1.0.0';
+        this.version = '0.0.1';
         this.webSite = 'http://dofustouch.no-emu.com';
 
-<<<<<<< HEAD
         require('./Updater').init( () => {
             Emulator.setMenu();
             Emulator.openGameWindow(win);
         });
-=======
-        //require('./updater').init( () => {
-            Emulator.setMenu();
-            Emulator.openGameWindow(win);
-        //});
->>>>>>> eee817a1a1a472be20827df899f677dfafab2e03
-
-        //if (this.devMode)
-        //require('electron-reload')(__dirname);
     }
 }
 
