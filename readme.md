@@ -40,4 +40,4 @@ $ tar czvf update.tar.gz ./views ./src ./package.json
 License
 ----
 
-MIT
+GNU GPLv3 
