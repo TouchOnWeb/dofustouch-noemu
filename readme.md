@@ -30,7 +30,7 @@ $ npm run dist
 ## Create Update :
 Seulement les dossiers src et view ainsi que le package.json peuvent êtres mis à jours via l'updater
 ```sh
-$ tar czvf updater.tar.gz ./views ./src ./package.json
+$ tar czvf update.tar.gz ./views ./src ./package.json
 ```
 
 ## Todos
