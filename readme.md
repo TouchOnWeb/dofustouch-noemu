@@ -40,4 +40,4 @@ $ tar czvf update.tar.gz ./views ./src ./package.json
 License
 ----
 
-GNU GPLv3 
+GNU GPLv3 read [LICENCE](https://github.com/scapain/dofustouch-noemu/blob/master/LICENCE)
