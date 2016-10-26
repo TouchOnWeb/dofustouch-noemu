@@ -35,7 +35,10 @@ $ tar czvf update.tar.gz ./views ./src ./package.json
 
 ## Todos
 
- - ...
+ - Sauvegarde de plusieurs comptes via la sauvegarde de Frame
+ - Amélioration des onglets
+ - Création de raccoursis IG (accés Inventaire, carte, sorts, etc)
+ - Raccourci pour aller sur l'onglet actif (onglet sur le quel c'est au tour du joueur)
 
 License
 ----

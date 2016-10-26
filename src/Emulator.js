@@ -23,7 +23,7 @@ class Emulator {
         win.webContents.setAudioMuted(true);
 
         if (this.devMode)
-        win.webContents.openDevTools();
+            win.webContents.openDevTools();
 
         win.on('closed', () => {
             delete Emulator.gameWindows[Emulator.gameWindows.indexOf(win)];
@@ -259,7 +259,7 @@ class Emulator {
     }
 
     static init (win) {
-        this.devMode = true;
+        this.devMode = false;
         this.mainWindow = null;
         this.gameWindows = [];
         this.version = pkg.version;
