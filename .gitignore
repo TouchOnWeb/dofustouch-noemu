@@ -1,0 +1,4 @@
+views/bower_components/
+node_modules/
+.idea/
+dist/

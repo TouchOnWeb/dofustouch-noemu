@@ -13,18 +13,22 @@ DofusTouch No-Emu fonctionne sur :
 ## Installation :
 ```sh
 $ git clone https://github.com/scapain/dofustouch-noemu.git
-$ npm install -d
-$ npm install electron -g
+$ npm install
 ```
 
 ## Lancement :
 ```sh
-$ electron ./
+$ npm start
 ```
 
 ## Build Distribution :
 ```sh
 $ npm run dist
+```
+
+### Docker :
+```sh
+$ docker-compose up
 ```
 
 ## Create Update :

@@ -4,9 +4,11 @@
   "main": "src/main.js",
   "description": "Emulateur open source de dofus touch pour Linux/OS X/Windows",
   "scripts": {
+    "install": "bower install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "build --dir",
-    "dist": "build --platform all --arch all"
+    "dist": "build --platform all --arch all",
+    "start": "electron ./"
   },
   "author": "Daniel Lefebvre",
   "license": "GNU GPLv3",
@@ -34,7 +36,10 @@
     }
   },
   "devDependencies": {
+    "bower": "^1.7.9",
     "electron": "^1.4.3",
+    "electron-builder": "^7.15.2",
     "electron-reload": "^1.0.2"
   }
 }
+
