@@ -54,13 +54,19 @@ class Client {
     }
 
     switchTab(action){
-        switch(action){
-            case 'prev':
-            $('li.active').prev().children('a').first().click();
-            break;
-            case 'next':
-            $('li.active').next().children('a').first().click();
-            break;
+        if (Number.isInteger(action)) {
+            var i = action;
+            if (i <= $('#navTabs li').length)
+                $($('#navTabs li')[i]).children('a').first().click();
+        } else {
+            switch (action) {
+                case 'prev':
+                    $('li.active').prev().children('a').first().click();
+                    break;
+                case 'next':
+                    $('li.active').next().children('a').first().click();
+                    break;
+            }
         }
     }
 

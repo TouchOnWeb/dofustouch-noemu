@@ -1,10 +1,23 @@
 const {app, BrowserWindow, Menu, ipcMain} = require('electron');
+const electronLocalshortcut = require('electron-localshortcut');
 const pkg = require('./../package.json');
 
 class Emulator {
 
     static dirView (file){
         return `file://${__dirname}/../views/`+file;
+    }
+
+    static setKeyboardShortcut(win) {
+        // register F1-F12 shortcuts to switch tab
+        for (var i = 1; i <= 12; i++) {
+            (function(i) {
+                var key = 'F' + i;
+                electronLocalshortcut.register(win, key, (e) => {
+                    win.webContents.send('switchTab', i - 1);
+                });
+            })(i);
+        }
     }
 
     static openGameWindow (win) {
@@ -16,6 +29,8 @@ class Emulator {
             useContentSize: true,
             center: true
         });
+
+        Emulator.setKeyboardShortcut(win);
 
         win.loadURL(Emulator.dirView('index.html'), {userAgent: 'Mozilla/5.0 (Linux; Android 6.0; FEVER Build/MRA58K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.124 Mobile Safari/537.36'});
 
