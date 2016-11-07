@@ -1,25 +1,40 @@
 {
-  "name": "dofustouch-ne",
-  "description": "Emulateur open source de dofus touch pour Linux/OS X/Windows",
-  "main": "src/main.js",
-  "authors": [
-    "Daniel Lefebvre"
-  ],
-  "license": "GNU GPLv3",
-  "homepage": "https://github.com/TouchOnWeb/dofustouch-noemu",
-  "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "views/bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "bootstrap": "^3.3.7",
-    "lodash": "^4.16.4",
-    "jquery": "^3.1.1",
-    "chrome-tabs": "git://github.com/adamschwartz/chrome-tabs.git#gh-pages"
-  }
+    "name": "dofustouch-ne",
+    "description": "Emulateur open source de dofus touch pour Linux/OS X/Windows",
+    "main": "src/main.js",
+    "authors": [
+        "Daniel Lefebvre"
+    ],
+    "license": "GNU GPLv3",
+    "homepage": "https://github.com/TouchOnWeb/dofustouch-noemu",
+    "private": true,
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "views/bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "lodash": "^4.16.4",
+        "jquery": "^3.1.1",
+        "keymaster": "^1.6.3",
+        "bootstrap-vertical-tabs": "^1.2.1",
+        "bootswatch-dist": "lumen",
+        "bootstrap": "^3.3.7"
+    },
+    "install": {
+        "sources": {
+            "bootstrap": [
+                "bower_components/bootstrap/dist/**"
+            ],
+            "jquery": [
+                "bower_components/bootstrap/dist/**"
+            ],
+            "lodash": [
+                "bower_components/lodash/dist/**"
+            ]
+        }
+    }
 }
