@@ -41,17 +41,20 @@ iframe.hide {
 }
 
 .tab2.active > a{
-    background-color: #cacaca!important;
+    /*background-color: #158cba!important;*/
+    border-radius: 0px;
 }
 
 .tab2 > a {
-    padding-right: 5px!important;
+    padding-right: 7px!important;
 }
 
 .tab2 > a > span.glyphicon {
+    top:2px;
+    margin-left: 3px;
     visibility: hidden;
     cursor:pointer;
-    color: red;
+    color: #ce3d3d;
 }
 
 .tab2:hover > a > span.glyphicon {

@@ -4,7 +4,7 @@ class Client {
     constructor() {
         this.Emulator = require('electron').remote.require('./Emulator');
         this.$addTab = $('#addTab');
-        this.$navTabs = $('.nav-tabs');
+        this.$navTabs = $('.nav-pills');
         this.$tabContent = $('.tab-content');
         this.id = 0;
     }
