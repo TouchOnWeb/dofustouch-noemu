@@ -274,7 +274,7 @@ class Emulator {
     }
 
     static init (win) {
-        this.devMode = false;
+        this.devMode = true;
         this.mainWindow = null;
         this.gameWindows = [];
         this.version = pkg.version;
@@ -284,6 +284,9 @@ class Emulator {
             Emulator.setMenu();
             Emulator.openGameWindow(win);
         });
+
+
+        //require('./Option').show();
     }
 }
 

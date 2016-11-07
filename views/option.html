@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./bower_components/bootswatch-dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="./bower_components/bootstrap-vertical-tabs/bootstrap.vertical-tabs.css">
+    <title>Options</title>
+    <style>
+    html,
+    body {
+        height: 100%;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .row,
+    .tabs-left,
+    #left-menu{
+        height: 100%;
+    }
+
+    #left-menu{
+        background-image:
+        linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 100%),
+        linear-gradient(to bottom, rgb(236, 236, 236) 0%, rgb(236, 236, 236) 100%);
+        background-clip: content-box, padding-box;
+        padding-left: 0px;
+    }
+
+    #right-menu{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .tabs-left>li>a {
+        border-radius: 0px;
+    }
+    .nav-pills > li + li {
+        margin-left: 0px;
+    }
+
+    .tabs-left {
+        padding-top: 0px;
+    }
+
+    .container {
+        padding-top: 10px;
+    }
+    </style>
+</head>
+<body>
+    <div class="col-xs-2" id="left-menu"> <!-- required for floating -->
+        <!-- Nav tabs -->
+        <ul class="nav tabs-left nav-pills">
+            <li class="active"><a href="#general" data-toggle="tab">General</a></li>
+            <li><a href="#shortcuts" data-toggle="tab">Raccourcis</a></li>
+        </ul>
+    </div>
+    <div class="col-xs-10" id="right-menu">
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="general">
+                <div class="container">
+                    xcvxcv
+                </div>
+            </div>
+            <div class="tab-pane" id="shortcuts">
+                <div>
+
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#no-emu" aria-controls="no-emu" role="tab" data-toggle="tab">No-Emu</a></li>
+                        <li role="presentation"><a href="#spell" aria-controls="spell" role="tab" data-toggle="tab">Sorts</a></li>
+                        <li role="presentation"><a href="#item" aria-controls="item" role="tab" data-toggle="tab">Objets</a></li>
+                        <li role="presentation"><a href="#menu" aria-controls="menu" role="tab" data-toggle="tab">Menu</a></li>
+                    </ul>
+                    <!-- No-Emu -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="no-emu">
+                            <div class="container">
+                                <form class="form-horizontal">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-xs-6 control-label">Nouvelle fenêtre</label>
+                                            <div class="col-xs-6">
+                                                <input type="email" class="form-control" id="inputEmail3" >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-xs-6 control-label">Nouveau onglet</label>
+                                            <div class="col-xs-6">
+                                                <input type="email" class="form-control" id="inputEmail3" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-xs-6 control-label">Onglet suivant</label>
+                                            <div class="col-xs-6">
+                                                <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-xs-6 control-label">Onglet précédent</label>
+                                            <div class="col-xs-6">
+                                                <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Sorts -->
+                        <div role="tabpanel" class="tab-pane" id="spell">
+                            <div class="container">
+                                <form class="form-horizontal">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-xs-6 control-label">Slot 1</label>
+                                            <div class="col-xs-6">
+                                                <input type="email" class="form-control" id="inputEmail3" >
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-xs-6 control-label">Slot 2</label>
+                                            <div class="col-xs-6">
+                                                <input type="email" class="form-control" id="inputEmail3" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-xs-6 control-label">Slot 3</label>
+                                            <div class="col-xs-6">
+                                                <input type="email" class="form-control" id="inputEmail3" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-xs-6 control-label">Slot 4</label>
+                                            <div class="col-xs-6">
+                                                <input type="email" class="form-control" id="inputEmail3" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Objets -->
+                        <div role="tabpanel" class="tab-pane" id="item">
+
+                        </div>
+
+                        <!-- Menu -->
+                        <div role="tabpanel" class="tab-pane" id="menu">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+window.$ = window.jQuery = require('jquery');
+</script>
+<script src="./bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="./bower_components/keymaster/js/keymaster.js"></script>
+<script src="./assets/js/Option.js"></script>
+<script>
+$(function() {
+
+});
+</script>
+
+</body>
+</html>
