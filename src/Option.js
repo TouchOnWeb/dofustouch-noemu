@@ -6,12 +6,17 @@ const os = require('os');
 const fs = require('fs');
 const url = require('url');
 const Emulator = require('./Emulator');
+const jsonfile = require('jsonfile');
+const MessageBox = require('./MessageBox');
+const electronLocalshortcut = require('electron-localshortcut');
 
 class Option {
 
     static show () {
 
-        var winUpdate = new BrowserWindow({
+        this.config = './config.json';
+
+        this.winOption = new BrowserWindow({
             width: 700,
             height: 500,
             resizable: Emulator.devMode,
@@ -21,19 +26,44 @@ class Option {
             skipTaskbar: true,
         });
 
-        winUpdate.on('closed', () => {
-            winUpdate = null
+        this.winOption.on('closed', () => {
+            this.winOption = null
         });
 
         console.log(Emulator.devMode);
 
 
-        winUpdate.loadURL(Emulator.dirView('option.html'));
+        this.winOption.loadURL(Emulator.dirView('option.html'));
 
         if (Emulator.devMode)
-            winUpdate.webContents.openDevTools();
+        this.winOption.webContents.openDevTools();
+
+        app.on('shortcut-pressed', e => {
+            console.log(
+                e.shortcut, // the name of accelerator
+                e.event // the custom name for the event or accelerator
+            );
+        })
     }
 
+    static loadConfig(cb){
+        jsonfile.readFile(this.config, function(err, obj) {
+            if (err){
+                MessageBox.error('Erreur', err.message);
+                return;
+            }
+            cb(obj);
+        });
+    }
+
+    static saveConfig(obj, cb){
+        jsonfile.writeFile(this.config, obj,{spaces: 4}, function (err) {
+            if (err){
+                MessageBox.error('Erreur', err.message);
+                return;
+            }
+        });
+    }
 }
 
 module.exports = Option;

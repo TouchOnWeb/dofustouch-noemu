@@ -4,173 +4,698 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./bower_components/bootswatch-dist/css/bootstrap.css" />
     <link rel="stylesheet" href="./bower_components/bootstrap-vertical-tabs/bootstrap.vertical-tabs.css">
+    <link rel="stylesheet" href="./assets/css/option.css" />
     <title>Options</title>
-    <style>
-    html,
-    body {
-        height: 100%;
-        padding: 0px;
-        margin: 0px;
-    }
-
-    .row,
-    .tabs-left,
-    #left-menu{
-        height: 100%;
-    }
-
-    #left-menu{
-        background-image:
-        linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 100%),
-        linear-gradient(to bottom, rgb(236, 236, 236) 0%, rgb(236, 236, 236) 100%);
-        background-clip: content-box, padding-box;
-        padding-left: 0px;
-    }
-
-    #right-menu{
-        padding-left: 0px;
-        padding-right: 0px;
-    }
-
-    .tabs-left>li>a {
-        border-radius: 0px;
-    }
-    .nav-pills > li + li {
-        margin-left: 0px;
-    }
-
-    .tabs-left {
-        padding-top: 0px;
-    }
-
-    .container {
-        padding-top: 10px;
-    }
-    </style>
 </head>
 <body>
-    <div class="col-xs-2" id="left-menu"> <!-- required for floating -->
+    <div class="col-xs-2" id="left-menu" style="position:fixed"> <!-- required for floating -->
         <!-- Nav tabs -->
         <ul class="nav tabs-left nav-pills">
             <li class="active"><a href="#general" data-toggle="tab">General</a></li>
             <li><a href="#shortcuts" data-toggle="tab">Raccourcis</a></li>
         </ul>
     </div>
-    <div class="col-xs-10" id="right-menu">
+    <form class="col-xs-offset-2 col-xs-10" id="right-menu" style="height:100%">
         <!-- Tab panes -->
         <div class="tab-content">
             <div class="tab-pane active" id="general">
                 <div class="container">
-                    xcvxcv
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label for="inputNewWindows" class="col-xs-3 control-label">Résolution de la fenêtre</label>
+                            <div class="col-xs-6">
+                                <select class="form-control">
+                                    <option>1920x1080 (smartphone)</option>
+                                    <option>1600x1200 (smartphone)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" class="shortcut" name="general.hidden-shop"> Cacher le bouton Shop
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" class="shortcut" name="general.hidden-shop"> Mode developpeur
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="tab-pane" id="shortcuts">
                 <div>
-
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#no-emu" aria-controls="no-emu" role="tab" data-toggle="tab">No-Emu</a></li>
                         <li role="presentation"><a href="#spell" aria-controls="spell" role="tab" data-toggle="tab">Sorts</a></li>
                         <li role="presentation"><a href="#item" aria-controls="item" role="tab" data-toggle="tab">Objets</a></li>
-                        <li role="presentation"><a href="#menu" aria-controls="menu" role="tab" data-toggle="tab">Menu</a></li>
+                        <li role="presentation"><a href="#interface" aria-controls="menu" role="tab" data-toggle="tab">Interfaces</a></li>
                     </ul>
+                    <br>
+                    <ul>
+                        <li>Vous pouvez utiliser les touches spéciales : <strong>ctrl</strong>, <strong>shift</strong>, <strong>space</strong>, <strong>alt</strong> (ctrl = cmd sur Macintosh OS X)</li>
+                        <li>Pour rentrer vos raccourcis pressez simplement la combinaison de touche souhaitée en cliquant préalablement sur le champ</li>
+                    </ul>
+                    <hr>
                     <!-- No-Emu -->
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="no-emu">
-                            <div class="container">
-                                <form class="form-horizontal">
-                                    <div class="col-xs-6">
-                                        <div class="form-group">
-                                            <label for="inputEmail3" class="col-xs-6 control-label">Nouvelle fenêtre</label>
-                                            <div class="col-xs-6">
-                                                <input type="email" class="form-control" id="inputEmail3" >
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="inputEmail3" class="col-xs-6 control-label">Nouveau onglet</label>
-                                            <div class="col-xs-6">
-                                                <input type="email" class="form-control" id="inputEmail3" >
-                                            </div>
+                            <div class="form-horizontal">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="inputNewWindows" class="col-xs-5 control-label">Nouvelle fenêtre</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputNewWindows" name="shortcut.no-emu.new-window">
                                         </div>
                                     </div>
-                                    <div class="col-xs-6">
-                                        <div class="form-group">
-                                            <label for="inputEmail3" class="col-xs-6 control-label">Onglet suivant</label>
-                                            <div class="col-xs-6">
-                                                <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="inputEmail3" class="col-xs-6 control-label">Onglet précédent</label>
-                                            <div class="col-xs-6">
-                                                <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-                                            </div>
+                                    <div class="form-group">
+                                        <label for="inputNewTab" class="col-xs-5 control-label">Nouveau onglet</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputNewTab" name="shortcut.no-emu.new-tab">
                                         </div>
                                     </div>
-                                </form>
+                                    <hr>
+                                    <div class="form-group">
+                                        <label for="inputTab1" class="col-xs-5 control-label">Onglet 1</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputTab1" name="shortcut.no-emu.tabs">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputTab2" class="col-xs-5 control-label">Onglet 2</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputTab2" name="shortcut.no-emu.tabs">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputTab3" class="col-xs-5 control-label">Onglet 3</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputTab3" name="shortcut.no-emu.tabs">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputTab4" class="col-xs-5 control-label">Onglet 4</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputTab4" name="shortcut.no-emu.tabs">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputTab5" class="col-xs-5 control-label">Onglet 5</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputTab5" name="shortcut.no-emu.tabs">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="inputNextTab" class="col-xs-5 control-label">Onglet suivant</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputNextTab" name="shortcut.no-emu.next-tab" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPrevTab" class="col-xs-5 control-label">Onglet précédent</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputPrevTab" name="shortcut.no-emu.prev-tab" placeholder="">
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="form-group">
+                                        <label for="inputTab6" class="col-xs-5 control-label">Onglet 6</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputTab6" name="shortcut.no-emu.tabs">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputTab7" class="col-xs-5 control-label">Onglet 7</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputTab8" name="shortcut.no-emu.tabs">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputTab8" class="col-xs-5 control-label">Onglet 8</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputTab8" name="shortcut.no-emu.tabs">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputTab9" class="col-xs-5 control-label">Onglet 9</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputTab9" name="shortcut.no-emu.tabs">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputTab10" class="col-xs-5 control-label">Onglet 10</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputTab10" name="shortcut.no-emu.tabs">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Sorts -->
                         <div role="tabpanel" class="tab-pane" id="spell">
-                            <div class="container">
-                                <form class="form-horizontal">
-                                    <div class="col-xs-6">
-                                        <div class="form-group">
-                                            <label for="inputEmail3" class="col-xs-6 control-label">Slot 1</label>
-                                            <div class="col-xs-6">
-                                                <input type="email" class="form-control" id="inputEmail3" >
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="inputEmail3" class="col-xs-6 control-label">Slot 2</label>
-                                            <div class="col-xs-6">
-                                                <input type="email" class="form-control" id="inputEmail3" >
-                                            </div>
+                            <div class="form-horizontal">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot1" class="col-xs-5 control-label">Slot 1</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot1">
                                         </div>
                                     </div>
-                                    <div class="col-xs-6">
-                                        <div class="form-group">
-                                            <label for="inputEmail3" class="col-xs-6 control-label">Slot 3</label>
-                                            <div class="col-xs-6">
-                                                <input type="email" class="form-control" id="inputEmail3" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="inputEmail3" class="col-xs-6 control-label">Slot 4</label>
-                                            <div class="col-xs-6">
-                                                <input type="email" class="form-control" id="inputEmail3" placeholder="">
-                                            </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot2" class="col-xs-5 control-label">Slot 2</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot2" >
                                         </div>
                                     </div>
-                                </form>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot3" class="col-xs-5 control-label">Slot 3</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot3">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot4" class="col-xs-5 control-label">Slot 4</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot4" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot5" class="col-xs-5 control-label">Slot 5</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot5">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot6" class="col-xs-5 control-label">Slot 6</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot6" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot7" class="col-xs-5 control-label">Slot 7</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot8">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot8" class="col-xs-5 control-label">Slot 8</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot8" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot9" class="col-xs-5 control-label">Slot 9</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot9">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot10" class="col-xs-5 control-label">Slot 10</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot10" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot11" class="col-xs-5 control-label">Slot 11</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot11">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot12" class="col-xs-5 control-label">Slot 12</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot12" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot13" class="col-xs-5 control-label">Slot 13</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot13">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot14" class="col-xs-5 control-label">Slot 14</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot14" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot15" class="col-xs-5 control-label">Slot 15</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot15">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot16" class="col-xs-5 control-label">Slot 16</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot16">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot17" class="col-xs-5 control-label">Slot 17</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot17" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot18" class="col-xs-5 control-label">Slot 18</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot18" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot19" class="col-xs-5 control-label">Slot 19</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot19">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot20" class="col-xs-5 control-label">Slot 20</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot20" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot21" class="col-xs-5 control-label">Slot 21</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot21">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot22" class="col-xs-5 control-label">Slot 22</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot22" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot23" class="col-xs-5 control-label">Slot 23</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot23">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot24" class="col-xs-5 control-label">Slot 24</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot24" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot25" class="col-xs-5 control-label">Slot 25</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot25">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot26" class="col-xs-5 control-label">Slot 26</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot26" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot27" class="col-xs-5 control-label">Slot 27</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot27">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot28" class="col-xs-5 control-label">Slot 28</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot28" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot29" class="col-xs-5 control-label">Slot 29</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot29">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpellSlot30" class="col-xs-5 control-label">Slot 30</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.spell" id="inputSpellSlot30">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Objets -->
                         <div role="tabpanel" class="tab-pane" id="item">
-
+                            <div class="form-horizontal">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="inputItemSlot1" class="col-xs-5 control-label">Slot 1</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot1">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot2" class="col-xs-5 control-label">Slot 2</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot2" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot3" class="col-xs-5 control-label">Slot 3</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot3">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot4" class="col-xs-5 control-label">Slot 4</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot4" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot5" class="col-xs-5 control-label">Slot 5</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot5">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot6" class="col-xs-5 control-label">Slot 6</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot6" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot7" class="col-xs-5 control-label">Slot 7</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot8">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot8" class="col-xs-5 control-label">Slot 8</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot8" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot9" class="col-xs-5 control-label">Slot 9</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot9">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot10" class="col-xs-5 control-label">Slot 10</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot10" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot11" class="col-xs-5 control-label">Slot 11</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot11">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot12" class="col-xs-5 control-label">Slot 12</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot12" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot13" class="col-xs-5 control-label">Slot 13</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot13">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot14" class="col-xs-5 control-label">Slot 14</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot14" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot15" class="col-xs-5 control-label">Slot 15</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot15">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="inputItemSlot16" class="col-xs-5 control-label">Slot 16</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot16">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot17" class="col-xs-5 control-label">Slot 17</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot17" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot18" class="col-xs-5 control-label">Slot 18</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot18" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot19" class="col-xs-5 control-label">Slot 19</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot19">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot20" class="col-xs-5 control-label">Slot 20</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot20" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot21" class="col-xs-5 control-label">Slot 21</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot21">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot22" class="col-xs-5 control-label">Slot 22</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot22" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot23" class="col-xs-5 control-label">Slot 23</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot23">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot24" class="col-xs-5 control-label">Slot 24</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot24" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot25" class="col-xs-5 control-label">Slot 25</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot25">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot26" class="col-xs-5 control-label">Slot 26</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot26" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot27" class="col-xs-5 control-label">Slot 27</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot27">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot28" class="col-xs-5 control-label">Slot 28</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot28" >
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot29" class="col-xs-5 control-label">Slot 29</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot29">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputItemSlot30" class="col-xs-5 control-label">Slot 30</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" name="shortcut.item" id="inputItemSlot30">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Menu -->
-                        <div role="tabpanel" class="tab-pane" id="menu">
-
+                        <div role="tabpanel" class="tab-pane" id="interface">
+                            <div class="form-horizontal">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="intputCharacter" class="col-xs-5 control-label">Personnage</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="intputCharacter" name="shortcut.interface.character">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSpell" class="col-xs-5 control-label">Sorts</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputSpell" name="shortcut.interface.spell">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputInventory" class="col-xs-5 control-label">Inventaire</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputInventory" name="shortcut.interface.inventory">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputMarket" class="col-xs-5 control-label">Hotel de Vente</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputMarket" name="shortcut.interface.market">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputMap" class="col-xs-5 control-label">Carte</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputMap" name="shortcut.interface.map">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputFriends" class="col-xs-5 control-label">Amis</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputFriends" name="shortcut.interface.friends">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputQuests" class="col-xs-5 control-label">Quêtes</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputQuests" name="shortcut.interface.quests">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="intputGuild" class="col-xs-5 control-label">Guilde</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="intputGuild" name="shortcut.interface.guild">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="intputKolizeum" class="col-xs-5 control-label">Kolizum</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="intputKolizeum" name="shortcut.interface.kolizeum">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputShop" class="col-xs-5 control-label">Shop</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputShop" name="shortcut.interface.shop">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputJobs" class="col-xs-5 control-label">Metiers</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputJobs" name="shortcut.interface.jobs">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="inputLeague" class="col-xs-5 control-label">Alliance</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputLeague" name="shortcut.interface.league">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputMount" class="col-xs-5 control-label">Monture</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputMount" name="shortcut.interface.mount">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputDirectoryLeagueGuild" class="col-xs-5 control-label">Repertoire de guilde et d'alliance</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputDirectoryLeagueGuild" name="shortcut.interface.directory-league-guild">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputAlignement" class="col-xs-5 control-label">Alignement</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputAlignement" name="shortcut.interface.alignement">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputBestiary" class="col-xs-5 control-label">Bestiaire</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputBestiary" name="shortcut.interface.bestiary">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputTitleOrnament" class="col-xs-5 control-label">Titre et Ornement</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputTitleOrnament" name="shortcut.interface.title-ornament">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSuccess" class="col-xs-5 control-label">Succés</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputSuccess" name="shortcut.interface.success">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputAlmanax" class="col-xs-5 control-label">Almanax</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputAlmanax" name="shortcut.interface.almanax">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputConjoint" class="col-xs-5 control-label">Conjoint</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputConjoint" name="shortcut.interface.conjoint">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputStore" class="col-xs-5 control-label">Marchand</label>
+                                        <div class="col-xs-7">
+                                            <input type="text" class="shortcut form-control" id="inputStore" name="shortcut.interface.store">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <button type="submit" class="btn btn-primary" style="position:absolute; top:5px;right:5px;">Sauvegarder</button>
         </div>
-    </div>
+    </form>
 </div>
 
 <script>
 window.$ = window.jQuery = require('jquery');
 </script>
 <script src="./bower_components/bootstrap/dist/js/bootstrap.js"></script>
-<script src="./bower_components/keymaster/js/keymaster.js"></script>
+<script src="./bower_components/keymaster/keymaster.js"></script>
 <script src="./assets/js/Option.js"></script>
 <script>
-$(function() {
 
+
+$(function() {
+    const option = new Option();
 });
 </script>
 

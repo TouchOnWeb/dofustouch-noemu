@@ -1,20 +1,115 @@
 {
-    "options" : {
-        "general" :{
-
+    "option": {
+        "general": {
+            "hidden-shop": true,
+            "developer-mode": false,
+            "resolution": "1600,900"
         },
-        "raccourcis" : {
-            "no-emu" :{
-
+        "shortcut": {
+            "no-emu": {
+                "new-tab": "ctrl+t",
+                "new-window": "space",
+                "next-tab": "alt+right",
+                "prev-tab": "alt+left",
+                "tabs": [
+                    "f1",
+                    "f2",
+                    "f3",
+                    "f4",
+                    "f5",
+                    "f6",
+                    "f7",
+                    "f8",
+                    "f9",
+                    "f10"
+                ]
             },
-            "spell" :{
-
-            },
-            "item":{
-
-            },
-            "interface":{
-
+            "spell": [
+                "space+n",
+                "m",
+                "3",
+                "4",
+                "5",
+                "6",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ],
+            "item": [
+                "d",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "e",
+                ""
+            ],
+            "interface": {
+                "character": "c",
+                "spell": "",
+                "inventory": "",
+                "market": "",
+                "map": "",
+                "friends": "",
+                "quests": "",
+                "guild": "",
+                "kolizeum": "",
+                "shop": "",
+                "jobs": "",
+                "league": "",
+                "mount": "",
+                "diretory-league-guild": "",
+                "alignement": "",
+                "bestiary": "",
+                "title-ornament": "",
+                "success": "",
+                "almanax": "",
+                "conjoint": "",
+                "store": "m"
             }
         }
     }
