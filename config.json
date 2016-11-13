@@ -1,18 +1,19 @@
 {
     "option": {
         "general": {
-            "hidden-shop": true,
-            "developer-mode": false,
-            "resolution": "1600,900"
+            "hidden-shop": false,
+            "developer-mode": true,
+            "resolution": "800;660"
         },
         "shortcut": {
             "no-emu": {
                 "new-tab": "ctrl+t",
-                "new-window": "space",
+                "new-window": "ctrl+n",
                 "next-tab": "alt+right",
                 "prev-tab": "alt+left",
+                "turn-end":"",
                 "tabs": [
-                    "f1",
+                    "backspace",
                     "f2",
                     "f3",
                     "f4",
@@ -25,15 +26,15 @@
                 ]
             },
             "spell": [
-                "space+n",
-                "m",
+                "1",
+                "2",
                 "3",
                 "4",
                 "5",
                 "6",
-                "",
-                "",
-                "",
+                "a",
+                "z",
+                "e",
                 "",
                 "",
                 "",

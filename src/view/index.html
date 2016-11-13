@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static//bower_components/bootswatch-dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../static/css/style.css" />
+</head>
+<body>
+    <div style="height:100%">
+        <ul class="nav nav-pills" id="navTabs">
+            <li><a id="addTab">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+            </a></li>
+        </ul>
+        <div class="tab-content">
+        </div>
+    </div>
+</body>
+</html>
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<!-- Dynamic Load ES6 module -->
+<script src="../../node_modules/browser-es-module-loader/dist/babel-browser-build.js"></script>
+<script src="../../node_modules/browser-es-module-loader/dist/browser-es-module-loader.js"></script>
+
+<!-- Dependencies -->
+<script src="../static/bower_components/jquery/dist/jquery.js"></script>
+<script src="../static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+
+<!-- Modules -->
+<script type="module" src="../browser/Tab.js"></script>
+<script type="module" src="../browser/Client.js"></script>
+<script type="module" src="../browser/Convert.js"></script>
+
+<script>if (window.module) module = window.module;</script>
+
+<script>
+$(document).ready(function() {
+    const loader = new BrowserESModuleLoader();
+    loader.import('../browser/Client.js').then(function(m) {
+        window.client = new m.Client();
+        window.client.init();
+    });
+});
+</script>

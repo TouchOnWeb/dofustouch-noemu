@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/css/styles-native.css" />
+    <style>
+
+    /* Turn on custom 8px wide scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px; /* 1px wider than Lion. */
+        /* This is more usable for users trying to click it. */
+        background-color: rgba(0,0,0,0);
+        -webkit-border-radius: 100px;
+    }
+    /* hover effect for both scrollbar area, and scrollbar 'thumb' */
+    ::-webkit-scrollbar:hover {
+        background-color: rgba(0, 0, 0, 0.09);
+    }
+
+    /* The scrollbar 'thumb' ...that marque oval shape in a scrollbar */
+    ::-webkit-scrollbar-thumb:vertical {
+        /* This is the EXACT color of Mac OS scrollbars.
+        Yes, I pulled out digital color meter */
+        background: rgba(0,0,0,0.5);
+        -webkit-border-radius: 100px;
+        background-clip: padding-box;
+        border: 2px solid rgba(0, 0, 0, 0);
+        min-height: 10px; /*Prevent it from getting too small */
+    }
+    ::-webkit-scrollbar-thumb:vertical:active {
+        background: rgba(0,0,0,0.61); /* Some darker color when you click it */
+        -webkit-border-radius: 100px;
+    }
+    </style>
+</head>
+<body>
+</body>
+</html>
+
+
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<!-- Dependencies -->
+<script src="../static/bower_components/jquery/dist/jquery.js"></script>
+<script src="../static/bower_components/keymaster/keymaster.js"></script>
+
+<!-- Game -->
+<script src="../browser/script.js"></script>
+<script>if (window.module) module = window.module;</script>
+
+<script>
+const client = window.top.client;
+const tab = client.getTab(window.id).element;
+
+$(document).ready(function() {
+    tab.init();
+
+    /*setTimeout(function() {
+        window.onresize = function() {
+            window.gui._resizeUi();
+        };
+
+        window.gui._resizeUi();
+    }, 2000);*/
+});
+
+</script>
