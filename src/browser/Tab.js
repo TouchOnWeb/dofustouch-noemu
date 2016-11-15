@@ -1,6 +1,7 @@
 // Node Context
 const low = require('lowdb');
 const async = require('async');
+const app = require('electron').remote.app
 
 export class Tab {
     constructor(id){
@@ -8,7 +9,7 @@ export class Tab {
         this.ig = false;
         this.window = window['Frame'+this.id];
         this.Emulator = require('electron').remote.require('./Emulator');
-        this.db = low('config.json');
+        this.db = low(app.getAppPath()+'/config.json');
     }
 
     init(){

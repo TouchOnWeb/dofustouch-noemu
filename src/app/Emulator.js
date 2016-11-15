@@ -14,8 +14,9 @@ class Emulator {
     }
 
     static init (win) {
+        console.log(app.getAppPath());
         var self = this;
-        this.config = low('config.json', {
+        this.config = low(app.getAppPath()+'/config.json', {
             storage: fileAsync
         });
         this.devMode = this.config.get('option.general.developer-mode').value();

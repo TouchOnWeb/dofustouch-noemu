@@ -15,7 +15,7 @@ class Option {
 
     static init (winParent) {
 
-        this.config = './config.json';
+        this.config = app.getAppPath()+'/config.json';
         this.winOption = new BrowserWindow({
             width: 700,
             height: 500,

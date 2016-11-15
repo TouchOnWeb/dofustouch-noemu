@@ -67,7 +67,7 @@ class UpdaterClient {
                 });
             });
             break;
-            case 'windows':
+            case 'win32':
             exec('cmd.exe update.bat', function(error, stdout, stderr) {
                 console.log(stdout);
             });

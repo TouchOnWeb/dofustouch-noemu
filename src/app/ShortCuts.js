@@ -2,13 +2,14 @@ const electronLocalshortcut = require('electron-localshortcut');
 const low = require('lowdb');
 const async = require('async');
 const fileAsync = require('lowdb/lib/file-async');
+const {app} = require('electron');
 
 class ShortCuts {
 
     constructor(win){
         this.win = win;
         this.start = false;
-        this.config = low('config.json', {
+        this.config = low(app.getAppPath()+'/config.json', {
             storage: fileAsync
         });
     }
