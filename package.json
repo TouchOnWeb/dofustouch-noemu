@@ -7,7 +7,8 @@
     "install": "bower install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "build --dir",
-    "dist": "build --platform all --arch all",
+    "build": "node build.js",
+    "distmac": "build --platform darwin",
     "start": "electron ./"
   },
   "author": "Daniel Lefebvre",
@@ -30,20 +31,13 @@
     "tar": "^2.2.1",
     "watch-object": "^1.1.2"
   },
-  "build": {
-    "asar": false,
-    "appId": "com.electron.${name}",
-    "mac": {
-      "category": "public.app-category.games"
-    },
-    "win": {
-      "iconUrl": "http://dofustouch.no-emu.com/icon.ico"
-    }
-  },
+  "build": {},
   "devDependencies": {
     "bower": "^1.7.9",
     "electron": "^1.4.2",
     "electron-builder": "^7.15.2",
-    "electron-reload": "^1.0.2"
+    "electron-installer-windows": "^0.2.0",
+    "electron-reload": "^1.0.2",
+    "electron-windows-installer": "^1.4.4"
   }
 }
