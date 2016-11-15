@@ -14,47 +14,15 @@ class ShortCuts {
     }
 
     init(){
-
         // tabs
         async.forEachOf(this.config.get('option.shortcut.no-emu.tabs').value(), (shortcut, index, callback) => {
             if(shortcut){
                 electronLocalshortcut.register(this.win, this.convert(shortcut), (e) => {
-                    this.win.webContents.send('spell', index);
+                    this.win.webContents.send('switchTab', index);
                 });
             }
             callback();
-        }, (err) => {});
-
-        // spell
-        async.forEachOf(this.config.get('option.shortcut.spell').value(), (shortcut, index, callback) =>{
-            if(shortcut){
-                electronLocalshortcut.register(this.win, this.convert(shortcut), (e) => {
-                    this.win.webContents.send('spell', index);
-                });
-            }
-            callback();
-        }, (err) => {});
-
-        // item
-        async.forEachOf(this.config.get('option.shortcut.item').value(), (shortcut, index, callback) =>{
-            if(shortcut){
-                electronLocalshortcut.register(this.win, this.convert(shortcut), (e) => {
-                    this.win.webContents.send('item', index);
-                });
-            }
-            callback();
-        }, (err) => {});
-
-        //interface
-        async.forEachOf(this.config.get('option.shortcut.interface').value(), (shortcut, key, callback) =>{
-            if(shortcut){
-                electronLocalshortcut.register(this.win, this.convert(shortcut), (e) => {
-                    this.win.webContents.send('interface', key);
-                });
-            }
-            callback();
-        }, (err) => {});
-
+        });
     }
 
     enable(){

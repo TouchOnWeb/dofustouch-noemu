@@ -1,6 +1,10 @@
+// Node Context
 const {ipcRenderer} = require('electron');
 
-class Option {
+// Browser Context
+import {KeyCode} from './KeyCode.js'
+
+export class Option {
 
     constructor(){
         this.option  = require('electron').remote.require('./Option');

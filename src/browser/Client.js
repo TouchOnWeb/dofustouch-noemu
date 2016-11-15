@@ -1,7 +1,6 @@
 // Node context
 const {ipcRenderer} = require('electron');
 const electronLocalshortcut  = require('electron').remote.require('electron-localshortcut');
-const low = require('lowdb');
 
 // Client context
 import {Tab} from './Tab.js';
@@ -12,7 +11,6 @@ export class Client {
         this.Emulator = require('electron').remote.require('./Emulator');
         this.tabs = [];
         this.id = 0;
-        this.db = low('config.json');
 
         this.$addTab = $('#addTab');
         this.$navTabs = $('.nav-pills');
@@ -43,7 +41,7 @@ export class Client {
         window['Frame'+this.id].id = this.id;
 
         // create tab object
-        this.tabs.push(new Tab(this.id));
+        this.tabs.push(new Tab(this.id, this.db));
 
         //click on the last tab
         if (this.$navTabs.length > 0){

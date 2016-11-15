@@ -14,6 +14,7 @@
   "license": "GNU GPLv3",
   "dependencies": {
     "async": "^2.1.2",
+    "auto-updater": "^1.0.2",
     "browser-es-module-loader": "^0.2.0",
     "cheerio": "^0.22.0",
     "electron-localshortcut": "^1.0.0",
@@ -41,7 +42,7 @@
   },
   "devDependencies": {
     "bower": "^1.7.9",
-    "electron": "^1.4.3",
+    "electron": "^1.4.2",
     "electron-builder": "^7.15.2",
     "electron-reload": "^1.0.2"
   }

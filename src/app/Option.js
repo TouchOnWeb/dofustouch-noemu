@@ -13,15 +13,15 @@ const MessageBox = require('./MessageBox');
 
 class Option {
 
-    static init () {
+    static init (winParent) {
 
         this.config = './config.json';
         this.winOption = new BrowserWindow({
             width: 700,
             height: 500,
-            resizable: Emulator.devMode,
+            resizable: false,
             center: true,
-            parent: BrowserWindow.getFocusedWindow(),
+            parent: winParent/*BrowserWindow.getFocusedWindow()*/,
             darkTheme: true,
             skipTaskbar: true,
         });

@@ -156,6 +156,17 @@ class MenuTemplate {
                 ]
             },
             {
+                label:'Option',
+                submenu: [
+                    {
+                        label: 'Peference',
+                        click (item, focusedWindow) {
+                            require('./Option').init(focusedWindow)
+                        }
+                    }
+                ]
+            },
+            {
                 role: 'help',
                 submenu: [
                     {
