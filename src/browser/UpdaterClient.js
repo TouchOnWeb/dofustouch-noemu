@@ -1,6 +1,5 @@
-const updater = require('electron').remote.require('./Updater');
+const Updater = require('electron').remote.require('./Updater');
 const emulator = require('electron').remote.require('./Emulator');
-const process = require('electron').remote.getGlobal('process');
 const {app} = require('electron').remote
 const http = require('http');
 const fs = require('fs');
@@ -45,6 +44,7 @@ class UpdaterClient {
     }
 
     start(){
+        console.log(Updater.platform);
         this.downloadUpdate();
     }
 
@@ -52,8 +52,30 @@ class UpdaterClient {
 
         this.updateProgressBarIndice('Installation de la mis à jour...');
 
+        switch(process.platform){
+            case 'linux':
+            case 'darwin':
+            console.log('start darwin update');
+            exec('chmod a+x update.sh', function(error, stdout, stderr) {
+                console.log(error);
+                console.log(stdout);
+                console.log(stderr);
+                exec('./update.sh', function(error, stdout, stderr) {
+                    console.log(error);
+                    console.log(stdout);
+                    console.log(stderr);
+                });
+            });
+            break;
+            case 'windows':
+            exec('cmd.exe update.bat', function(error, stdout, stderr) {
+                console.log(stdout);
+            });
+            break;
+        }
+
         // remove old source
-        fs.unlinkSync(`${__dirname}/../package.json`);
+        /*fs.unlinkSync(`${__dirname}/../package.json`);
         fsExtra.rmrfSync(`${__dirname}/../views`);
         fsExtra.rmrfSync(`${__dirname}/../src`);
 
@@ -67,46 +89,46 @@ class UpdaterClient {
         .pipe(zlib.Unzip())
         .pipe(tar.Extract({ path: `${__dirname}/../`,strip: 0 }))
         .on('end', () => {
-            // delete update file
-            fs.unlinkSync(this.toSaveFilePath);
+        // delete update file
+        fs.unlinkSync(this.toSaveFilePath);
 
-            // restart the app
-            app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
-            app.exit(0)
-        });
-    }
+        // restart the app
+        app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
+        app.exit(0)
+    });*/
+}
 
-    downloadUpdate(){
+downloadUpdate(){
 
-        progress(request(this.dataFile.file), {})
-        .on('progress', (state) => {
-            let percent = Math.round(state.percentage * 100);
-            this.updateProgressBar(percent);
-            this.updateProgressBarIndice(UpdaterClient.formatDownloadUnit(state.size.transferred)+' / '+UpdaterClient.formatDownloadUnit(state.size.total))
-        })
-        .on('error', (err) =>{
-            this.updateProgressBarIndice('<span class="text-error">Impossible de télécharger la mise à jour ! Veuillez réessayer ultérieurement</span>');
-        })
-        .on('end', () =>{
-            this.updateProgressBar(100);
-            this.updateProgressBarIndice('Mise à jour terminée');
-        })
-        .pipe(this.file);
+    progress(request(this.dataFile.file), {})
+    .on('progress', (state) => {
+        let percent = Math.round(state.percentage * 100);
+        this.updateProgressBar(percent);
+        this.updateProgressBarIndice(UpdaterClient.formatDownloadUnit(state.size.transferred)+' / '+UpdaterClient.formatDownloadUnit(state.size.total))
+    })
+    .on('error', (err) =>{
+        this.updateProgressBarIndice('<span class="text-error">Impossible de télécharger la mise à jour ! Veuillez réessayer ultérieurement</span>');
+    })
+    .on('end', () =>{
+        this.updateProgressBar(100);
+        this.updateProgressBarIndice('Mise à jour terminée');
+    })
+    .pipe(this.file);
 
-        this.file.addListener('finish', ()=>{
-            this.installUpdate();
-        });
-    }
+    this.file.addListener('finish', ()=>{
+        this.installUpdate();
+    });
+}
 
-    updateProgressBar(percent){
-        this.progressBar.css({
-            width: percent + '%',
-            ariaValuenow: percent
-        });
-    }
+updateProgressBar(percent){
+    this.progressBar.css({
+        width: percent + '%',
+        ariaValuenow: percent
+    });
+}
 
-    updateProgressBarIndice(text){
-        this.progressBarIndice.html(text);
-    }
+updateProgressBarIndice(text){
+    this.progressBarIndice.html(text);
+}
 
 }

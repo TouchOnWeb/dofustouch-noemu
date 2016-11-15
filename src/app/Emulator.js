@@ -5,7 +5,7 @@ const low = require('lowdb');
 const fileAsync = require('lowdb/lib/file-async');
 const ShortCuts = require('./ShortCuts');
 const MenuTemplate = require('./MenuTemplate');
-const autoUpdater = require('auto-updater');
+const os = require('os');
 
 class Emulator {
 
@@ -22,23 +22,21 @@ class Emulator {
         this.gameWindows = [];
         this.version = pkg.version;
         this.webSite = 'http://dofustouch.no-emu.com';
+        require('./Updater').init( () => {
 
-        this.win = new BrowserWindow({
-            width: this.config.get('option.general.resolution').value().split(';')[0],
-            height: this.config.get('option.general.resolution').value().split(';')[0],
-            title : 'DofusTouch-NE',
-            useContentSize: true,
-            center: true
+            this.win = new BrowserWindow({
+                width: this.config.get('option.general.resolution').value().split(';')[0],
+                height: this.config.get('option.general.resolution').value().split(';')[0],
+                title : 'DofusTouch-NE',
+                useContentSize: true,
+                center: true
+            });
+
+            console.log('start game');
+            this.shortCuts = new ShortCuts(this.win);
+            Emulator.setMenu();
+            Emulator.openGameWindow();
         });
-
-
-
-        this.shortCuts = new ShortCuts(this.win);
-
-        //require('./Updater').init( () => {
-        Emulator.setMenu();
-        Emulator.openGameWindow();
-        //});
     }
 
     static openGameWindow () {

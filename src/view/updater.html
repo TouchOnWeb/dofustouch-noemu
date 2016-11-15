@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../static/bower_components/bootstrap/dist/css/bootstrap.css" />
     <title>Mise à jour</title>
     <style>
 
@@ -26,11 +26,11 @@
 <script>
 window.$ = window.jQuery = require('jquery');
 </script>
-<script src="./bower_components/bootstrap/dist/js/bootstrap.js"></script>
-<script src="./assets/js/UpdaterClient.js"></script>
+<script src="../static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="../browser/UpdaterClient.js"></script>
 <script>
 $(function() {
-    let updaterClient = new UpdaterClient(updater.responseBody,  updater.toSaveFilePath, updater.startGame)
+    let updaterClient = new UpdaterClient(Updater.responseBody,  Updater.toSaveFilePath, Updater.startGame)
     updaterClient.start();
 });
 </script>

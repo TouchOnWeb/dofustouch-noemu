@@ -77,13 +77,13 @@ class Updater {
         var winUpdate = new BrowserWindow({
             width: 700,
             height: 150,
-            modal: false,
-            resizable: Emulator.devMode,
+            //modal: false,
+            //resizable: Emulator.devMode,
             center: true,
             parent: BrowserWindow.getFocusedWindow(),
-            darkTheme: true,
-            skipTaskbar: true,
-            frame: false
+            //darkTheme: true,
+            //skipTaskbar: true,
+            //frame: false
         });
 
         winUpdate.on('closed', () => {
