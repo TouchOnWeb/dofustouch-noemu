@@ -6,6 +6,9 @@ const os = require('os');
 const fs = require('fs');
 const url = require('url');
 const Emulator = require('./Emulator');
+const sudo = require('sudo-prompt');
+const MessageBox = require('./MessageBox');
+const exec = require('child_process').exec;
 
 class Updater {
 
@@ -70,6 +73,38 @@ class Updater {
         return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
     }
 
+    static execUpdate(){
+
+        let options = {
+            name: 'DofusTouchNE',
+        };
+
+        switch(process.platform){
+            case 'linux':
+            case 'darwin':
+            console.log('start unix update');
+            exec('chmod a+x '+app.getAppPath()+'/update.sh', options, function(error, stdout, stderr) {
+                sudo.exec(app.getAppPath()+'/update.sh '+app.getAppPath(), options, function(error, stdout, stderr) {
+                    app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
+                    app.exit(0)
+                });
+            });
+            break;
+            case 'win32':
+            console.log('start win32 update');
+            const bat = spawn('cmd.exe', ['/c', app.getAppPath()+'/update.bat', options.name,  app.getAppPath()]);
+            bat.stdout.on('data', (data) => {
+                var str = String.fromCharCode.apply(null, data);
+                console.info(str);
+            });
+            bat.stderr.on('data', (data) => {
+                var str = String.fromCharCode.apply(null, data);
+                console.error(str);
+            });
+            break;
+        }
+    }
+
     static startUpdate (i) {
 
         Updater.toSaveFilePath = app.getAppPath()+'/update.tar.gz';
@@ -93,7 +128,7 @@ class Updater {
         winUpdate.loadURL(Emulator.dirView('updater.html'));
 
         if (Emulator.devMode)
-            winUpdate.webContents.openDevTools();
+        winUpdate.webContents.openDevTools();
     }
 
     static init (startGame) {

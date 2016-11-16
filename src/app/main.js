@@ -4,6 +4,7 @@ const url = require('url');
 const os = require('os');
 const Emulator = require('./Emulator');
 
+
 app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 
 var win;

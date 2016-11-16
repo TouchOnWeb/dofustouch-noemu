@@ -28,6 +28,7 @@
     "lowdb": "^0.14.0",
     "request": "^2.76.0",
     "request-progress": "^2.0.1",
+    "sudo-prompt": "^6.2.0",
     "tar": "^2.2.1",
     "watch-object": "^1.1.2"
   },
@@ -36,8 +37,6 @@
     "bower": "^1.7.9",
     "electron": "^1.4.2",
     "electron-builder": "^7.15.2",
-    "electron-installer-windows": "^0.2.0",
-    "electron-reload": "^1.0.2",
-    "electron-windows-installer": "^1.4.4"
+    "electron-reload": "^1.0.2"
   }
 }

@@ -1,6 +1,6 @@
 const Updater = require('electron').remote.require('./Updater');
 const emulator = require('electron').remote.require('./Emulator');
-const {app} = require('electron').remote
+const app = require('electron').remote.app
 const http = require('http');
 const fs = require('fs');
 const fsExtra = require('fs.extra');
@@ -14,6 +14,7 @@ const zlib = require('zlib');
 const tar = require('tar');
 const execSync = require('child_process').execSync;
 const async = require('async');
+
 
 class UpdaterClient {
 
@@ -52,27 +53,7 @@ class UpdaterClient {
 
         this.updateProgressBarIndice('Installation de la mis à jour...');
 
-        switch(process.platform){
-            case 'linux':
-            case 'darwin':
-            console.log('start darwin update');
-            exec('chmod a+x update.sh', function(error, stdout, stderr) {
-                console.log(error);
-                console.log(stdout);
-                console.log(stderr);
-                exec('./update.sh', function(error, stdout, stderr) {
-                    console.log(error);
-                    console.log(stdout);
-                    console.log(stderr);
-                });
-            });
-            break;
-            case 'win32':
-            exec('cmd.exe update.bat', function(error, stdout, stderr) {
-                console.log(stdout);
-            });
-            break;
-        }
+        Updater.execUpdate();
 
         // remove old source
         /*fs.unlinkSync(`${__dirname}/../package.json`);
