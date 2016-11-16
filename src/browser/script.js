@@ -17,9 +17,16 @@
     t.p = "",
     t(0)
 }([function(e, t, i) {
-    function n() {
-        if (l.isWebGlSupported()) {
-            var e = i(1010);
+    function n(e) {
+        return window.wizAssets && window.wizAssets.initialize ? void window.wizAssets.initialize(e, function() {
+            console.error("failed to init wizAssets"),
+            window.wizAssets = null ,
+            e()
+        }) : e()
+    }
+    function o() {
+        if (c.isWebGlSupported()) {
+            var e = i(1012);
             window.isoEngine = new e,
             window.actorManager = window.isoEngine.actorManager,
             window.background = window.isoEngine.background
@@ -33,20 +40,20 @@
     window.developmentMode = !1,
     window.assetPreloader = i(5),
     window.dofus = i(11);
-    var o = document.createElement("div");
-    o.id = "dofusBody",
-    document.body.appendChild(o);
-    var s = i(182)
-      , a = i(293);
-    window.gui = new a,
-    window.foreground = new s;
-    var r = i(7)
-      , l = i(266)
-      , c = window.chrome;
-    "object" == typeof c && c.system && c.system.memory && r.isPhoneGap ? c.system.memory.getInfo(function(e) {
-        r.capacity = e.capacity,
-        n()
-    }) : n()
+    var s = document.createElement("div");
+    s.id = "dofusBody",
+    document.body.appendChild(s);
+    var a = i(183)
+      , r = i(294);
+    window.gui = new r,
+    window.foreground = new a;
+    var l = i(7)
+      , c = i(267)
+      , u = window.chrome;
+    "object" == typeof u && u.system && u.system.memory && l.isPhoneGap ? u.system.memory.getInfo(function(e) {
+        l.capacity = e.capacity,
+        n(o)
+    }) : n(o)
 }
 , function(e, t) {}
 , function(e, t) {}
@@ -443,8 +450,7 @@
           , s = function(a) {
             return i -= 1,
             i > 0 && o(a) ? window.wizAssets.downloadFile(t, e, n, s) : c(a, e, null )
-        }
-        ;
+        };
         return _[e] ? (console.warn('initiateAssetLoading: known missing asset "' + e + '" will be skip'),
         c(null , e, null )) : window.wizAssets.downloadFile(t, e, n, s)
     }
@@ -896,8 +902,7 @@
             ,
             this.setUA(i),
             this
-        }
-        ;
+        };
         N.VERSION = a,
         N.BROWSER = {
             NAME: f,
@@ -2205,10 +2210,10 @@
       , I = i(156)
       , T = i(157)
       , S = i(158)
-      , A = i(180)
+      , A = i(181)
       , E = i(41)
       , x = i(7);
-    window.developmentMode && i(181);
+    window.developmentMode && i(182);
     var M = "STICKER"
       , N = window.appInfo && window.appInfo.version;
     t = e.exports = new p,
@@ -2239,7 +2244,7 @@
         r(i, function(t) {
             return t ? (console.error(t),
             void (navigator.notification ? navigator.notification.alert("Server busy.", e, "Dofus Touch", "Reload") : (window.alert("Server busy."),
-            e()))) : (S.init(null ),
+            e()))) : (S.init(null),
             A.initialize(window.Config.adjust),
             y.backToLogin(),
             window.gui.initialize(window.Config),
@@ -3174,8 +3179,7 @@
                 })
                   , o = function(e, o) {
                     e ? i(e) : o ? t(n) : i(null )
-                }
-                ;
+                };
                 e(o)
             }
             ,
@@ -3570,8 +3574,7 @@
 , function(e, t) {
     var i = function() {
         this.eventHandlers = {}
-    }
-    ;
+    };
     i.EventEmitter = i,
     e.exports = i,
     i.listenerCount = function(e, t) {
@@ -3701,7 +3704,8 @@
             for (var t in e)
                 if (e.hasOwnProperty(t)) {
                     if (C[t])
-                        continue;u[t] = e[t]
+                        continue;
+                    u[t] = e[t]
                 }
         }
     }
@@ -4344,14 +4348,21 @@
                 u.destroy()
             })
         }
-        return i.openState = !0,
+        i.openState = !0,
         i.show(),
         this.emit("open", {
             id: e
         }),
         i.emit("open", t),
         v.focusWindow(e),
-        c = i.position,
+        c = i.position;
+        var p = l && l.isDefault;
+        return p || i.initialPosition || (i.initialPosition = {
+            x: c.x,
+            y: c.y,
+            width: c.width,
+            height: c.height
+        }),
         c.x = Math.min(d.windowFullScreenWidth - c.width, Math.max(0, c.x)),
         c.y = Math.max(0, Math.min(d.windowFullScreenHeight - _, c.y)),
         i.openingTweener = m.tween(i, {
@@ -4376,14 +4387,26 @@
     }
     ,
     v.positionWindow = function(e, t) {
-        var i = y[e]
-          , n = i.position = h(t || i.positionInfo);
-        i.setStyles({
-            width: n.width + "px",
-            height: n.height + "px",
-            webkitTransform: "translate3d(" + n.x + "px," + n.y + "px,0) scale(1)"
+        var i, n = y[e];
+        if (t)
+            i = h(t);
+        else if (n.initialPosition) {
+            var o = n.initialPosition;
+            i = {
+                x: o.x,
+                y: o.y,
+                width: o.width,
+                height: o.height
+            }
+        } else
+            i = h(n.positionInfo);
+        n.position = i,
+        n.setStyles({
+            width: i.width + "px",
+            height: i.height + "px",
+            webkitTransform: "translate3d(" + i.x + "px," + i.y + "px,0) scale(1)"
         }),
-        t ? i.emit("positioned") : i.emit("repositioned")
+        t ? n.emit("positioned") : n.emit("repositioned")
     }
     ,
     v.openDialog = function(e, t) {
@@ -4392,7 +4415,7 @@
             w = e;
             for (var i = 0, n = e.length; i < n; i += 1)
                 v.open(e[i], t);
-            window.foreground.lock("windowsManagerDialog")
+            window.foreground.lock("windowsManagerDialog");
         }
     }
     ,
@@ -5063,8 +5086,7 @@
     }
     : e.exports = function(e, t) {
         e.super_ = t;
-        var i = function() {}
-        ;
+        var i = function() {};
         i.prototype = t.prototype,
         e.prototype = new i,
         e.prototype.constructor = e
@@ -5239,6 +5261,7 @@
 }
 , function(e, t) {
     function i() {
+        this._hasListeners = !1,
         this.autosave = null ,
         this.nextSaveTime = 0,
         this.accountName = null ,
@@ -5252,9 +5275,20 @@
         this.setAccount(null )
     }
     ,
+    i.prototype._setupListeners = function() {
+        if (!this._hasListeners) {
+            var e = this;
+            window.gui.on("appOnBackground", function() {
+                null !== e.accountName && e.autosave && e._save()
+            }),
+            this._hasListeners = !0
+        }
+    }
+    ,
     i.prototype.setAccount = function(e) {
         this.autosave && this._save(),
-        this.accountName = e
+        this.accountName = e,
+        this._setupListeners()
     }
     ,
     i.prototype._load = function() {
@@ -5288,6 +5322,10 @@
         }
     }
     ,
+    i.prototype.saveNow = function() {
+        this._save()
+    }
+    ,
     i.prototype.getValue = function(e, t, i) {
         e = (this.accountName && !i ? this.accountName : s) + "#" + e;
         var n = this.prefs[e];
@@ -5310,52 +5348,58 @@
     e.exports = a
 }
 , function(e, t) {
-    t.tween = function(e, t, i, n) {
-        function o() {
-            window.clearTimeout(d),
-            c.removeEventListener("webkitTransitionEnd", p),
-            d = null ,
-            c.style.webkitTransition = u,
+    function i(e) {
+        return !!e._tween && (e._tween.cancel(),
+        e.emit("tweenCancelled"),
+        !0)
+    }
+    t.tween = function(e, t, n, o) {
+        function s() {
+            window.clearTimeout(p),
+            u.removeEventListener("webkitTransitionEnd", m),
+            p = null ,
+            u.style.webkitTransition = h,
             e._tween = null
         }
-        function s() {
-            m || f || (m = f = !0,
-            o(),
-            n = null )
+        function a() {
+            f || g || (f = g = !0,
+            s(),
+            o = null )
         }
-        e._tween && (e._tween.cancel(),
-        e.emit("tweenCancelled")),
-        i = i || {};
-        var a = i.time || 500
-          , r = i.delay || 0
-          , l = i.easing || "ease-in-out"
-          , c = e.rootElement
-          , u = c.style.webkitTransition
-          , h = "all " + a + "ms " + l;
-        r && (h += " " + r + "ms");
-        var d, p, m = !1, f = !1;
-        return p = function(t) {
-            f || (f = !0,
+        i(e),
+        n = n || {};
+        var r = n.time || 500
+          , l = n.delay || 0
+          , c = n.easing || "ease-in-out"
+          , u = e.rootElement
+          , h = u.style.webkitTransition
+          , d = "all " + r + "ms " + c;
+        l && (d += " " + l + "ms");
+        var p, m, f = !1, g = !1;
+        return m = function(t) {
+            g || (g = !0,
             t && t.stopPropagation(),
-            o(),
-            n && (n.call(e, t),
-            n = null ))
+            s(),
+            o && (o.call(e, t),
+            o = null ))
         }
         ,
         window.setTimeout(function() {
-            if (!m) {
-                c.style.webkitTransition = h;
+            if (!f) {
+                u.style.webkitTransition = d;
                 for (var e in t)
-                    c.style[e] = t[e];
-                c.addEventListener("webkitTransitionEnd", p),
-                d = window.setTimeout(p, r + a)
+                    u.style[e] = t[e];
+                u.addEventListener("webkitTransitionEnd", m),
+                p = window.setTimeout(m, l + r)
             }
         }, 0),
         e._tween = {
-            cancel: s
+            cancel: a
         },
         e._tween
     }
+    ,
+    t.cancelTween = i
 }
 , function(e, t, i) {
     function n() {
@@ -5523,9 +5567,10 @@
       , s = i(35).getText
       , a = i(26).inherits
       , r = 6e5
-      , l = 12e5
-      , c = 12e4
-      , u = 1e3;
+      , l = 3e5
+      , c = 6e5
+      , u = 12e4
+      , h = 1e3;
     a(n, o),
     e.exports = new n,
     n.prototype.initialize = function(e) {
@@ -5553,10 +5598,12 @@
         this.isListening || (this.isListening = !0,
         this.activityInterval = window.setInterval(function(e) {
             e._checkActivity()
-        }, c, this),
+        }, u, this),
         this.pingInterval = window.setInterval(function(e) {
             e._pingServer()
         }, r, this),
+        this.isInactive = !1,
+        this.hasSeenActivity = !1,
         this.lastActivityTime = Date.now())
     }
     ,
@@ -5577,7 +5624,8 @@
     }
     ,
     n.prototype._checkActivity = function() {
-        Date.now() - this.lastActivityTime + u < l || this.isInactive || this._enterInactiveMode()
+        var e = Date.now() - this.lastActivityTime + h;
+        e < l || (this.isInactive ? e >= c && window.dofus.disconnect("INACTIVITY") : this._enterInactiveMode())
     }
     ,
     n.prototype._pingServer = function() {
@@ -6200,8 +6248,7 @@
             cleanInterface && Object.defineProperty(this, "_items", {
                 enumerable: !1
             })
-        }
-        ;
+        };
         if (n.prototype = {
             contains: function(e) {
                 return -1 !== this._items.indexOf(e)
@@ -6436,8 +6483,7 @@
                 eventPhase: 0,
                 timeStamp: new Date
             }
-        }
-        ;
+        };
         e.Event = t
     }(idbModules),
     function(e) {
@@ -6447,8 +6493,7 @@
         }
           , i = function() {
             this.onblocked = this.onupgradeneeded = null
-        }
-        ;
+        };
         i.prototype = t,
         e.IDBRequest = t,
         e.IDBOpenRequest = i
@@ -6459,8 +6504,7 @@
             this.upper = t,
             this.lowerOpen = i,
             this.upperOpen = n
-        }
-        ;
+        };
         i.only = function(e) {
             return new i(e,e,(!1),(!1))
         }
@@ -6544,8 +6588,7 @@
                     o.value = i,
                     o.primaryKey = n,
                     a(o.key !== t ? o : t, o.__req)
-                }
-                ;
+                };
                 return o.__prefetchedData && (o.__prefetchedIndex++,
                 o.__prefetchedIndex < o.__prefetchedData.length) ? (o.__decode(o.__prefetchedData.item(o.__prefetchedIndex), l),
                 t) : (o.__find(i, e, l, r, n),
@@ -6711,8 +6754,7 @@
             this.__ready = {},
             this.__setReadyState("createObjectStore", void 0 === i || i),
             this.indexNames = new idbModules.util.StringList
-        }
-        ;
+        };
         IDBObjectStore.prototype.__setReadyState = function(e, t) {
             this.__ready[e] = t
         }
@@ -6971,8 +7013,7 @@
             this.db = s,
             this.error = null ,
             this.onabort = this.onerror = this.oncomplete = null
-        }
-        ;
+        };
         o.prototype.__executeRequests = function() {
             if (this.__running && this.mode !== n)
                 return void (e.DEBUG && console.log("Looks like the request set is already running", this.mode));
@@ -7069,8 +7110,7 @@
                 this.objectStoreNames.push(o.rows.item(s).name);
             this.name = i,
             this.onabort = this.onerror = this.onversionchange = null
-        }
-        ;
+        };
         t.prototype.createObjectStore = function(t, i) {
             var n = this;
             i = i || {},
@@ -7331,44 +7371,33 @@
     function i(e, t) {
         return Object.prototype.hasOwnProperty.call(e, t)
     }
-    e.exports = function(e, t, o, s) {
+    e.exports = function(e, t, n, o) {
         t = t || "&",
-        o = o || "=";
-        var a = {};
+        n = n || "=";
+        var s = {};
         if ("string" != typeof e || 0 === e.length)
-            return a;
-        var r = /\+/g;
+            return s;
+        var a = /\+/g;
         e = e.split(t);
-        var l = 1e3;
-        s && "number" == typeof s.maxKeys && (l = s.maxKeys);
-        var c = e.length;
-        l > 0 && c > l && (c = l);
-        for (var u = 0; u < c; ++u) {
-            var h, d, p, m, f = e[u].replace(r, "%20"), g = f.indexOf(o);
-            g >= 0 ? (h = f.substr(0, g),
-            d = f.substr(g + 1)) : (h = f,
-            d = ""),
+        var r = 1e3;
+        o && "number" == typeof o.maxKeys && (r = o.maxKeys);
+        var l = e.length;
+        r > 0 && l > r && (l = r);
+        for (var c = 0; c < l; ++c) {
+            var u, h, d, p, m = e[c].replace(a, "%20"), f = m.indexOf(n);
+            f >= 0 ? (u = m.substr(0, f),
+            h = m.substr(f + 1)) : (u = m,
+            h = ""),
+            d = decodeURIComponent(u),
             p = decodeURIComponent(h),
-            m = decodeURIComponent(d),
-            i(a, p) ? n(a[p]) ? a[p].push(m) : a[p] = [a[p], m] : a[p] = m
+            i(s, d) ? Array.isArray(s[d]) ? s[d].push(p) : s[d] = [s[d], p] : s[d] = p
         }
-        return a
-    }
-    ;
-    var n = Array.isArray || function(e) {
-        return "[object Array]" === Object.prototype.toString.call(e)
+        return s
     }
 }
 , function(e, t) {
     "use strict";
-    function i(e, t) {
-        if (e.map)
-            return e.map(t);
-        for (var i = [], n = 0; n < e.length; n++)
-            i.push(t(e[n], n));
-        return i
-    }
-    var n = function(e) {
+    var i = function(e) {
         switch (typeof e) {
         case "string":
             return e;
@@ -7379,28 +7408,17 @@
         default:
             return ""
         }
-    }
-    ;
-    e.exports = function(e, t, a, r) {
+    };
+    e.exports = function(e, t, n, o) {
         return t = t || "&",
-        a = a || "=",
+        n = n || "=",
         null === e && (e = void 0),
-        "object" == typeof e ? i(s(e), function(s) {
-            var r = encodeURIComponent(n(s)) + a;
-            return o(e[s]) ? i(e[s], function(e) {
-                return r + encodeURIComponent(n(e))
-            }).join(t) : r + encodeURIComponent(n(e[s]))
-        }).join(t) : r ? encodeURIComponent(n(r)) + a + encodeURIComponent(n(e)) : ""
-    }
-    ;
-    var o = Array.isArray || function(e) {
-        return "[object Array]" === Object.prototype.toString.call(e)
-    }
-      , s = Object.keys || function(e) {
-        var t = [];
-        for (var i in e)
-            Object.prototype.hasOwnProperty.call(e, i) && t.push(i);
-        return t
+        "object" == typeof e ? Object.keys(e).map(function(o) {
+            var s = encodeURIComponent(i(o)) + n;
+            return Array.isArray(e[o]) ? e[o].map(function(e) {
+                return s + encodeURIComponent(i(e))
+            }).join(t) : s + encodeURIComponent(i(e[o]))
+        }).join(t) : o ? encodeURIComponent(i(o)) + n + encodeURIComponent(i(e)) : ""
     }
 }
 , function(e, t, i) {
@@ -7881,7 +7899,7 @@
     t.connectMethod = null ,
     t.lastServerId = null ,
     t.startLoginProcessWithPassword = function(e, t, i, n, s) {
-		window.a = [t,i,n];
+        window.a = [t,i,n];
         o(e, {
             account: t,
             password: i,
@@ -8073,7 +8091,8 @@
         e = t.getHaapiUsername(),
         r() ? t.createToken(l) : a({
             reason: "NOKEY"
-        })) : void t.createApiKey({
+        })) : (e = e.trim(),
+        void t.createApiKey({
             login: e,
             password: i,
             long_life_token: n
@@ -8086,7 +8105,7 @@
                 timeout: o
             }),
             t.createToken(l)
-        })
+        }))
     }
     ,
     t.getForumTopicsList = function(e) {
@@ -8630,9 +8649,6 @@
     n.on("CharacterLevelUpInformationMessage", function(e) {
         var t = e.id;
         t !== window.gui.playerData.id && window.isoEngine.playLevelUpAnimation(t)
-    }),
-    n.on("CharacterExperienceGainMessage", function(e) {
-        window.gui.transmitMessage(e)
     }),
     n.on("UpdateLifePointsMessage", function(e) {
         window.gui.transmitMessage(e)
@@ -10045,7 +10061,7 @@
         function i(e) {
             n.uri = e,
             n.media = new window.cordova.plugins.Yanap.AudioInstance(n.audioMode,t),
-            e = e.substr(e.indexOf("/audio/") + 1),
+            window.wizAssets && !window.wizAssets.initialize && (e = e.substr(e.indexOf("/audio/") + 1)),
             n.media.load(e),
             n._finalizeLoad(null )
         }
@@ -10193,7 +10209,11 @@
     var n = i(49);
     n.on("GameFightShowFighterMessage", function(e) {
         window.gui.transmitMessage(e),
-        e.informations.alive && window.actorManager.addActor(e.informations)
+        e.informations.alive ? window.actorManager.addActor(e.informations) : window.actorManager.userActor.actorId === e.informations.contextualId && window.actorManager.userActor.loadAndPlayAnimation({
+            base: "AnimMort"
+        }, !1, function() {
+            window.actorManager.userActor.death()
+        })
     }),
     n.on("GameFightRefreshFighterMessage", function(e) {
         window.gui.transmitMessage(e),
@@ -11370,7 +11390,7 @@
 }
 , function(e, t, i) {
     var n = i(160)
-      , o = i(179)
+      , o = i(180)
       , s = 0;
     n.logTutorialStepStart = function(e) {
         var t = o.STEP_START[e];
@@ -12907,8 +12927,7 @@
               , ae = function() {
                 I = ue(),
                 se(I)
-            }
-            ;
+            };
             F._writeStore = function(e, t) {
                 if (s) {
                     var i, n, a, r, c;
@@ -12984,8 +13003,7 @@
                 }
                 ,
                 void n.insertBefore(i, n.firstChild))
-            }
-            ;
+            };
             F._send = function() {
                 return oe ? function(e) {
                     le(e)
@@ -13005,8 +13023,7 @@
               , he = function() {
                 var e = function() {
                     return (65536 * (1 + Math.random()) | 0).toString(16).substring(1)
-                }
-                ;
+                };
                 return e() + e() + "-" + e() + "-" + e() + "-" + e() + "-" + e() + e() + e()
             }
               , de = function() {
@@ -13029,8 +13046,7 @@
             }
               , ve = function() {
                 return {}
-            }
-            ;
+            };
             F._getOrCreateProperty = function(e, t, i, n) {
                 return n ? (e = i(),
                 F._writeStore(t, e)) : null == e && (e = F._getStore(t, !0),
@@ -13059,8 +13075,7 @@
             }
               , Te = function() {
                 return m = F._getOrCreateProperty(m, j, de, !1)
-            }
-            ;
+            };
             F._getSessionIndex = function() {
                 return _ = F._getOrCreateProperty(_, V, _e, !1)
             }
@@ -13079,8 +13094,7 @@
             }
               , Ee = function() {
                 return y = F._getOrCreateProperty(y, Y, me, !1)
-            }
-            ;
+            };
             F._getOSVersion = function(e) {
                 var t, i, n, o, s, a, r = e.split(/[)]?\s[(]?/), l = r.length, c = r[1];
                 if (e.match(/iPhone|iPad|iPod/))
@@ -13173,8 +13187,7 @@
               , Re = function() {
                 F._markNewClose(),
                 A = a.setTimeout(Re, P)
-            }
-            ;
+            };
             F._markNewClose = function() {
                 return o("Marking a new close."),
                 b = pe(),
@@ -13207,8 +13220,7 @@
                 T = [],
                 F._writeStore(Z, T),
                 F._writeStore(Y, !1)
-            }
-            ;
+            };
             F._finalizeClose = Pe,
             F._clearStoredUploads = function() {
                 w = null ,
@@ -13375,8 +13387,7 @@
                 o("Deleting value for key:" + e),
                 delete t[e],
                 F._writeStore(ee, t)
-            }
-            ;
+            };
             F._setIdentifier = function(e, t) {
                 null != e && 0 != e.length && (null == t ? Ge(e) : 0 == t.length ? Ge(e) : He(e, t))
             }
@@ -13404,8 +13415,7 @@
                 console.log(t);
                 for (var e in R)
                     F[e] = i
-            }
-            ;
+            };
             return function() {
                 var e, i, n = R.length;
                 for (e = 0; e < n; e++)
@@ -13423,8 +13433,7 @@
             }(),
             F
         }(window)
-    }
-    ;
+    };
     e.exports = i
 }
 , function(e, t, i) {
@@ -13732,8 +13741,7 @@
                         o = d,
                         u
                     }
-                }
-                ;
+                };
                 return n("", {
                     "": t
                 })
@@ -13756,14 +13764,12 @@
                     at: e,
                     text: i
                 }
-            }
-            , a = function(n) {
+            }, a = function(n) {
                 return n && n !== t && s("Expected '" + n + "' instead of '" + t + "'"),
                 t = i.charAt(e),
                 e += 1,
                 t
-            }
-            , r = function() {
+            }, r = function() {
                 var e, i = "";
                 for ("-" === t && (i = "-",
                 a("-")); t >= "0" && t <= "9"; )
@@ -13781,8 +13787,7 @@
                         a();
                 return e = +i,
                 isFinite(e) ? e : void s("Bad number")
-            }
-            , l = function() {
+            }, l = function() {
                 var e, i, n, r = "";
                 if ('"' === t)
                     for (; a(); ) {
@@ -13806,12 +13811,10 @@
                             r += t
                     }
                 s("Bad string")
-            }
-            , c = function() {
+            }, c = function() {
                 for (; t && t <= " "; )
                     a()
-            }
-            , u = function() {
+            }, u = function() {
                 switch (t) {
                 case "t":
                     return a("t"),
@@ -13834,8 +13837,7 @@
                     null
                 }
                 s("Unexpected '" + t + "'")
-            }
-            , h = function() {
+            }, h = function() {
                 var e = [];
                 if ("[" === t) {
                     if (a("["),
@@ -13854,8 +13856,7 @@
                     }
                 }
                 s("Bad array")
-            }
-            , d = function() {
+            }, d = function() {
                 var e, i = {};
                 if ("{" === t) {
                     if (a("{"),
@@ -13878,8 +13879,7 @@
                     }
                 }
                 s("Bad object")
-            }
-            ;
+            };
             return n = function() {
                 switch (c(),
                 t) {
@@ -13974,8 +13974,7 @@
                     s = []);
                 return s.length > 0 && (a = t(a, s)),
                 a.toString(16)
-            }
-            ;
+            };
             return function() {
                 var n = (screen.height * screen.width).toString(16);
                 return e() + "-" + t() + "-" + i() + "-" + n + "-" + e()
@@ -14053,8 +14052,7 @@
                         !1 !== s && !1 !== a || (r = !1),
                         r
                     }
-                }
-                ;
+                };
                 return o
             }
             function t(e) {
@@ -14072,8 +14070,7 @@
                       , a = t[s];
                     t[s] = e(t, n, a)
                 }
-            }
-            ;
+            };
             return t.preventDefault = function() {
                 this.returnValue = !1
             }
@@ -14294,8 +14291,7 @@
                 }
             }
         }
-          , P = function() {}
-        ;
+          , P = function() {};
         P.prototype.create_properties = function() {}
         ,
         P.prototype.event_handler = function() {}
@@ -14339,8 +14335,7 @@
         ;
         var D = function() {
             this.override_event = "click"
-        }
-        ;
+        };
         x.inherit(D, P),
         D.prototype.create_properties = function(e, t) {
             var i = D.superclass.create_properties.apply(this, arguments);
@@ -14362,8 +14357,7 @@
         ;
         var L = function() {
             this.override_event = "submit"
-        }
-        ;
+        };
         x.inherit(L, P),
         L.prototype.event_handler = function(e, t, i) {
             i.element = t,
@@ -14384,8 +14378,7 @@
             this.update_config(e),
             this.upgrade(e),
             this.save()
-        }
-        ;
+        };
         B.prototype.properties = function() {
             var e = {};
             return x.each(this.props, function(t, i) {
@@ -14562,8 +14555,7 @@
             o._execute_array(s)),
             o)
         }
-          , F = function() {}
-        ;
+          , F = function() {};
         F.prototype.init = function(t, i, n) {
             if ("undefined" == typeof n)
                 return void O.error("You must name your new library: init(token, config, name)");
@@ -14631,8 +14623,7 @@
             if (A) {
                 var i = function(i) {
                     e(i, t)
-                }
-                ;
+                };
                 return i
             }
             var n = this._jsc
@@ -14701,8 +14692,7 @@
                 x.each(e, function(e) {
                     this[e[0]].apply(this, e.slice(1))
                 }, t)
-            }
-            ;
+            };
             s(i, this),
             s(n, this),
             s(o, this)
@@ -14825,8 +14815,7 @@
             e
         }
         ;
-        var H = function() {}
-        ;
+        var H = function() {};
         if (H.prototype._init = function(e) {
             this._mixpanel = e
         }
@@ -15021,8 +15010,7 @@
                 i !== d && (e[i] = t)
             }),
             e._ = x
-        }
-        ;
+        };
         if (e.init = function(t, i, n) {
             if (n)
                 e[n] || (e[n] = G[n] = k(t, i, n),
@@ -15190,11 +15178,15 @@
         "F_T_U_E.Step3130_Talk_To_NPC_Maitre_Pifo": 389,
         "F_T_U_E.Step3160_Answer_NPC_Maitre_Pifo": 390,
         "F_T_U_E.Step3200_Succeed_Tuto_Step_15_End_Learning": 391,
+        "fight_report.fight_end_alive_monster_description": 583,
         "character_progression.spell_level_change": 585,
         "social.fight_group_join": 586,
         "social.fight_group_quit": 587,
         "social.guild_join": 588,
         "social.guild_quit": 589,
+        "Fight_Action.Spell_Cast_By_User": 398,
+        "Fight_Report.Fight_Start": 405,
+        "Fight_Report.Fight_End": 407,
         "User_Life_Cycle.Level_Up": 415,
         "User_Life_Cycle.Achievement_Achieved": 416,
         "User_Life_Cycle.Achievement_Get_Reward": 417,
@@ -15543,8 +15535,9 @@
         })
     }
     var o = i(160)
-      , s = i(178)
-      , a = !1
+      , s = i(178);
+    i(179);
+    var a = !1
       , r = 0
       , l = 0
       , c = 0
@@ -15701,6 +15694,137 @@
         ERR_NEW_PLAYER_NOT_ALLOWED: 6,
         ERR_RESTRICED_ZONE: 7
     }
+}
+, function(e, t, i) {
+    function n(e) {
+        var t = p[e.contextualId] = {};
+        t.monster_id = e.creatureGenericId,
+        t.monster_level = e._level,
+        t.monster_grade = e.creatureGrade,
+        t.team_id = e.teamId
+    }
+    function o(e) {
+        if (!(e.id >= 0)) {
+            var t = p[e.id];
+            t || (t = p[e.id] = {});
+            var i = e.data.stats;
+            t.ratio_life_remaining = Math.ceil(100 * i.lifePoints / i.maxLifePoints) / 100,
+            1 === t.ratio_life_remaining && i.lifePoints !== i.maxLifePoints && (t.ratio_life_remaining = .99)
+        }
+    }
+    function s(e) {
+        for (var t = 0; t < e.results.length; t++) {
+            var i = e.results[t];
+            if (i.alive && !(i.id >= 0)) {
+                var n = p[i.id] || {};
+                n.fight_id = window.gui.fightManager.fightId,
+                void 0 === n.ratio_life_remaining && (n.ratio_life_remaining = 1),
+                h.log("fight_report.fight_end_alive_monster_description", n, {
+                    noSessionId: !0
+                })
+            }
+        }
+    }
+    function a(e) {
+        if (!m) {
+            var t = window.gui.playerData.id
+              , i = "GameActionFightSpellCastMessage" === e._messageType || "GameActionFightCloseCombatMessage" === e._messageType;
+            i && e.sourceId === t && h.log("Fight_Action.Spell_Cast_By_User", {
+                spell_id: e.spellId,
+                spell_level: e.spellLevel,
+                fight_id: window.gui.fightManager.fightId
+            })
+        }
+    }
+    function r(e) {
+        var t = 0;
+        for (var i in e)
+            t += e[i];
+        return t
+    }
+    function l(e, t, i) {
+        0 !== e && 1 !== e || (f[e][t] = i)
+    }
+    function c(e, t) {
+        0 !== e && 1 !== e || (f[e][t] = 0)
+    }
+    function u(e) {
+        for (var t = null , i = 0, n = e.results.length; i < n; i += 1) {
+            var o = e.results[i];
+            if (o.alive) {
+                t = o.id;
+                break
+            }
+        }
+        return f[0][t] ? 0 : f[1][t] ? 1 : -1
+    }
+    var h = i(160)
+      , d = window.dofus.connectionManager
+      , p = {}
+      , m = !1
+      , f = {
+        0: {},
+        1: {}
+    };
+    d.on("GameFightJoinMessage", function(e) {
+        return e.isSpectator ? void (m = !0) : (p = {},
+        void (m = !1))
+    }),
+    d.on("GameFightTurnReadyRequestMessage", function() {
+        if (!m) {
+            var e = window.gui.fightManager.getAvailableFighters();
+            for (var t in e)
+                o(e[t])
+        }
+    }),
+    d.on("messageSequence", function(e) {
+        for (var t = 0; t < e.sequence.length; t += 1)
+            a(e.sequence[t])
+    }),
+    d.on("GameActionFightSpellCastMessage", a),
+    d.on("GameActionFightCloseCombatMessage", a),
+    d.on("GameFightShowFighterMessage", function(e) {
+        if (!m) {
+            var t = e.informations;
+            l(t.teamId, t.contextualId, t.stats.lifePoints),
+            t.contextualId < 0 && n(t)
+        }
+    }),
+    d.on("GameFightRemoveTeamMemberMessage", function(e) {
+        m || c(e.teamId, e.charId)
+    }),
+    d.on("GameFightStartMessage", function() {
+        if (!m) {
+            var e = window.gui.fightManager;
+            h.log("Fight_Report.Fight_Start", {
+                fight_id: e.fightId,
+                fight_type: e.fightType,
+                team_0_hp: r(f[0]),
+                team_1_hp: r(f[1])
+            }, {
+                noSessionId: !0
+            })
+        }
+    }),
+    d.on("GameFightEndMessage", function(e) {
+        if (!m) {
+            s(e);
+            var t = u(e);
+            h.log("Fight_Report.Fight_End", {
+                nb_turns: window.gui.fightManager.getTurnCount() + 1,
+                fight_id: window.gui.fightManager.fightId,
+                winner_team_id: t
+            }, {
+                noSessionId: !0
+            }),
+            f = {
+                0: {},
+                1: {}
+            },
+            p = {},
+            m = !1
+        }
+    })
 }
 , function(e, t) {
     t.STEP_START = {
@@ -15896,12 +16020,12 @@
     })
 }
 , function(e, t, i) {
-    i(183),
-    e.exports = i(184),
-    i(213),
+    i(184),
+    e.exports = i(185),
     i(214),
     i(215),
-    i(292)
+    i(216),
+    i(293)
 }
 , function(e, t) {}
 , function(e, t, i) {
@@ -15951,14 +16075,14 @@
         i.on("resize", e)
     }
     var o = i(24).dimensions
-      , s = i(185)
+      , s = i(186)
       , a = i(85)
       , r = i(25)
       , l = i(26).inherits
-      , c = i(200)
+      , c = i(201)
       , u = i(84).playUiSound
-      , h = i(212)
-      , d = i(189)
+      , h = i(213)
+      , d = i(190)
       , p = i(35).getText
       , m = i(35).processText;
     l(n, d),
@@ -16012,25 +16136,15 @@
             window.isoEngine.clearUserMovementZone())
         }
         function n(t) {
-          // detection du tour du joueur
-          //window.Mgmt.turn = true;
-
             var i = o.fightIsUserTurn = e.playerData.characters.canControlCharacterId(t.id)
               , n = window.isoEngine;
-
-              if(i)
-                window.top.client.alertTurn(e.playerData.characterBaseInformations.name);
-
-
             if (n.fightTurnStart(i),
             n.clearHighlights(),
             i && r.soundOnPlayerTurnStart && u("PLAYER_TURN"),
-            !n.mapRenderer.isReady){
+            !n.mapRenderer.isReady)
                 return n.mapRenderer.once("ready", function() {
                     o._displayUserZones()
                 })
-            }
-
         }
         var o = this;
         e.on("sendAllFightEvent", function() {
@@ -16117,8 +16231,8 @@
     ,
     n.prototype.lock = function(e) {
         return e ? (this.lockMap[e] = !0,
-        this.cancelTransform(),
-        void (this.locked = !0)) : console.error(new Error("Foreground.lock: no reason provided"))
+        this.locked = !0,
+        void this.cancelTransform()) : console.error(new Error("Foreground.lock: no reason provided"))
     }
     ,
     n.prototype.unlock = function(e) {
@@ -16177,12 +16291,12 @@
         }
         l.stop()
     }
-    i(186);
-    var a = i(187)
+    i(187);
+    var a = i(188)
       , r = i(16).EventEmitter
-      , l = i(188)
+      , l = i(189)
       , c = i(31)
-      , u = i(189)
+      , u = i(190)
       , h = new r
       , d = !1;
     h.isDragging = !1;
@@ -16570,9 +16684,9 @@
         e && this._assign(e, t)
     }
     var a = i(26).inherits
-      , r = i(190).EventEmitter
-      , l = i(191);
-    i(192);
+      , r = i(191).EventEmitter
+      , l = i(192);
+    i(193);
     var c = {
         EMPTY: null ,
         WUI: "wui",
@@ -17113,8 +17227,7 @@
                       , u = function(e) {
                         i(),
                         t.emit("dom.touchstart", e)
-                    }
-                    ;
+                    };
                     this.domListeners.touchstart = {
                         mousedown: c,
                         touchstart: u
@@ -17128,8 +17241,7 @@
                     }
                       , d = function(e) {
                         t.emit("dom.touchmove", e)
-                    }
-                    ;
+                    };
                     this.domListeners.touchmove = {
                         mousemove: h,
                         touchmove: d
@@ -17145,8 +17257,7 @@
                         i(),
                         t.emit("dom.touchend", e),
                         e.preventDefault()
-                    }
-                    ;
+                    };
                     this.domListeners.touchend = {
                         mouseup: p,
                         touchend: m
@@ -17157,8 +17268,7 @@
                 default:
                     var f = function(i) {
                         t.emit(e, i)
-                    }
-                    ;
+                    };
                     this.domListeners[l] = f,
                     this.rootElement.addEventListener(l, f)
                 }
@@ -17201,12 +17311,12 @@
     }
 }
 , function(e, t, i) {
-    i(193),
     i(194),
     i(195),
     i(196),
     i(197),
-    i(198)
+    i(198),
+    i(199)
 }
 , function(e, t) {
     "HTMLDocument"in window || (window.HTMLDocument = window.Document)
@@ -17317,9 +17427,8 @@
         "use strict";
         var e, t = document.createElement("x"), n = document.createElementNS("http://www.w3.org/2000/svg", "svg"), o = function(e) {
             return "classList"in e && (!e.classList.toggle("a", !1) && !e.classList.contains("a"))
-        }
-        ;
-        if (o(n) || (e = i(199),
+        };
+        if (o(n) || (e = i(200),
         Object.defineProperty(Element.prototype, "classList", {
             get: function() {
                 function t() {}
@@ -17328,7 +17437,7 @@
             }
         })),
         !o(t)) {
-            e = i(199);
+            e = i(200);
             var s = DOMTokenList.prototype
               , a = function(e) {
                 return function() {
@@ -17336,8 +17445,7 @@
                     for (t = 0; t < i; t++)
                         e.call(this, arguments[t])
                 }
-            }
-            ;
+            };
             s.add = a(s.add),
             s.remove = a(s.remove),
             s.toggle = function(t, i) {
@@ -17479,16 +17587,16 @@
             e.currentValue = t
         })
     }
-    i(201);
-    var o = i(202).getElementPositionAt
+    i(202);
+    var o = i(203).getElementPositionAt
       , s = i(35).getText
       , a = i(26).inherits
-      , r = i(203)
+      , r = i(204)
       , l = r.DofusButton
-      , c = i(207)
-      , u = i(211)
+      , c = i(208)
+      , u = i(212)
       , h = i(31)
-      , d = i(189)
+      , d = i(190)
       , p = u.MAX_NUMBER
       , m = 100
       , f = {
@@ -17673,10 +17781,10 @@
         n.call(this, t, i),
         this.addClassNames("button")
     }
-    i(204);
-    var s = i(205).addTooltip
+    i(205);
+    var s = i(206).addTooltip
       , a = i(26).inherits
-      , r = i(189)
+      , r = i(190)
       , l = i(32)
       , c = i(84).playUiSound
       , u = ["before", "after"];
@@ -17723,15 +17831,15 @@
     function l(e) {
         return Math.max(I, e / 25 * 1e3)
     }
-    i(206);
-    var c = i(202)
+    i(207);
+    var c = i(203)
       , u = c.getElementPositionAround
       , h = c.getElementPositionAt
       , d = i(26).inherits
-      , p = i(189)
+      , p = i(190)
       , m = i(31)
       , f = i(32)
-      , g = i(188)
+      , g = i(189)
       , _ = i(47)
       , v = i(84).playUiSound;
     d(n, p);
@@ -17869,12 +17977,12 @@
         r(this),
         this.on("tap", this._tapOnNumberInputBox)
     }
-    i(208);
-    var o = i(209)
+    i(209);
+    var o = i(210)
       , s = i(26).inherits
-      , a = i(211)
+      , a = i(212)
       , r = i(32)
-      , l = i(189)
+      , l = i(190)
       , c = a.MAX_NUMBER
       , u = 1
       , h = a.MAX_NUMBER_LEN;
@@ -17955,7 +18063,7 @@
     }
     var o = i(35).getText
       , s = i(12)
-      , a = i(210).time.dofusTimeYearLag
+      , a = i(211).time.dofusTimeYearLag
       , r = i(31);
     t.sortObjectInArray = function(e, t, i) {
         var n = i ? 1 : -1
@@ -18165,9 +18273,8 @@
     t.allLinksOnTargetBlank = function(e) {
         for (var i = e.rootElement.getElementsByTagName("a"), n = function(e) {
             e.preventDefault(),
-            window.open(this.href, "_blank")
-        }
-        , o = 0; o < i.length; o++)
+            t.openUrlInAppBrowser(this.href)
+        }, o = 0; o < i.length; o++)
             i[o].onclick = n
     }
     ,
@@ -18176,7 +18283,8 @@
     }
     ,
     t.openUrlInAppBrowser = function(e) {
-        window.cordova && window.cordova.InAppBrowser ? window.cordova.InAppBrowser.open(e, "_blank", "closebuttoncaption=" + o("tablet.common.backToGame")) : window.open(e, "_blank")
+        //window.cordova && window.cordova.InAppBrowser ? window.cordova.InAppBrowser.open(e, "_blank", "closebuttoncaption=" + o("tablet.common.backToGame")) : window.open(e, "_blank")
+         window.open(e, "_blank")
     }
     ,
     t.cssTransform = function(e, t) {
@@ -18330,7 +18438,7 @@
     }
 }
 , function(e, t, i) {
-    var n = i(184)
+    var n = i(185)
       , o = i(35).getText;
     n.prototype._setupInfoBox = function() {
         var e = this.infoBox = this.createChild("div", {
@@ -18356,10 +18464,10 @@
     }
 }
 , function(e, t, i) {
-    var n = i(203)
-      , o = i(184)
+    var n = i(204)
+      , o = i(185)
       , s = i(35).getText
-      , a = i(202).getElementPositionCenteredAt
+      , a = i(203).getElementPositionCenteredAt
       , r = i(33).position
       , l = i(31);
     o.prototype._createConfirmBox = function() {
@@ -18468,24 +18576,24 @@
     }
 }
 , function(e, t, i) {
-    var n = i(216).FIGHT_STATES
-      , o = i(184)
+    var n = i(217).FIGHT_STATES
+      , o = i(185)
       , s = i(24).dimensions
-      , a = i(202)
+      , a = i(203)
       , r = a.getElementPositionAt
       , l = a.getElementPositionCenteredAt
       , c = i(33)
       , u = c.position
       , h = c.getPosition
       , d = i(47).requestInteractionHandle
-      , p = i(283)
-      , m = i(285)
-      , f = i(205)
+      , p = i(284)
+      , m = i(286)
+      , f = i(206)
       , g = i(31)
-      , _ = i(260).Tween
+      , _ = i(261).Tween
       , v = f.addTooltip
-      , y = i(286)
-      , w = i(189);
+      , y = i(287)
+      , w = i(190);
     o.prototype._setupTouchInteraction = function() {
         function e(e) {
             if (u.isVisible()) {
@@ -18863,27 +18971,31 @@
             if (B.x.playing && B.x.stop(),
             B.y.playing && B.y.stop(),
             w) {
-                if (Math.abs(P[A]) === M[A] && T !== -1) {
-                    var e = o.convertScreenToCanvasCoordinate(R.x, R.y)
-                      , t = l.convertCanvasToSceneCoordinate(R.x, R.y);
-                    r._tapRoleplay(t.x, t.y, r.mapRenderer.getCellId(t.x, t.y), {
-                        canvasX: e.x,
-                        canvasY: e.y,
-                        changeMapRequest: b,
-                        mode: "roleplay"
-                    })
-                }
-                return g.tween(w, {
-                    webkitTransform: "translate3d(" + R.x + "px," + R.y + "px,0)"
+                var e;
+                if (e = "x" === A ? "translate3d(0," + P.y + "px,0)" : "translate3d(" + P.x + "px,0,0)",
+                g.tween(w, {
+                    webkitTransform: e
                 }, {
                     time: 200,
                     easing: "ease-out"
                 }),
                 w.arrow.setStyle("opacity", 0),
-                void (w = null )
-            }
-            this.setTranslationEnable(u.fightState !== n.BATTLE),
-            Date.now() - i > 100 || c.addInertia(h, d, .8)
+                w = null ,
+                this.locked)
+                    return;
+                if (Math.abs(P[A]) === M[A] && T !== -1) {
+                    var t = o.convertScreenToCanvasCoordinate(R.x, R.y)
+                      , s = l.convertCanvasToSceneCoordinate(R.x, R.y);
+                    r._tapRoleplay(s.x, s.y, r.mapRenderer.getCellId(s.x, s.y), {
+                        canvasX: t.x,
+                        canvasY: t.y,
+                        changeMapRequest: b,
+                        mode: "roleplay"
+                    })
+                }
+            } else
+                this.setTranslationEnable(u.fightState !== n.BATTLE),
+                Date.now() - i > 100 || c.addInertia(h, d, .8)
         }),
         u.on("fightEnterBattle", function() {
             o.setTranslationEnable(!1)
@@ -18948,9 +19060,9 @@
         this.currentFighterId = 0,
         this._lastFighterId = 0,
         this._fighters = {},
-        this.FIGHT_STATES = M,
-        this.fightState = M.UNDEFINED,
-        this.fightType = N,
+        this.FIGHT_STATES = N,
+        this.fightState = N.UNDEFINED,
+        this.fightType = R,
         this.isInReconnection = !1,
         this.isInactive = !1,
         this.turnStartTime = 0,
@@ -18962,7 +19074,8 @@
             GameActionFightCloseCombatMessage: this.gameActionFightCloseCombatAndSpell,
             GameActionFightSpellCastMessage: this.gameActionFightCloseCombatAndSpell
         },
-        a = window.gui.playerData
+        a = window.gui.playerData,
+        this._isTurnEndRequestPending = !1
     }
     function s(e) {
         switch (e._messageType) {
@@ -18975,23 +19088,23 @@
             return null
         }
     }
-    var a, r = i(16).EventEmitter, l = i(35).getText, c = i(34), u = i(26).inherits, h = i(30), d = i(217), p = i(218), m = i(219), f = i(236), g = i(221), _ = i(280), v = i(233), y = i(85), w = i(12), b = i(22), C = i(231), I = i(282), T = I.pushStep, S = 1024, A = 1097, E = 1008, x = _.WEAPON_SPELL_ID, M = {
+    var a, r = i(16).EventEmitter, l = i(35).getText, c = i(34), u = i(26).inherits, h = i(30), d = i(218), p = i(219), m = i(220), f = i(237), g = i(222), _ = i(281), v = i(234), y = i(85), w = i(12), b = i(22), C = i(232), I = i(283), T = I.pushStep, S = 1e4, A = 1024, E = 1097, x = 1008, M = _.WEAPON_SPELL_ID, N = {
         UNDEFINED: -1,
         PREPARATION: 0,
         BATTLE: 1
-    }, N = -1, R = {
+    }, R = -1, O = {
         isSecret: p.FIGHT_OPTION_SET_SECRET,
         isRestrictedToPartyOnly: p.FIGHT_OPTION_SET_TO_PARTY_ONLY,
         isClosed: p.FIGHT_OPTION_SET_CLOSED,
         isAskingForHelp: p.FIGHT_OPTION_ASK_FOR_HELP
-    }, O = [p.FIGHT_OPTION_SET_TO_PARTY_ONLY, p.FIGHT_OPTION_SET_CLOSED, p.FIGHT_OPTION_ASK_FOR_HELP];
+    }, P = [p.FIGHT_OPTION_SET_TO_PARTY_ONLY, p.FIGHT_OPTION_SET_CLOSED, p.FIGHT_OPTION_ASK_FOR_HELP];
     n.uniqueSpellId = 0;
-    var P;
+    var D;
     u(o, r),
     e.exports = o,
-    o.FIGHT_STATES = M,
-    o.FIGHT_OPTION_KEY_TO_ENUM = R,
-    o.FIGHT_OPTION_ICON_ID = O,
+    o.FIGHT_STATES = N,
+    o.FIGHT_OPTION_KEY_TO_ENUM = O,
+    o.FIGHT_OPTION_ICON_ID = P,
     o.prototype.INCREMENT_MODE_SOURCE = 1,
     o.prototype.INCREMENT_MODE_TARGET = 2,
     o.prototype.getFighters = function() {
@@ -19039,12 +19152,17 @@
     }
     ,
     o.prototype._checkInactivityOnTurnStart = function() {
-        this.isInactive && (c.isActiveSince(this.turnStartTime) ? this.isInactive = !1 : window.dofus.sendMessage("GameFightTurnFinishMessage")),
+        this.isInactive && (c.isActiveSince(this.turnStartTime) ? this.isInactive = !1 : this.finishTurn()),
         this.turnStartTime = Date.now()
     }
     ,
+    o.prototype.finishTurn = function() {
+        window.dofus.sendMessage("GameFightTurnFinishMessage"),
+        this._isTurnEndRequestPending = !0
+    }
+    ,
     o.prototype._checkInactivityOnTurnEnd = function() {
-        this.isInactive || c.isActiveSince(this.turnStartTime) || (this.isInactive = !0,
+        !this.isInactive && !c.isActiveSince(this.turnStartTime) && Date.now() - this.turnStartTime > S && (this.isInactive = !0,
         window.gui.openSimplePopup(l("ui.fight.inactivityMessage"), l("ui.fight.inactivityTitle")))
     }
     ,
@@ -19058,8 +19176,8 @@
             for (var t in r._fighters)
                 r.removeFighter(t);
             r._fighters = {},
-            r.fightState = M.UNDEFINED,
-            r.fightType = N,
+            r.fightState = N.UNDEFINED,
+            r.fightType = R,
             r.isInReconnection = !1,
             r.spellCastCounts = {},
             r.fightMessagesStack = [],
@@ -19071,7 +19189,8 @@
             a.characters.mainCharacter.currentSummonedCreature = 0,
             a.characters.mainCharacter.currentSummonedBomb = 0,
             a.characters.clearSlaves(),
-            window.actorManager.removeTeamCircles()
+            window.actorManager.removeTeamCircles(),
+            r._isTurnEndRequestPending = !1
         }
         function i(e) {
             var t = e.id;
@@ -19080,10 +19199,11 @@
             a.characters.canControlCharacterId(t) && (r.spellCastCounts = {},
             r._checkInactivityOnTurnStart(),
             window.isoEngine.displayTextBanner("tablet.fight.animation.userTurn")),
-            r.emit("GameFightTurnStart", e.id, e.waitTime, h.getValue("turnPicture"))
+            r.emit("GameFightTurnStart", e.id, e.waitTime, h.getValue("turnPicture")),
+            r._isTurnEndRequestPending = !1
         }
         function n(e) {
-            if (r.fightState === M.PREPARATION) {
+            if (r.fightState === N.PREPARATION) {
                 var t = s(e);
                 r.emit("UpdatePreFightersList", t.contextualId)
             }
@@ -19095,9 +19215,9 @@
                 return console.warn("Fighter was killed previously.");
             for (var o in i) {
                 var s = i[o];
-                s.id !== e && s.data.stats.summoner === e && T(I.fightDeathStep, [P ? P.castingSpellId : -1, s.id])
+                s.id !== e && s.data.stats.summoner === e && T(I.fightDeathStep, [D ? D.castingSpellId : -1, s.id])
             }
-            T(I.fightDeathStep, [P ? P.castingSpellId : -1, e, !t]);
+            T(I.fightDeathStep, [D ? D.castingSpellId : -1, e, !t]);
             var l = n.data.stats.summoner;
             a.characters.canControlCharacterId(l) && (n.isBomb ? a.characters.removeSummonedBomb(l) : a.characters.removeSummonedCreature(l),
             r.emit("updateSpellsAvailability"))
@@ -19105,7 +19225,7 @@
         var r = this
           , l = window.dofus.connectionManager;
         e.on("GameFightStartMessage", function() {
-            r.fightState = M.BATTLE,
+            r.fightState = N.BATTLE,
             r.emit("fightEnterBattle"),
             r.prepareSpellsWithInitialCooldown(a.characters.mainCharacter);
             for (var e in a.characters.slaves)
@@ -19206,9 +19326,9 @@
                 var s = r.getFighter(o.contextualId);
                 if (!s)
                     return console.error(new Error("Summoning failed, fighter does not exist"));
-                i === E || s.isBomb ? a.characters.addSummonedBomb() : s.isCreature && a.characters.addSummonedCreature()
+                i === x || s.isBomb ? a.characters.addSummonedBomb() : s.isCreature && a.characters.addSummonedCreature()
             }
-            T(I.fightSummonStep, [P ? P.castingSpellId : -1, t, o])
+            T(I.fightSummonStep, [D ? D.castingSpellId : -1, t, o])
         }),
         e.on("GameFightTurnListMessage", function(e) {
             r.turnsList = e.ids,
@@ -19283,17 +19403,17 @@
             r.emit(d.FIGHTER_CHANGE_LOOK, [t, n], t)
         }),
         e.on("GameActionFightDispellEffectMessage", function(e) {
-            T(I.fightDispelEffectStep, [P ? P.castingSpellId : -1, e.targetId, e.boostUID])
+            T(I.fightDispelEffectStep, [D ? D.castingSpellId : -1, e.targetId, e.boostUID])
         }),
         e.on("GameActionFightDispellSpellMessage", function(e) {
-            T(I.fightDispelSpellStep, [P ? P.castingSpellId : -1, e.targetId, e.spellId])
+            T(I.fightDispelSpellStep, [D ? D.castingSpellId : -1, e.targetId, e.spellId])
         }),
         e.on("GameActionFightDispellMessage", function(e) {
-            T(I.fightDispelStep, [P ? P.castingSpellId : -1, e.targetId])
+            T(I.fightDispelStep, [D ? D.castingSpellId : -1, e.targetId])
         }),
         e.on("GameActionFightNoSpellCastMessage", function(e) {
             var t, i = e.spellLevelId, n = a.characters.getControlledCharacter();
-            if (t = 0 === i ? n.spellData.spells[x] : n.spellData.getSpellBySpellLevelId(e.spellLevelId),
+            if (t = 0 === i ? n.spellData.spells[M] : n.spellData.getSpellBySpellLevelId(e.spellLevelId),
             t && r.spellCastCounts[t.id]) {
                 r.spellCastCounts[t.id] = r.spellCastCounts[t.id] - 1;
                 var o = t.getProperty("apCost", t.level);
@@ -19301,20 +19421,20 @@
             }
         }),
         e.on("GameActionFightLifePointsGainMessage", function(e) {
-            T(I.fightLifePointsVariationStep, [P ? P.castingSpellId : -1, e.targetId, e.delta, 0, e.actionId])
+            T(I.fightLifePointsVariationStep, [D ? D.castingSpellId : -1, e.targetId, e.delta, 0, e.actionId])
         }),
         e.on("GameActionFightLifePointsLostMessage", function(e) {
-            T(I.fightLifePointsVariationStep, [P ? P.castingSpellId : -1, e.targetId, -e.loss, -e.permanentDamages, e.actionId])
+            T(I.fightLifePointsVariationStep, [D ? D.castingSpellId : -1, e.targetId, -e.loss, -e.permanentDamages, e.actionId])
         }),
         e.on("GameActionFightLifeAndShieldPointsLostMessage", function(e) {
-            T(I.fightShieldPointsVariationStep, [P ? P.castingSpellId : -1, e.targetId, -e.shieldLoss, e.actionId]),
-            T(I.fightLifePointsVariationStep, [P ? P.castingSpellId : -1, e.targetId, -e.loss, -e.permanentDamages, e.actionId])
+            T(I.fightShieldPointsVariationStep, [D ? D.castingSpellId : -1, e.targetId, -e.shieldLoss, e.actionId]),
+            T(I.fightLifePointsVariationStep, [D ? D.castingSpellId : -1, e.targetId, -e.loss, -e.permanentDamages, e.actionId])
         }),
         e.on("GameActionFightPointsVariationMessage", function(e) {
             var t = e.targetId
               , i = e.actionId
               , n = e.delta;
-            i === g.ACTION_CHARACTER_ACTION_POINTS_USE || i === g.ACTION_CHARACTER_ACTION_POINTS_LOST || i === g.ACTION_CHARACTER_ACTION_POINTS_WIN ? T(I.fightActionPointsVariationStep, [P ? P.castingSpellId : -1, t, n, i === g.ACTION_CHARACTER_ACTION_POINTS_USE]) : i !== g.ACTION_CHARACTER_MOVEMENT_POINTS_USE && i !== g.ACTION_CHARACTER_MOVEMENT_POINTS_LOST && i !== g.ACTION_CHARACTER_MOVEMENT_POINTS_WIN || T(I.fightMovementPointsVariationStep, [P ? P.castingSpellId : -1, t, n, i === g.ACTION_CHARACTER_MOVEMENT_POINTS_USE])
+            i === g.ACTION_CHARACTER_ACTION_POINTS_USE || i === g.ACTION_CHARACTER_ACTION_POINTS_LOST || i === g.ACTION_CHARACTER_ACTION_POINTS_WIN ? T(I.fightActionPointsVariationStep, [D ? D.castingSpellId : -1, t, n, i === g.ACTION_CHARACTER_ACTION_POINTS_USE]) : i !== g.ACTION_CHARACTER_MOVEMENT_POINTS_USE && i !== g.ACTION_CHARACTER_MOVEMENT_POINTS_LOST && i !== g.ACTION_CHARACTER_MOVEMENT_POINTS_WIN || T(I.fightMovementPointsVariationStep, [D ? D.castingSpellId : -1, t, n, i === g.ACTION_CHARACTER_MOVEMENT_POINTS_USE])
         }),
         e.on("GameActionFightVanishMessage", function(e) {
             var t = e.targetId
@@ -19328,7 +19448,7 @@
             r.isInReconnection = !0
         }),
         e.on("GameFightJoinMessage", function(e) {
-            r.fightState = e.isFightStarted ? M.BATTLE : M.PREPARATION,
+            r.fightState = e.isFightStarted ? N.BATTLE : N.PREPARATION,
             r.fightType = e.fightType;
             var t = e.isSpectator;
             t ? window.actorManager.userActor.hide() : window.actorManager.userActor.show(),
@@ -19339,69 +19459,69 @@
             r.emit("fightEnterPreparation", e))
         }),
         e.on("GameActionFightSpellCooldownVariationMessage", function(e) {
-            T(I.fightSpellCooldownVariationStep, [P ? P.castingSpellId : -1, e.targetId, e.spellId, e.value])
+            T(I.fightSpellCooldownVariationStep, [D ? D.castingSpellId : -1, e.targetId, e.spellId, e.value])
         }),
         e.on("GameActionFightModifyEffectsDurationMessage", function(e) {
-            T(I.fightModifyEffectsDurationStep, [P ? P.castingSpellId : -1, e.sourceId, e.targetId, e.delta])
+            T(I.fightModifyEffectsDurationStep, [D ? D.castingSpellId : -1, e.sourceId, e.targetId, e.delta])
         }),
         e.on("GameActionFightExchangePositionsMessage", function(e) {
-            T(I.fightExchangePositionsStep, [P ? P.castingSpellId : -1, e.sourceId, e.casterCellId, e.targetId, e.targetCellId])
+            T(I.fightExchangePositionsStep, [D ? D.castingSpellId : -1, e.sourceId, e.casterCellId, e.targetId, e.targetCellId])
         }),
         e.on("GameActionFightSlideMessage", function(e) {
-            T(I.fightSlideStep, [P ? P.castingSpellId : -1, e.targetId, e.endCellId])
+            T(I.fightSlideStep, [D ? D.castingSpellId : -1, e.targetId, e.endCellId])
         }),
         e.on("GameActionFightTeleportOnSameMapMessage", function(e) {
-            T(I.fightTeleportOnSameMapStep, [P ? P.castingSpellId : -1, e.targetId, e.cellId])
+            T(I.fightTeleportOnSameMapStep, [D ? D.castingSpellId : -1, e.targetId, e.cellId])
         }),
         e.on("GameMapMovementMessage", function(e) {
             var t = e.keyMovements[e.keyMovements.length - 1];
-            T(I.mapMovementStep, [P ? P.castingSpellId : -1, e.actorId, t])
+            T(I.mapMovementStep, [D ? D.castingSpellId : -1, e.actorId, t])
         }),
         e.on("GameActionFightCarryCharacterMessage", function(e) {
-            T(I.fightCarryCharacterStep, [P ? P.castingSpellId : -1, e.sourceId, e.targetId])
+            T(I.fightCarryCharacterStep, [D ? D.castingSpellId : -1, e.sourceId, e.targetId])
         }),
         e.on("GameActionFightThrowCharacterMessage", function(e) {
-            T(I.fightThrowCharacterStep, [P ? P.castingSpellId : -1, e.sourceId, e.targetId, e.cellId])
+            T(I.fightThrowCharacterStep, [D ? D.castingSpellId : -1, e.sourceId, e.targetId, e.cellId])
         }),
         e.on("GameActionFightDropCharacterMessage", function(e) {
-            T(I.fightThrowCharacterStep, [P ? P.castingSpellId : -1, e.sourceId, e.targetId, e.cellId])
+            T(I.fightThrowCharacterStep, [D ? D.castingSpellId : -1, e.sourceId, e.targetId, e.cellId])
         }),
         e.on("sendAllFightEvent", function() {
             C.flush()
         }),
         e.on("GameActionFightReduceDamagesMessage", function(e) {
-            T(I.fightReduceDamages, [P ? P.castingSpellId : -1, e.targetId, e.amount])
+            T(I.fightReduceDamages, [D ? D.castingSpellId : -1, e.targetId, e.amount])
         }),
         e.on("GameActionFightDodgePointLossMessage", function(e) {
             var t = e.actionId;
-            t === g.ACTION_FIGHT_SPELL_DODGED_PA ? T(I.fightActionPointsLossDodge, [P ? P.castingSpellId : -1, e.targetId, e.amount]) : t === g.ACTION_FIGHT_SPELL_DODGED_PM && T(I.fightMovementPointsLossDodge, [P ? P.castingSpellId : -1, e.targetId, e.amount])
+            t === g.ACTION_FIGHT_SPELL_DODGED_PA ? T(I.fightActionPointsLossDodge, [D ? D.castingSpellId : -1, e.targetId, e.amount]) : t === g.ACTION_FIGHT_SPELL_DODGED_PM && T(I.fightMovementPointsLossDodge, [D ? D.castingSpellId : -1, e.targetId, e.amount])
         }),
         e.on("GameActionFightSpellImmunityMessage", function(e) {
-            T(I.fightSpellImmunity, [P ? P.castingSpellId : -1, e.targetId])
+            T(I.fightSpellImmunity, [D ? D.castingSpellId : -1, e.targetId])
         }),
         e.on("GameActionFightReflectSpellMessage", function(e) {
-            T(I.fightReflectSpellStep, [P ? P.castingSpellId : -1, e.targetId])
+            T(I.fightReflectSpellStep, [D ? D.castingSpellId : -1, e.targetId])
         }),
         e.on("GameActionFightReflectDamagesMessage", function(e) {
-            T(I.fightReflectDamagesStep, [P ? P.castingSpellId : -1, e.sourceId])
+            T(I.fightReflectDamagesStep, [D ? D.castingSpellId : -1, e.sourceId])
         }),
         e.on("GameActionFightTackledMessage", function(e) {
-            T(I.fightTackledStep, [P ? P.castingSpellId : -1, e.sourceId])
+            T(I.fightTackledStep, [D ? D.castingSpellId : -1, e.sourceId])
         }),
         e.on("GameActionFightKillMessage", function(e) {
-            T(I.fightKillStep, [P ? P.castingSpellId : -1, e.targetId, e.sourceId])
+            T(I.fightKillStep, [D ? D.castingSpellId : -1, e.targetId, e.sourceId])
         }),
         e.on("GameActionFightInvisibilityMessage", function(e) {
-            T(I.fightInvisibilityStep, [P ? P.castingSpellId : -1, e.targetId, e.state])
+            T(I.fightInvisibilityStep, [D ? D.castingSpellId : -1, e.targetId, e.state])
         }),
         e.on("GameActionFightTriggerGlyphTrapMessage", function(e) {
-            T(I.fightTriggerGlyphTrapStep, [P ? P.castingSpellId : -1, e.triggeringCharacterId, e.sourceId, e._spellId])
+            T(I.fightTriggerGlyphTrapStep, [D ? D.castingSpellId : -1, e.triggeringCharacterId, e.sourceId, e._spellId])
         }),
         e.on("GameFightUpdateTeamMessage", function(e) {
             a.isFightLeader = e.team.leaderId === a.id
         }),
         e.on("GameContextDestroyMessage", function() {
-            window.isoEngine.gameContext === y.FIGHT && (r.fightState = M.UNDEFINED)
+            window.isoEngine.gameContext === y.FIGHT && (r.fightState = N.UNDEFINED)
         })
     }
     ,
@@ -19416,7 +19536,7 @@
             if (!s)
                 return console.error(new Error("Find next controllable character failed, fighter does not exist"));
             if (a.characters.canControlCharacterId(o) && s.data.alive)
-                return o;
+                return o
         }
         return a.characters.controlledCharacterId
     }
@@ -19434,7 +19554,7 @@
     ,
     o.prototype.loadFighter = function(e) {
         var t = e.actionId
-          , i = "GameFightShowFighterRandomStaticPoseMessage" === e._type || t === S || t === A
+          , i = "GameFightShowFighterRandomStaticPoseMessage" === e._type || t === A || t === E
           , n = s(e);
         if (!n)
             return void console.warn("Fighter informations could not be extracted from this message type: " + e._messageType);
@@ -19461,12 +19581,12 @@
                 if (i)
                     return console.error(i);
                 if (o.timeCreationStarted = s,
-                o instanceof m.StateBuff && (952 === o.actionId ? T(I.fightLeavingStateStep, [P ? P.castingSpellId : -1, o.targetId, o.stateId]) : T(I.fightEnteringStateStep, [P ? P.castingSpellId : -1, o.targetId, o.stateId, o.effect.getDurationString()])),
+                o instanceof m.StateBuff && (952 === o.actionId ? T(I.fightLeavingStateStep, [D ? D.castingSpellId : -1, o.targetId, o.stateId]) : T(I.fightEnteringStateStep, [D ? D.castingSpellId : -1, o.targetId, o.stateId, o.effect.getDurationString()])),
                 "FightTemporaryBoostEffect" === n._type) {
                     var a = e.actionId;
-                    a !== g.ACTION_CHARACTER_MAKE_INVISIBLE && a !== g.ACTION_CHARACTER_UPDATE_BOOST && a !== g.ACTION_CHARACTER_CHANGE_LOOK && a !== g.ACTION_CHARACTER_CHANGE_COLOR && a !== g.ACTION_CHARACTER_ADD_APPEARANCE && a !== g.ACTION_FIGHT_SET_STATE && T(I.fightTemporaryBoostStep, [P ? P.castingSpellId : -1, e.effect.targetId, o.effect.description, o.effect.duration, o.effect.getDurationString()])
+                    a !== g.ACTION_CHARACTER_MAKE_INVISIBLE && a !== g.ACTION_CHARACTER_UPDATE_BOOST && a !== g.ACTION_CHARACTER_CHANGE_LOOK && a !== g.ACTION_CHARACTER_CHANGE_COLOR && a !== g.ACTION_CHARACTER_ADD_APPEARANCE && a !== g.ACTION_FIGHT_SET_STATE && T(I.fightTemporaryBoostStep, [D ? D.castingSpellId : -1, e.effect.targetId, o.effect.description, o.effect.duration, o.effect.getDurationString()])
                 }
-                return T(I.fightDisplayBuffStep, [P ? P.castingSpellId : -1, o]),
+                return T(I.fightDisplayBuffStep, [D ? D.castingSpellId : -1, o]),
                 delete o.timeCreationStarted,
                 t()
             }
@@ -19474,9 +19594,9 @@
             m.makeBuffFromEffect(n, o, e.actionId, i)
         }
         var o;
-        o = new n(e.actionId === g.ACTION_CHARACTER_UPDATE_BOOST ? !1 : !P),
-        P && (o.castingSpellId = P.castingSpellId,
-        P.spell.id === e.effect.spellId && (o.spellRank = P.spellRank));
+        o = new n(e.actionId === g.ACTION_CHARACTER_UPDATE_BOOST ? !1 : !D),
+        D && (o.castingSpellId = D.castingSpellId,
+        D.spell.id === e.effect.spellId && (o.spellRank = D.spellRank));
         var s = Date.now()
           , a = e.effect.spellId;
         o.casterId = e.sourceId,
@@ -19490,21 +19610,21 @@
         var i = this
           , o = "GameActionFightCloseCombatMessage" === e._messageType
           , s = 0;
-        o && (e.spellId = x,
+        o && (e.spellId = M,
         e.spellLevel = 1,
         s = e.weaponGenericId),
         this.spellCastCounts[e.spellId] && (this.spellCastCounts[e.spellId] = this.spellCastCounts[e.spellId] - 1),
         this.getFighterSpell(e.spellId, e.sourceId, function(r, l) {
-            return r ? t(r) : l ? (P = new n,
-            P.casterId = e.sourceId,
-            P.spell = l,
-            P.spellRank = o ? null : l.getProperty("spellLevel", e.spellLevel),
-            P.isCriticalFail = e.critical === v.CRITICAL_FAIL,
-            P.isCriticalHit = e.critical === v.CRITICAL_HIT,
-            P.silentCast = e.silentCast,
-            o && (P.weaponId = e.weaponGenericId),
+            return r ? t(r) : l ? (D = new n,
+            D.casterId = e.sourceId,
+            D.spell = l,
+            D.spellRank = o ? null : l.getProperty("spellLevel", e.spellLevel),
+            D.isCriticalFail = e.critical === v.CRITICAL_FAIL,
+            D.isCriticalHit = e.critical === v.CRITICAL_HIT,
+            D.silentCast = e.silentCast,
+            o && (D.weaponId = e.weaponGenericId),
             e.sourceId === a.characters.controlledCharacterId && e.critical !== v.CRITICAL_FAIL && l.cast(i.turnCount, [e.targetId]),
-            o && 0 !== s ? T(I.fightCloseCombatStep, [P ? P.castingSpellId : -1, e.sourceId, s, e.critical]) : T(I.fightSpellCastStep, [P ? P.castingSpellId : -1, e.sourceId, e.spellId, e.critical]),
+            o && 0 !== s ? T(I.fightCloseCombatStep, [D ? D.castingSpellId : -1, e.sourceId, s, e.critical]) : T(I.fightSpellCastStep, [D ? D.castingSpellId : -1, e.sourceId, e.spellId, e.critical]),
             void t()) : t(new Error("unable to find spell id " + e.spellId))
         })
     }
@@ -19629,8 +19749,7 @@
         }
         var u = function(e, t) {
             return e.init === t.init ? t.fighter - e.fighter : t.init - e.init
-        }
-        ;
+        };
         i.sort(u),
         t.sort(u);
         var h = i
@@ -19668,7 +19787,7 @@
             var f = window.gui.databases.SpellStates[s[o]];
             if (p && p.length > 0 && p.indexOf(s[o]) !== -1)
                 return !1;
-            if (e === x && f && f.preventsFight)
+            if (e === M && f && f.preventsFight)
                 return !1
         }
         if (m)
@@ -19777,11 +19896,22 @@
     }
     ,
     o.prototype.isInBattle = function() {
-        return this.fightState === M.BATTLE
+        return this.fightState === N.BATTLE
     }
     ,
     o.prototype.isFightersTurn = function(e) {
         return this.currentFighterId === e
+    }
+    ,
+    o.prototype.getIsTurnEndRequestPending = function() {
+        return this._isTurnEndRequestPending
+    }
+    ,
+    o.prototype.isFighterOnUsersTeam = function(e) {
+        var t = this.getFighter(window.actorManager.userActor.actorId)
+          , i = this.getFighter(e);
+        return t && i ? t.data.teamId === i.data.teamId : (console.warning("fighter not found"),
+        !1)
     }
 }
 , function(e, t) {
@@ -19871,11 +20001,11 @@
         }
         return c
     }
-    var o = i(220)
-      , s = i(224)
-      , a = i(229)
-      , r = i(230)
-      , l = i(235);
+    var o = i(221)
+      , s = i(225)
+      , a = i(230)
+      , r = i(231)
+      , l = i(236);
     o.setStateBuff(r),
     t.BasicBuff = o,
     t.SpellBuff = s,
@@ -19902,10 +20032,9 @@
         this.parentBoostUid = 0,
         this.initParam(n, o, s, a)
     }
-    var o, s = i(221), a = i(222), r = i(223), l = r.EffectInstance, c = [s.ACTION_BOOST_SPELL_RANGE, s.ACTION_BOOST_SPELL_RANGEABLE, s.ACTION_BOOST_SPELL_DMG, s.ACTION_BOOST_SPELL_HEAL, s.ACTION_BOOST_SPELL_AP_COST, s.ACTION_BOOST_SPELL_CAST_INTVL, s.ACTION_BOOST_SPELL_CC, s.ACTION_BOOST_SPELL_CASTOUTLINE, s.ACTION_BOOST_SPELL_NOLINEOFSIGHT, s.ACTION_BOOST_SPELL_MAXPERTURN, s.ACTION_BOOST_SPELL_MAXPERTARGET, s.ACTION_BOOST_SPELL_CAST_INTVL_SET, s.ACTION_BOOST_SPELL_BASE_DMG, s.ACTION_DEBOOST_SPELL_RANGE, 406, 787, 792, 793, 1017, 1018, 1019, 1035, 1036, 1044, 1045], u = function(e) {
+    var o, s = i(222), a = i(223), r = i(224), l = r.EffectInstance, c = [s.ACTION_BOOST_SPELL_RANGE, s.ACTION_BOOST_SPELL_RANGEABLE, s.ACTION_BOOST_SPELL_DMG, s.ACTION_BOOST_SPELL_HEAL, s.ACTION_BOOST_SPELL_AP_COST, s.ACTION_BOOST_SPELL_CAST_INTVL, s.ACTION_BOOST_SPELL_CC, s.ACTION_BOOST_SPELL_CASTOUTLINE, s.ACTION_BOOST_SPELL_NOLINEOFSIGHT, s.ACTION_BOOST_SPELL_MAXPERTURN, s.ACTION_BOOST_SPELL_MAXPERTARGET, s.ACTION_BOOST_SPELL_CAST_INTVL_SET, s.ACTION_BOOST_SPELL_BASE_DMG, s.ACTION_DEBOOST_SPELL_RANGE, 406, 787, 792, 793, 1017, 1018, 1019, 1035, 1036, 1044, 1045], u = function(e) {
         e && console.error(e)
-    }
-    ;
+    };
     e.exports = n,
     n.prototype.getParam1 = function() {
         return "EffectInstanceDice" === this.effect._type ? this.effect.diceNum : null
@@ -20706,7 +20835,7 @@
             return e ? t(e) : void t(null , _.extractElementsFrom(i, n, !0))
         })
     }
-    var h, d, p, m, f = i(12), g = i(35).getText, _ = i(209), v = i(35).processText, y = i(36), w = {
+    var h, d, p, m, f = i(12), g = i(35).getText, _ = i(210), v = i(35).processText, y = i(36), w = {
         X: {
             code: 88,
             desc: "ui.spellarea.cross",
@@ -20964,7 +21093,8 @@
             var i = this.getValue("modificator");
             0 !== i && (this.description += " " + g("ui.effect.boosted.spell.complement", [i], "%"));
             var n = this.getValue("random");
-            n > 0 && (this.getValue("group") > 0 ? this.description += " (" + g("ui.common.random") + ")" : this.description += " " + g("ui.effect.randomProbability", [n], "%"))
+            n > 0 && (this.getValue("group") > 0 ? this.description += " (" + g("ui.common.random") + ")" : this.description += " " + g("ui.effect.randomProbability", [n], "%")),
+            this.trigger && (this.description = g("ui.spell.trigger", this.description))
         }
     }
     ,
@@ -21018,12 +21148,10 @@
         var n, o = {}, s = function(e, t) {
             o[e] || (o[e] = {}),
             o[e][t] = !0
-        }
-        ;
+        };
         f.each(e, function(e, i) {
             return e ? (e.description || (n = e.getParams(),
             d(e, n, t, s)),
-            e.trigger && (e.description = g("ui.spell.trigger", e.description)),
             void ("" === e.subEffectDescription ? (n = e.getParams(),
             p(e, n, t, s, i)) : i())) : i()
         }, function(n) {
@@ -21170,7 +21298,8 @@
             e.setDescription(t)) : n("MonsterRaces", t[0]);
             break;
         case 724:
-            if (i) {
+            if (s(t[0]) && !s(t[2]) && (t[0] = t[2]),
+            i) {
                 var a = window.gui.playerData.characterBaseInformations && window.gui.playerData.characterBaseInformations.sex ? "nameFemaleId" : "nameMaleId";
                 t[2] = i.Titles[t[0]][a],
                 e.setDescription(t)
@@ -21309,7 +21438,8 @@
                 for (var n = [], s = 0; s < i.length; s++)
                     if (i[s].description) {
                         if (i[s].hidden)
-                            continue;n.push(i[s].description);
+                            continue;
+                        n.push(i[s].description);
                         var a = i[s].getDurationString();
                         a && (n[n.length - 1] += " (" + a + ")")
                     }
@@ -21355,11 +21485,11 @@
             n(null , i))
         })
     }
-    var o = i(220)
-      , s = i(221)
-      , a = i(225)
+    var o = i(221)
+      , s = i(222)
+      , a = i(226)
       , r = i(26).inherits
-      , l = i(227);
+      , l = i(228);
     r(n, o),
     e.exports = n,
     n.prototype.getDelta = function() {
@@ -21399,8 +21529,8 @@
     function n(e) {
         return a[e]
     }
-    var o = i(221)
-      , s = i(226)
+    var o = i(222)
+      , s = i(227)
       , a = {};
     a[o.ACTION_BOOST_SPELL_RANGEABLE] = s.RANGEABLE,
     a[o.ACTION_BOOST_SPELL_DMG] = s.DAMAGE,
@@ -21443,7 +21573,7 @@
         this.spellId = 0,
         this.value = new o
     }
-    var o = i(228);
+    var o = i(229);
     e.exports = n
 }
 , function(e, t) {
@@ -21465,9 +21595,9 @@
             n(null , t))
         })
     }
-    var o = i(220)
+    var o = i(221)
       , s = i(26).inherits
-      , a = i(221);
+      , a = i(222);
     s(n, o),
     e.exports = n,
     n.prototype.getDelta = function() {
@@ -21573,7 +21703,7 @@
     }
     ,
     n.prototype.decrementStats = function(e) {
-        this.incrementStats(-e)
+        this.incrementStats(-e);
     }
 }
 , function(e, t, i) {
@@ -21585,11 +21715,11 @@
             n(null , o))
         })
     }
-    var o = i(220)
+    var o = i(221)
       , s = i(26).inherits
-      , a = i(221)
-      , r = i(231)
-      , l = i(217);
+      , a = i(222)
+      , r = i(232)
+      , l = i(218);
     s(n, o),
     e.exports = n,
     n.prototype.apply = function() {
@@ -21798,15 +21928,15 @@
         return b = [],
         T ? S.push([t, e]) : void u(t, e)
     }
-    var d = i(217)
-      , p = i(232)
-      , m = i(233)
+    var d = i(218)
+      , p = i(233)
+      , m = i(234)
       , f = i(36)
       , g = i(35)
       , _ = g.getText
       , v = g.processTextWithModifier
       , y = i(12)
-      , w = i(234)
+      , w = i(235)
       , b = []
       , C = {}
       , I = {}
@@ -21815,8 +21945,7 @@
       , A = function(e) {
         if (e)
             return console.error(e)
-    }
-    ;
+    };
     t.send = r,
     t.push = l,
     t.reset = c,
@@ -21863,7 +21992,7 @@
             n(null , i))
         })
     }
-    var o = i(220)
+    var o = i(221)
       , s = i(26).inherits;
     s(n, o),
     e.exports = n,
@@ -21904,13 +22033,13 @@
         this.isShieldBarVisible = !1,
         window.gui.timeline.linkToTimeline(this))
     }
-    var o = i(189)
-      , s = i(237)
-      , a = i(278)
+    var o = i(190)
+      , s = i(238)
+      , a = i(279)
       , r = i(25)
-      , l = i(212)
-      , c = i(219)
-      , u = i(279)
+      , l = i(213)
+      , c = i(220)
+      , u = i(280)
       , h = i(35).getText
       , d = 40
       , p = 30
@@ -22420,14 +22549,14 @@
             t.resize())
         }, 0)
     }
-    i(238);
+    i(239);
     var a = i(26).inherits
-      , r = i(189)
-      , l = i(239)
-      , c = i(241)
+      , r = i(190)
+      , l = i(240)
+      , c = i(242)
       , u = i(6)
-      , h = i(266)
-      , d = i(260).Delay
+      , h = i(267)
+      , d = i(261).Delay
       , p = null
       , m = null
       , f = null
@@ -22627,9 +22756,9 @@
         this.addClassNames("Canvas"),
         this.style = this.rootElement.style
     }
-    i(240);
+    i(241);
     var o = i(26).inherits
-      , s = i(189);
+      , s = i(190);
     o(n, s),
     e.exports = n,
     n.prototype.getContext = function(e) {
@@ -22668,12 +22797,12 @@
         this.showSubentities = !0
     }
     var o = i(26).inherits
-      , s = i(242)
-      , a = i(246)
-      , r = i(247)
-      , l = i(248)
-      , c = i(262)
-      , u = i(265);
+      , s = i(243)
+      , a = i(247)
+      , r = i(248)
+      , l = i(249)
+      , c = i(263)
+      , u = i(266);
     o(n, s),
     e.exports = n,
     n.prototype.updateAnimation = function() {
@@ -22785,8 +22914,8 @@
         this.animManager = t || new a(this)
     }
     var o = i(26).inherits
-      , s = i(243)
-      , a = i(245);
+      , s = i(244)
+      , a = i(246);
     o(n, s),
     e.exports = n,
     n.prototype.setAnimManager = function(e) {
@@ -22876,7 +23005,7 @@
         r = e.createTexture(t, null , "nearest", "permanent")
     }
     var s = i(26).inherits
-      , a = i(244);
+      , a = i(245);
     s(n, a),
     e.exports = n,
     Object.defineProperty(n.prototype, "x", {
@@ -23012,7 +23141,7 @@
               , m = o * s + n * l
               , f = n * a - o * l
               , g = o * a + n * l;
-            this.bbox = [this._x + Math.min(c, h, p, f), this._x + Math.max(c, h, p, f), this._y + Math.min(u, d, m, g), this._y + Math.max(u, d, m, g)]
+            this.bbox = [this._x + Math.min(c, h, p, f), this._x + Math.max(c, h, p, f), this._y + Math.min(u, d, m, g), this._y + Math.max(u, d, m, g)];
         }
         t[0] = Math.floor(Math.min(t[0], this.bbox[0])),
         t[1] = Math.ceil(Math.max(t[1], this.bbox[1])),
@@ -23352,7 +23481,7 @@
         this.offsetY = e.offsetY || 0
     }
     var o = i(26).inherits
-      , s = i(242);
+      , s = i(243);
     o(n, s),
     e.exports = n,
     n.prototype.isFx = !0
@@ -23375,11 +23504,11 @@
             r()
         })
     }
-    var s = i(246)
-      , a = i(249)
-      , r = i(259)
-      , l = i(262)
-      , c = i(265)
+    var s = i(247)
+      , a = i(250)
+      , r = i(260)
+      , l = i(263)
+      , c = i(266)
       , u = c.HOOK_POINT_CATEGORY_MOUNT_DRIVER;
     t.loadCharacterAnimationManager = function(e, t, i, o, s, l, c) {
         function u(i) {
@@ -23481,15 +23610,15 @@
         s
     }
     var a = i(6)
-      , r = i(250)
+      , r = i(251)
       , l = i(5)
-      , c = i(252)
+      , c = i(253)
       , u = i(84)
-      , h = i(253)
-      , d = i(254)
-      , p = i(255)
-      , m = i(256)
-      , f = i(258)
+      , h = i(254)
+      , d = i(255)
+      , p = i(256)
+      , m = i(257)
+      , f = i(259)
       , g = {
         skin: a.SKIN_PATH,
         bone: a.BONE_PATH,
@@ -23629,7 +23758,7 @@
         this.addCount = 0,
         this.removeCount = 0
     }
-    var s = i(251)
+    var s = i(252)
       , a = {
         permanent: 0,
         archivable: 1,
@@ -23934,7 +24063,7 @@
         this.nbFrames = this.frames.length,
         this.animationData = t
     }
-    var o = i(253);
+    var o = i(254);
     n.prototype.isAnim = !0,
     e.exports = n
 }
@@ -23964,8 +24093,8 @@
     function r(e) {
         this.id = e
     }
-    var l = i(251)
-      , c = i(257)
+    var l = i(252)
+      , c = i(258)
       , u = i(26).inherits;
     u(n, c),
     e.exports = n,
@@ -24254,7 +24383,7 @@
         this.vertexPos = t,
         this.textureCoord = i
     }
-    var s = i(257)
+    var s = i(258)
       , a = i(26).inherits;
     a(n, s),
     e.exports = n,
@@ -24362,11 +24491,11 @@
         }
     }
     var a = i(26).inherits
-      , r = i(260).Tween
+      , r = i(261).Tween
       , l = i(6)
       , c = i(84)
-      , u = i(249)
-      , h = i(245)
+      , u = i(250)
+      , h = i(246)
       , d = l.ANIM_SYMBOLS
       , p = l.ANIM_SYMETRY
       , m = l.MAP_SCENE_WIDTH / 2
@@ -24705,8 +24834,8 @@
     }
     var l = i(26).inherits
       , c = i(6)
-      , u = i(261)
-      , h = i(251)
+      , u = i(262)
+      , h = i(252)
       , d = window.performance ? window.performance : Date
       , p = {
         tups: c.TIME_UNITS_PER_SECOND,
@@ -24786,7 +24915,7 @@
     }
     ,
     n.prototype.fastForwardToEnd = function() {
-        this._time = this._duration;
+        this._time = this._duration
     }
     ,
     n.prototype._stopped = function() {
@@ -25215,8 +25344,8 @@
             child: null
         }
     }
-    var o = i(263)
-      , s = i(264)
+    var o = i(264)
+      , s = i(265)
       , a = [n, s, o, n, n, n, n];
     e.exports = a
 }
@@ -25415,17 +25544,17 @@
     }
 }
 , function(e, t, i) {
-    i(267),
-    i(272),
+    i(268),
     i(273),
     i(274),
     i(275),
     i(276),
     i(277),
-    e.exports = i(268)
+    i(278),
+    e.exports = i(269)
 }
 , function(e, t, i) {
-    var n = i(268);
+    var n = i(269);
     n.shadersData = {
         vertexLine: {
             type: "vertex",
@@ -25538,8 +25667,8 @@
         this.emptyTexture = this.createTexture(o.EMPTY_IMAGE, "empty_texture", "linear", "permanent")
     }
     var o = i(6)
-      , s = i(250)
-      , a = i(269)
+      , s = i(251)
+      , a = i(270)
       , r = null ;
     e.exports = n,
     n.prototype.resetClearColor = function() {
@@ -25699,8 +25828,8 @@
         this.update = 0,
         this.chunksById = {}
     }
-    var s = i(270)
-      , a = i(271);
+    var s = i(271)
+      , a = i(272);
     n.prototype.set = function(e, t, i) {
         this.start = e,
         this.nBytes = t,
@@ -25975,7 +26104,7 @@
         e.parent = t,
         e.right = i,
         null !== i && (i.parent = e),
-        e.height = e.height - 1
+        e.height = e.height - 1;
     }
     ,
     i.prototype._balance = function(e) {
@@ -26269,7 +26398,7 @@
     function s(e, t, i, n, s) {
         o.call(this, e, t, i, n, s)
     }
-    var a = i(268)
+    var a = i(269)
       , r = {
         uTexture: 0,
         uMask: 1
@@ -26406,7 +26535,7 @@
         this.scissor = null ,
         this.texture = null
     }
-    var o = i(268);
+    var o = i(269);
     o.prototype._createRenderTarget = function(e, t, i, o) {
         return new n(e,t,i,o)
     }
@@ -26519,7 +26648,7 @@
     }
 }
 , function(e, t, i) {
-    var n = i(268);
+    var n = i(269);
     n.prototype.initBuffer = function(e) {
         var t = this.gl
           , i = t.createBuffer();
@@ -26579,7 +26708,7 @@
     function n(e) {
         return 0 === (e & e - 1)
     }
-    var o = i(268);
+    var o = i(269);
     o.prototype._setFiltering = function(e, t, i) {
         var o = this.gl
           , s = o.LINEAR
@@ -26629,7 +26758,7 @@
     }
 }
 , function(e, t, i) {
-    var n = i(268);
+    var n = i(269);
     n.prototype.save = function() {
         this._matrixStack.unshift(this._matrixStack[0].slice())
     }
@@ -26810,7 +26939,7 @@
         this.prerender = i,
         this.spriteBatches = e
     }
-    var a = i(268);
+    var a = i(269);
     a.prototype.prepareBatchFromSpriteList = function(e, t, i) {
         i = !!i;
         for (var a = t.spriteBatch, r = a.length - 1, l = t.nbSprites * this._spriteSize, c = this.sFMPartitioner.reserve(e, l), u = c.start, h = u, d = u, p = new ArrayBuffer(l), m = new Float32Array(p), f = new Uint32Array(p), g = this._spriteSize / 4, _ = 0, v = [], y = 0; y <= r; y += 1) {
@@ -27199,7 +27328,7 @@
                     t[i].hasOwnProperty(n) && (e[i][n] = t[i][n])
             }
     }
-    var _, v = i(12), y = i(223), w = i(226), b = i(209), C = i(36), I = i(5), T = i(6), S = i(281), A = t.WEAPON_SPELL_ID = 0;
+    var _, v = i(12), y = i(224), w = i(227), b = i(210), C = i(36), I = i(5), T = i(6), S = i(282), A = t.WEAPON_SPELL_ID = 0;
     t.placeHolder = T.MISSING_TEXTURE_IMAGE_SRC;
     var E, x, M, N, R = 0;
     a.prototype.setLevel = function(e) {
@@ -27561,7 +27690,7 @@
         this.maxCastPerTurn = new o,
         this.maxCastPerTarget = new o
     }
-    var o = i(228);
+    var o = i(229);
     e.exports = n,
     n.prototype.getTotalBonus = function(e) {
         return e ? e.alignGiftBonus + e.base + e.contextModif + e.objectsAndMountBonus : 0
@@ -27766,11 +27895,11 @@
         o.setAlive(!1),
         void U.push(i ? k.FIGHTER_DEATH : k.FIGHTER_LEAVE, [t], t, e)) : console.error("Fighter " + t + " does not exist.")
     }
-    var k = i(217)
-      , F = i(232)
-      , H = i(221)
-      , G = i(219)
-      , U = i(231);
+    var k = i(218)
+      , F = i(233)
+      , H = i(222)
+      , G = i(220)
+      , U = i(232);
     t.pushStep = n,
     t.fightMovementPointsVariationStep = o,
     t.fightActionPointsVariationStep = s,
@@ -27847,10 +27976,10 @@
         }),
         void 0 !== e && this.setValue(e)
     }
-    i(284);
+    i(285);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(203)
+      , s = i(190)
+      , a = i(204)
       , r = i(22)
       , l = 5;
     o(n, s),
@@ -28018,15 +28147,15 @@
             height: 40
         })
     }
-    i(287);
+    i(288);
     var o = i(12)
-      , s = i(239)
-      , a = i(288)
+      , s = i(240)
+      , a = i(289)
       , r = i(26).inherits
-      , l = i(290)
+      , l = i(291)
       , c = i(36)
-      , u = i(189)
-      , h = i(291)
+      , u = i(190)
+      , h = i(292)
       , d = 160
       , p = 40
       , m = 16
@@ -28356,12 +28485,12 @@
                 return r("ui.guild.right.leader")
         })
     }
-    i(289);
-    var o = i(205).addTooltip
+    i(290);
+    var o = i(206).addTooltip
       , s = i(5)
-      , a = i(239)
+      , a = i(240)
       , r = i(35).getText
-      , l = i(209)
+      , l = i(210)
       , c = i(26).inherits
       , u = 227
       , h = 223
@@ -28430,6 +28559,8 @@
         this.isLeader && !this.images.crownImage && (o.push("ui/tx_crown.png"),
         a.push("crownImage")),
         s.loadImages(o, null , function(e) {
+            if (!n || !n.rootElement)
+                return void ("function" == typeof i && i());
             for (var t = 0; t < a.length; t += 1)
                 n.images[a[t]] = e[t];
             n._generateEmblem(),
@@ -28482,7 +28613,7 @@
     }
 }
 , function(e, t, i) {
-    var n = i(184);
+    var n = i(185);
     n.prototype._setupBorderArrow = function() {
         this._borderArrow = this.createChild("div", {
             className: "BorderArrow"
@@ -28545,89 +28676,89 @@
             }, 1e3)
         }, !1)
     }
-    i(294);
+    i(295);
     var o = i(12)
       , s = i(26).inherits
       , a = i(16).EventEmitter
-      , r = i(189)
+      , r = i(190)
       , l = i(85)
-      , c = i(188)
+      , c = i(189)
       , u = i(32)
-      , h = i(210)
-      , d = i(295)
-      , p = (i(433),
+      , h = i(211)
+      , d = i(296)
+      , p = (i(435),
     i(7))
       , m = i(24)
-      , f = i(422)
-      , g = i(434)
-      , _ = i(435)
-      , v = i(440)
-      , y = i(441)
-      , w = i(459)
-      , b = i(461)
-      , C = i(464)
-      , I = i(466)
-      , T = i(185)
-      , S = i(216)
-      , A = i(467)
-      , E = i(335)
+      , f = i(423)
+      , g = i(436)
+      , _ = i(437)
+      , v = i(442)
+      , y = i(443)
+      , w = i(461)
+      , b = i(463)
+      , C = i(466)
+      , I = i(468)
+      , T = i(186)
+      , S = i(217)
+      , A = i(469)
+      , E = i(336)
       , x = i(25)
       , M = i(35)
       , N = M.getText
-      , R = i(469)
-      , O = i(338)
-      , P = (i(209),
-    i(475))
-      , D = i(322)
+      , R = i(471)
+      , O = i(339)
+      , P = (i(210),
+    i(477))
+      , D = i(323)
       , L = i(34)
-      , B = i(280)
-      , k = i(477)
+      , B = i(281)
+      , k = i(479)
       , F = i(50)
-      , H = i(486)
-      , G = i(488)
-      , U = i(494)
-      , j = i(501)
-      , q = i(504)
-      , W = i(505)
-      , V = i(509)
-      , z = i(511)
-      , Y = (i(513),
-    i(517))
-      , X = i(546)
-      , Q = i(547)
-      , K = i(549)
-      , J = i(551)
-      , Z = i(560)
-      , $ = i(479)
-      , ee = i(561)
-      , te = i(576)
-      , ie = i(578)
-      , ne = i(587)
-      , oe = i(589)
-      , se = i(592)
-      , ae = i(205)
+      , H = i(488)
+      , G = i(490)
+      , U = i(496)
+      , j = i(503)
+      , q = i(506)
+      , W = i(507)
+      , V = i(511)
+      , z = i(513)
+      , Y = (i(515),
+    i(519))
+      , X = i(548)
+      , Q = i(549)
+      , K = i(551)
+      , J = i(553)
+      , Z = i(562)
+      , $ = i(481)
+      , ee = i(563)
+      , te = i(578)
+      , ie = i(580)
+      , ne = i(589)
+      , oe = i(591)
+      , se = i(594)
+      , ae = i(206)
       , re = i(30)
-      , le = i(594)
-      , ce = i(599)
-      , ue = i(601)
+      , le = i(596)
+      , ce = i(601)
+      , ue = i(603)
       , he = i(22)
-      , de = i(300)
-      , pe = i(605)
-      , me = i(628)
-      , fe = i(630)
-      , ge = i(631)
-      , _e = i(634)
-      , ve = i(977)
-      , ye = i(979)
-      , we = i(998)
-      , be = i(1e3)
-      , Ce = i(1003)
-      , Ie = i(1005)
-      , Te = i(1007)
-      , Se = i(639)
+      , de = i(301)
+      , pe = i(607)
+      , me = i(630)
+      , fe = i(632)
+      , ge = i(633)
+      , _e = i(636)
+      , ve = i(979)
+      , ye = i(981)
+      , we = i(1e3)
+      , be = i(1002)
+      , Ce = i(1005)
+      , Ie = i(1007)
+      , Te = i(1009)
+      , Se = i(641)
       , Ae = new r(document.getElementById("dofusBody"));
     u.initialize(Ae),
-    p.isIOS && !p.isPhoneGap && i(1009),
+    p.isIOS && !p.isPhoneGap && i(1011),
     s(n, a),
     e.exports = n,
     n.prototype.transmitMessage = function(e) {
@@ -29002,24 +29133,25 @@
         !1)
     }
     var a, r, l, c, u, h = i(33).getPosition, d = {
-        fightTeam: i(296),
-        generic: i(304),
-        interactive: i(305),
-        item: i(309),
-        map: i(406),
-        monster: i(409),
-        npc: i(412),
-        offlinePlayer: i(413),
-        partyOptions: i(414),
-        player: i(415),
-        preset: i(420),
-        prism: i(421),
-        storage: i(424),
-        spell: i(425),
-        spellUpgrade: i(426),
-        taxCollector: i(428),
-        userStatus: i(429),
-        paddockObject: i(432)
+        fightTeam: i(297),
+        generic: i(305),
+        interactive: i(306),
+        item: i(310),
+        map: i(407),
+        monster: i(410),
+        npc: i(413),
+        offlinePlayer: i(414),
+        partyOptions: i(415),
+        player: i(416),
+        preset: i(421),
+        prism: i(422),
+        storage: i(425),
+        spell: i(426),
+        spellUpgrade: i(427),
+        taxCollector: i(429),
+        userStatus: i(430),
+        paddockObject: i(433),
+        admin: i(434)
     }, p = null , m = {
         x: 0,
         y: 0
@@ -29069,9 +29201,9 @@
         this.once("open", this._setupDom),
         this.on("open", this._setContent)
     }
-    i(297);
+    i(298);
     var o = i(26).inherits
-      , s = i(298)
+      , s = i(299)
       , a = i(36)
       , r = i(35).getText
       , l = i(22);
@@ -29186,17 +29318,17 @@
             t._refreshScroller(t.maxHeight)
         })
     }
-    i(299);
-    var o = i(203)
+    i(300);
+    var o = i(204)
       , s = i(24).dimensions
       , a = i(35).getText
-      , r = i(202)
-      , l = i(300)
+      , r = i(203)
+      , l = i(301)
       , c = i(26).inherits
-      , u = i(301)
+      , u = i(302)
       , h = i(33).position
       , d = i(31)
-      , p = i(189)
+      , p = i(190)
       , m = 10
       , f = 40;
     c(n, p),
@@ -29463,11 +29595,11 @@
         this.isEnable && this.iScroll.enable(),
         this._handleRegistered = !1
     }
-    i(302);
+    i(303);
     var u = i(47)
-      , h = i(303)
+      , h = i(304)
       , d = i(26).inherits
-      , p = i(189)
+      , p = i(190)
       , m = 10
       , f = 17
       , g = 200
@@ -30697,8 +30829,8 @@
         })
     }
     var o = i(26).inherits
-      , s = i(298)
-      , a = i(203);
+      , s = i(299)
+      , a = i(204);
     o(n, s),
     e.exports = n,
     n.prototype._update = function(e) {
@@ -30800,13 +30932,13 @@
         })
     }
     var o = i(26).inherits
-      , s = i(298)
-      , a = i(306)
+      , s = i(299)
+      , a = i(307)
       , r = i(35).getText
-      , l = i(203)
-      , c = i(283)
+      , l = i(204)
+      , c = i(284)
       , u = i(22)
-      , h = i(308).displayNotification;
+      , h = i(309).displayNotification;
     o(n, s),
     e.exports = n,
     n.prototype._setupDom = function() {
@@ -30850,9 +30982,9 @@
             text: a("ui.common.forSale")
         })
     }
-    i(307);
-    var o = i(189)
-      , s = i(288)
+    i(308);
+    var o = i(190)
+      , s = i(289)
       , a = i(35).getText
       , r = i(26).inherits;
     r(n, o),
@@ -30966,7 +31098,7 @@
     }
     var h = i(35).getText
       , d = i(22)
-      , p = i(189)
+      , p = i(190)
       , m = 849
       , f = 601
       , g = [4, 3]
@@ -31045,15 +31177,15 @@
             for (var h in t)
                 t[h].hide();
             var d = window.gui.tutorialManager.inTutorial
-              , m = !n.hasOwnProperty("enableSet") || n.enableSet
+              , f = !n.hasOwnProperty("enableSet") || n.enableSet
               , g = !n.hasOwnProperty("enableRecipe") || n.enableRecipe
               , _ = !n.hasOwnProperty("enableInsertRecipe") || n.enableInsertRecipe
               , v = !n.hasOwnProperty("enableDestroy") || n.enableDestroy
               , y = !!n.hasOwnProperty("enableSell") && n.enableSell
               , w = !n.hasOwnProperty("enableCertificate") || n.enableCertificate
               , b = !!c && !d && !c.mountLocation
-              , C = !!s.getItemInstance() && s.getItem().typeId === f;
-            if (t.itemSet.toggleDisplay(!!c.itemSetId && c.itemSetId !== -1 && !d && m),
+              , C = !!s.getItemInstance() && s.getItem().typeId === m;
+            if (t.itemSet.toggleDisplay(!!c.itemSetId && c.itemSetId !== -1 && !d && f),
             t.recipes.toggleDisplay(g && b),
             t.insertRecipe.toggleDisplay(_ && b),
             t.findInBestiary.toggleDisplay(!!s.getProperty("dropMonsterIds").length),
@@ -31080,19 +31212,18 @@
             e && e(this._action)
         })
     }
-    var o = i(310)
-      , s = i(185)
+    var o = i(311)
+      , s = i(186)
       , a = i(26).inherits
-      , r = i(322).isEquippable
-      , l = i(322).isEquipped
-      , c = i(298)
+      , r = i(323).isEquippable
+      , l = i(323).isEquipped
+      , c = i(299)
       , u = i(35).getText
-      , h = i(200)
+      , h = i(201)
       , d = i(22)
       , p = i(85)
-      , m = 995
-      , f = 97
-      , g = 40;
+      , m = 97
+      , f = 40;
     a(n, c),
     e.exports = n,
     n.prototype._setupDom = function(e, t) {
@@ -31116,8 +31247,8 @@
             return window.gui.openSimplePopup(u("tablet.ui.item.targetInfo"))
         });
         s.setDraggable(c, t, "itemContextMenu", null , {
-            containerWidth: g,
-            containerHeight: g
+            containerWidth: f,
+            containerHeight: f
         }),
         c.on("dragStart", function() {
             this.item = a._item,
@@ -31178,10 +31309,7 @@
             })
         }),
         e.mount = this._addEntry(u("ui.mount.viewMountDetails"), function() {
-            var e = a._item.effectsMap[m];
-            e && d.open("mount", {
-                mountData: e
-            })
+            d.getWindow("mount").showCertificateMount(a._item)
         }),
         e.dismount = this._addEntry(u("ui.shortcuts.toggleRide"), function() {
             window.dofus.sendMessage("MountToggleRidingRequestMessage")
@@ -31292,22 +31420,22 @@
         this.searchBox.setValue(""),
         this._cancelSearch()
     }
-    i(311);
-    var m = i(203)
+    i(312);
+    var m = i(204)
       , f = i(49)
-      , g = i(312)
-      , _ = i(320)
+      , g = i(313)
+      , _ = i(321)
       , v = i(35).getText
-      , y = i(209)
+      , y = i(210)
       , w = i(26).inherits
-      , b = i(322)
-      , C = i(386)
-      , I = i(401)
+      , b = i(323)
+      , C = i(387)
+      , I = i(402)
       , T = i(22)
-      , S = i(189)
-      , A = i(404)
+      , S = i(190)
+      , A = i(405)
       , E = i(36)
-      , x = i(205)
+      , x = i(206)
       , M = -1
       , N = 5e3
       , R = 30
@@ -31369,7 +31497,7 @@
         this._createSwitchToSellModeButton(),
         this._createBidHouseCatList(),
         this._createViewer(),
-        this.shopViewer.setPlaceholder(v("tablet.bidHouse.searchOrSelect"))
+        this._resetSearch()
     }
     ,
     n.prototype.freeContent = function() {
@@ -31382,12 +31510,10 @@
     }
     ,
     n.prototype._reset = function() {
-        this._cancelSearch(!0),
-        this.bidHouseCatList.reset(),
-        this.shopViewer.clearContent(),
-        this.shopViewer.setPlaceholder(v("tablet.bidHouse.searchOrSelect")),
         this.currentItemTypeElt = null ,
-        this._categoryToDisplayItems = null
+        this._categoryToDisplayItems = null ,
+        this.bidHouseCatList.reset(),
+        this._resetSearch()
     }
     ,
     n.prototype._sortAllowedTypes = function(e) {
@@ -31546,6 +31672,12 @@
         e ? this.searchBox.clear() : this.currentItemTypeElt && this._pushHistory("itemType", this.currentItemTypeElt))
     }
     ,
+    n.prototype._resetSearch = function() {
+        this.searchBox.clear(),
+        this.currentSearchText = null ,
+        this._refreshDisplayedItems()
+    }
+    ,
     n.prototype._createViewer = function() {
         function e(e, t) {
             var i = e.level - t.level;
@@ -31603,7 +31735,6 @@
         this.isListening = !0;
         var e = this;
         f.on("ExchangeTypesExchangerDescriptionForUserMessage", function(t) {
-            e.shopViewer.table.placeholder.frame.delClassNames("spinner"),
             e._requestedCategories.shift(),
             e._storeItemAvailability(t.typeDescription, !0)
         }),
@@ -31634,10 +31765,12 @@
             var s = v("tablet.common.filterHeader", this._categoryToDisplayItems.length - e.length);
             this.shopViewerHeaderLabel.setText(s),
             this.shopViewerHeaderButton.setLabel(this.currentSearchText),
-            this.shopViewerHeaderButton.show()
+            this.shopViewerHeaderButton.show(),
+            this.shopViewer.table.setSortingHintVisible("name", !0)
         } else
             this.shopViewerHeaderLabel.setText(v("tablet.bidHouse.nowOnSale")),
-            this.shopViewerHeaderButton.hide();
+            this.shopViewerHeaderButton.hide(),
+            this.shopViewer.table.setSortingHintVisible("name", !1);
         if (!e.length) {
             this.shopViewer.clearContent();
             var a;
@@ -31696,6 +31829,7 @@
                 o.availableItemCache[s.id] = [M, Date.now()]
             }
             if (o.openState && (t || o.liveItems)) {
+                o.shopViewer.table.placeholder.frame.delClassNames("spinner");
                 var a = o._categoryToDisplayItems === o.liveItems;
                 o.liveItems = t ? i : o.liveItems.concat(i),
                 (a || t) && (o._categoryToDisplayItems = o.liveItems,
@@ -31741,12 +31875,12 @@
         e.toggleClassName("selected", t),
         e.subitemList.toggleDisplay(t)
     }
-    i(313);
-    var l = i(203)
+    i(314);
+    var l = i(204)
       , c = i(29).EventEmitter
       , u = i(26).inherits
-      , h = i(314)
-      , d = i(189);
+      , h = i(315)
+      , d = i(190);
     u(n, c),
     e.exports = n,
     n.prototype._init = function() {
@@ -31775,7 +31909,8 @@
             var e = this.currentDeployedItem;
             e && this.deployItem(e, !1),
             this.refresh(!0),
-            this._selectSubitem(null )
+            this._selectSubitem(null ),
+            this.removeFilter()
         }
     }
     ,
@@ -31998,9 +32133,9 @@
 }
 , function(e, t) {}
 , function(e, t, i) {
-    i(315);
-    var n = i(316)
-      , o = i(319);
+    i(316);
+    var n = i(317)
+      , o = i(320);
     n.SingleSelectionList = o,
     e.exports = n
 }
@@ -32013,9 +32148,9 @@
         this.placeholder = null
     }
     var o = i(26).inherits
-      , s = i(317)
+      , s = i(318)
       , a = i(84).playUiSound
-      , r = i(301)
+      , r = i(302)
       , l = i(32);
     o(n, r),
     e.exports = n,
@@ -32125,8 +32260,8 @@
         this.frame = null ,
         this.text = null
     }
-    i(318);
-    var o = i(301);
+    i(319);
+    var o = i(302);
     e.exports = n,
     n.prototype.setText = function(e) {
         if (!e)
@@ -32163,7 +32298,7 @@
         this.currentSelected = null
     }
     var o = i(26).inherits
-      , s = i(316);
+      , s = i(317);
     o(n, s),
     e.exports = n,
     n.prototype.removeItem = function(e) {
@@ -32215,8 +32350,8 @@
             text: "x"
         })
     }
-    i(321);
-    var o = i(203)
+    i(322);
+    var o = i(204)
       , s = i(26).inherits;
     s(n, o),
     e.exports = n,
@@ -32345,10 +32480,10 @@
         s
     }
     var u = i(12)
-      , h = i(323)
-      , d = i(324)
-      , p = i(325)
-      , m = i(385)
+      , h = i(324)
+      , d = i(325)
+      , p = i(326)
+      , m = i(386)
       , f = i(36)
       , g = i(5)
       , _ = i(16).EventEmitter
@@ -32387,8 +32522,7 @@
         var o = function() {
             window.gui.gameContext === v.ROLE_PLAY && (window.gui.removeListener("GameContextCreateMessage", o),
             window.dofus.sendMessage("ObjectAveragePricesGetMessage"))
-        }
-        ;
+        };
         window.gui.on("GameContextCreateMessage", o),
         window.gui.on("ObjectAveragePricesMessage", function(e) {
             for (var t = 0, i = e.ids.length; t < i; t += 1)
@@ -32510,7 +32644,7 @@
     function l(e) {
         return !e.isLinkedCharacter()
     }
-    var c = i(323);
+    var c = i(324);
     e.exports.getTypePositions = n,
     e.exports.getCategoryName = o,
     e.exports.getCategory = s,
@@ -32550,10 +32684,10 @@
         return i
     }
     var s = i(12)
-      , a = i(326)
-      , r = i(223)
+      , a = i(327)
+      , r = i(224)
       , l = i(35).getText
-      , c = i(209)
+      , c = i(210)
       , u = i(36)
       , h = {
         id: null ,
@@ -32747,50 +32881,50 @@
         return e = e.replace(/[\s+]/g, ""),
         new s(e,this,t)
     }
-    var s = i(327)
-      , a = i(328)
-      , r = i(330)
-      , l = i(331)
-      , c = i(332)
-      , u = i(333)
-      , h = i(346)
-      , d = i(347)
-      , p = i(349)
-      , m = i(350)
-      , f = i(351)
-      , g = i(352)
-      , _ = i(353)
-      , v = i(354)
-      , y = i(355)
-      , w = i(356)
-      , b = i(357)
-      , C = i(358)
-      , I = i(359)
-      , T = i(360)
-      , S = i(361)
-      , A = i(362)
-      , E = i(363)
-      , x = i(364)
-      , M = i(365)
-      , N = i(366)
-      , R = i(367)
-      , O = i(368)
-      , P = i(369)
-      , D = i(370)
-      , L = i(371)
-      , B = i(372)
-      , k = i(373)
-      , F = i(374)
-      , H = i(375)
-      , G = i(376)
-      , U = i(377)
-      , j = i(378)
-      , q = i(379)
-      , W = i(380)
-      , V = i(381)
-      , z = i(382)
-      , Y = i(383)
-      , X = i(384)
+    var s = i(328)
+      , a = i(329)
+      , r = i(331)
+      , l = i(332)
+      , c = i(333)
+      , u = i(334)
+      , h = i(347)
+      , d = i(348)
+      , p = i(350)
+      , m = i(351)
+      , f = i(352)
+      , g = i(353)
+      , _ = i(354)
+      , v = i(355)
+      , y = i(356)
+      , w = i(357)
+      , b = i(358)
+      , C = i(359)
+      , I = i(360)
+      , T = i(361)
+      , S = i(362)
+      , A = i(363)
+      , E = i(364)
+      , x = i(365)
+      , M = i(366)
+      , N = i(367)
+      , R = i(368)
+      , O = i(369)
+      , P = i(370)
+      , D = i(371)
+      , L = i(372)
+      , B = i(373)
+      , k = i(374)
+      , F = i(375)
+      , H = i(376)
+      , G = i(377)
+      , U = i(378)
+      , j = i(379)
+      , q = i(380)
+      , W = i(381)
+      , V = i(382)
+      , z = i(383)
+      , Y = i(384)
+      , X = i(385)
       , Q = {
         Ca: P,
         CA: P,
@@ -32944,7 +33078,7 @@
         o.call(this, e),
         window.gui.playerData.identification.hasRights ? this._text = s("ui.social.guildHouseRights") + " " + this.getOperatorText() + " " + this.getValueText() : this._text = ""
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -33046,7 +33180,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(36)
       , r = i(26).inherits;
@@ -33083,7 +33217,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -33110,7 +33244,7 @@
         o.call(this, e),
         this._text = s("ui.tooltip.AlignmentLevel") + " " + this.getOperatorText() + " " + this.value
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -33130,11 +33264,11 @@
         a.call(this, e),
         this.operator === a.operators.equal ? this._text = r("ui.criterion.allianceAvA") : this._text = ""
     }
-    var o = i(334)
-      , s = i(335)
-      , a = i(329)
+    var o = i(335)
+      , s = i(336)
+      , a = i(330)
       , r = i(35).getText
-      , l = i(345)
+      , l = i(346)
       , c = i(26).inherits;
     c(n, a),
     n.prototype.getText = function() {
@@ -33182,7 +33316,7 @@
         i.state === m.fighting && d.emit("fighting", e, a),
         a
     }
-    var o, s, a = i(16).EventEmitter, r = i(35).getText, l = i(336), c = l.TaxCollector, u = i(344), h = u.Prism, d = e.exports = new a, p = i(337), m = d.fightState = p.fightState, f = d.fightingSide = p.fightingSide, g = d.entityType = p.entityType;
+    var o, s, a = i(16).EventEmitter, r = i(35).getText, l = i(337), c = l.TaxCollector, u = i(345), h = u.Prism, d = e.exports = new a, p = i(338), m = d.fightState = p.fightState, f = d.fightingSide = p.fightingSide, g = d.entityType = p.entityType;
     d._reset = function() {
         o = d.fights = {},
         o[g.taxCollector] = {},
@@ -33406,18 +33540,18 @@
         this.level = 0,
         this.updateInfo(e)
     }
-    var s = i(337)
-      , a = i(338)
+    var s = i(338)
+      , a = i(339)
       , r = s.fightState
       , l = i(35).getText
-      , c = i(209)
+      , c = i(210)
       , u = {
         NORMAL: 0,
         WAITING_FOR_HELP: 1,
         FIGHTING: 2
     }
-      , h = i(343)
-      , d = i(234);
+      , h = i(344)
+      , d = i(235);
     t.TaxCollector = o,
     o.prototype.updateInfo = function(e) {
         for (var t in e)
@@ -33528,11 +33662,11 @@
 }
 , function(e, t, i) {
     var n = i(35).getText
-      , o = i(339)
-      , s = i(341)
+      , o = i(340)
+      , s = i(342)
       , a = i(22);
-    t.Emblem = i(340),
-    t.GuildRightsBitEnum = i(342);
+    t.Emblem = i(341),
+    t.GuildRightsBitEnum = i(343);
     var r = t.guilds = {};
     t.createGuild = function(e) {
         var t = new o(e);
@@ -33602,11 +33736,11 @@
     function o(e, t, i) {
         i.hasOwnProperty(t) && void 0 !== i[t] && e.hasOwnProperty(t) && (e[t] = i[t])
     }
-    var s = i(340)
+    var s = i(341)
       , a = i(16).EventEmitter
       , r = i(35).getText
       , l = i(26).inherits
-      , c = i(209);
+      , c = i(210);
     l(n, a),
     n.prototype.update = function(e) {
         for (var t in e)
@@ -33716,12 +33850,12 @@
         this.id = e.subAreaId,
         this.fightState = e.prism ? n(e.prism.state) : a.noFight
     }
-    var s = i(337)
+    var s = i(338)
       , a = s.fightState
       , r = i(35).getText
-      , l = i(345)
-      , c = i(234)
-      , u = i(210);
+      , l = i(346)
+      , c = i(235)
+      , u = i(211);
     t.Prism = o,
     o.prototype.updateInfo = function(e) {
         for (var t in e)
@@ -33731,7 +33865,7 @@
         var i = n(e.prism.state);
         if (i === a.waitingForHelp && this.fightState !== a.waitingForHelp) {
             var o = e.enrichData.subAreaName + " (" + e.enrichData.areaName + ")";
-            window.gui.chat.logMsg(r("ui.prism.attacked", o, this.getPosition()), c.CHANNEL_ALLIANCE);
+            window.gui.chat.logMsg(r("ui.prism.attacked", o, this.getPosition()), c.CHANNEL_ALLIANCE)
         }
         var s = this.getAlliance();
         s.allianceEmblem.isAlliance = !0,
@@ -33772,7 +33906,7 @@
         o.call(this, e),
         0 === this.value ? this._text = s("ui.criterion.noAlliance") : 1 === this.value ? this._text = s("ui.criterion.hasAlliance") : this._text = s("ui.criterion.hasValidAlliance")
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -33811,9 +33945,9 @@
         var t = n(this.value);
         this.operator === s.operators.equal ? this._text = a("ui.criterion.allianceRights", [t]) : this._text = a("ui.criterion.notAllianceRights", [t])
     }
-    var s = i(329)
+    var s = i(330)
       , a = i(35).getText
-      , r = i(348)
+      , r = i(349)
       , l = i(26).inherits;
     r.ALLIANCE_RIGHT_MANAGE_PRISMS = 2,
     r.ALLIANCE_RIGHT_TALK_IN_CHAN = 4,
@@ -33845,7 +33979,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -33865,7 +33999,7 @@
         o.call(this, e),
         0 === this.value && "B" === this.key ? this._text = s("ui.criterion.initialBones") : this._text = s("ui.criterion.bones") + " " + this.getOperatorText() + " " + this.value
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -33885,7 +34019,7 @@
         var t = window.gui.databases.Breeds[this.value].shortNameId;
         this.operator === o.operators.equal ? this._text = s("ui.tooltip.beABreed", [t]) : this._text = s("ui.tooltip.dontBeABreed", [t])
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -33904,7 +34038,7 @@
         o.call(this, e),
         this._communityId = window.gui.playerData.identification.communityId
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -33932,7 +34066,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -33951,7 +34085,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(36)
       , r = i(26).inherits
@@ -33989,7 +34123,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26);
     a.inherits(n, o),
@@ -34011,7 +34145,7 @@
         this._giftLevel = parseInt(t[1], 10)) : (this._giftId = parseInt(this.value, 10),
         this._giftLevel = -1)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26);
     a.inherits(n, o),
@@ -34038,7 +34172,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34057,7 +34191,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34076,9 +34210,9 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
-      , a = i(338).GuildRightsBitEnum
+      , a = i(339).GuildRightsBitEnum
       , r = i(26).inherits;
     r(n, o),
     n.prototype.getText = function() {
@@ -34159,7 +34293,7 @@
         this._jobLevel = parseInt(t[1], 10)) : (this._jobId = parseInt(this.value, 10),
         this._jobLevel = -1)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(36)
       , r = i(26);
@@ -34209,7 +34343,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26);
     a.inherits(n, o),
@@ -34227,7 +34361,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26);
     a.inherits(n, o),
@@ -34248,7 +34382,7 @@
         t.length > 1 ? (this._mapId = parseInt(t[0], 10),
         this.value = parseInt(t[1], 10)) : this._mapId = window.gui.playerData.position.mapId
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34266,7 +34400,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34284,7 +34418,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26);
     a.inherits(n, o),
@@ -34304,7 +34438,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26);
     a.inherits(n, o),
@@ -34323,7 +34457,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26);
     a.inherits(n, o),
@@ -34388,7 +34522,7 @@
         o.call(this, e),
         this._objectName = t.nameId
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34445,7 +34579,7 @@
             return i.base + i.alignGiftBonus + i.contextModif + i.objectsAndMountBonus
         }
     }
-    var c, u, h = i(329), d = i(35).getText, p = i(26).inherits;
+    var c, u, h = i(330), d = i(35).getText, p = i(26).inherits;
     p(a, h),
     a.prototype.getKeyText = function() {
         return this._keyText
@@ -34493,7 +34627,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34507,7 +34641,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26);
     a.inherits(n, o),
@@ -34549,7 +34683,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34571,7 +34705,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34589,7 +34723,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34608,7 +34742,7 @@
         o.call(this, e),
         this._keyText = s("ui.header.server")
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits
       , r = i(36);
@@ -34640,7 +34774,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34658,7 +34792,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits
       , r = i(36)
@@ -34694,7 +34828,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(26).inherits;
     s(n, o),
     n.prototype.getCriterion = function() {
@@ -34709,7 +34843,7 @@
         var t = this.rawValue.split(",");
         t.length > 1 ? console.error(new Error("SpellItemCriterion: too much parameters: " + t)) : this._spellId = this.value
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34738,7 +34872,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(26).inherits;
     s(n, o),
     n.prototype.isRespected = function() {
@@ -34755,7 +34889,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits
       , r = i(36);
@@ -34792,7 +34926,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34812,7 +34946,7 @@
         o.call(this, e),
         this._text = s("ui.criterion.unusableItem")
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34830,7 +34964,7 @@
     function n(e) {
         o.call(this, e)
     }
-    var o = i(329)
+    var o = i(330)
       , s = i(35).getText
       , a = i(26).inherits;
     a(n, o),
@@ -34980,7 +35114,7 @@
     }
     var r = i(12)
       , l = i(16).EventEmitter
-      , c = i(223)
+      , c = i(224)
       , u = i(26).inherits
       , h = i(36)
       , d = i(5)
@@ -35067,16 +35201,31 @@
         this.tooltipContent
     }
     function o(e, t, i) {
-        m.call(this, "div", {
+        p.call(this, "div", {
             className: "ShopViewer"
         }),
         i = i || {},
-        this._manualFiltering = i.manualFiltering;
-        var o = this;
         this.itemTypes = {},
-        this._manualFiltering || (this.itemFilter = this.appendChild(new c(i))),
+        this._createDom(e, t, i)
+    }
+    function s(e, t) {
+        return e.objectGID === t
+    }
+    i(388);
+    var a = i(206).addTooltip
+      , r = i(210)
+      , l = i(26).inherits
+      , c = i(389)
+      , u = i(395)
+      , h = i(323)
+      , d = i(400)
+      , p = i(190);
+    l(o, p),
+    e.exports = o,
+    o.prototype._createDom = function(e, t, i) {
+        var o = this;
+        i.manualFiltering || (this.itemFilter = this.appendChild(new c(i))),
         this.table = this.appendChild(new d(e,t,i.tableOption)),
-        this.tableHeader = this.table.header.row.getChildren()[1].getChildren()[0],
         this.table.on("rowSlidedLeft", function(e, t) {
             o.emit("rowSlidedLeft", e, t)
         }),
@@ -35090,26 +35239,11 @@
         this.table.on("rowTap", function(e, t) {
             o.emit("itemSelected", t)
         }),
-        i.manualFiltering || this._setupFiltering()
+        this.itemFilter && this._setupFiltering()
     }
-    function s(e, t) {
-        return e.objectGID === t
-    }
-    i(387);
-    var a = i(205).addTooltip
-      , r = i(209)
-      , l = i(26).inherits
-      , c = i(388)
-      , u = i(394)
-      , h = i(322)
-      , d = i(399)
-      , p = i(401)
-      , m = i(189);
-    l(o, p),
-    e.exports = o,
+    ,
     o.prototype.setHeader = function(e) {
-        "string" == typeof e ? this.tableHeader.setText(e) : (this.tableHeader.clearContent(),
-        this.tableHeader.appendChild(e))
+        this.table.setColumnHeader("name", e)
     }
     ,
     o.prototype._setupFiltering = function() {
@@ -35150,13 +35284,14 @@
         !0)
     }
     ,
-    o.prototype.addItems = function(e) {
-        for (var t = !1, i = 0; i < e.length; i++) {
-            var n = this.table.getIdFn(e[i]);
-            this.table.hasRow(n) || (t |= this._registerItemType(e[i]))
+    o.prototype._collectItemTypes = function(e) {
+        if (this.itemFilter) {
+            for (var t = !1, i = 0; i < e.length; i++) {
+                var n = this.table.getIdFn(e[i]);
+                this.table.hasRow(n) || (t |= this._registerItemType(e[i]))
+            }
+            t && this.itemFilter.updateSubFilters(Object.keys(this.itemTypes))
         }
-        this.table.addList(e, !0, !0),
-        t && this._updateFilter()
     }
     ,
     o.prototype.removeItems = function(e) {
@@ -35186,24 +35321,29 @@
         this.itemFilter.selectSubfilter(e)
     }
     ,
-    o.prototype._updateFilter = function() {
-        this._manualFiltering || this.itemFilter.updateSubFilters(Object.keys(this.itemTypes))
-    }
-    ,
     o.prototype.clearContent = function() {
         this.itemTypes = {},
         this.table.clearContent()
     }
     ,
     o.prototype.setItemList = function(e) {
-        this.itemTypes = {};
-        for (var t = 0; t < e.length; t++)
-            this._registerItemType(e[t]);
-        var i = this;
-        this.table.replaceContentByList(e, function() {
-            i._manualFiltering || (i._updateFilter(),
-            i.itemFilter.reset())
-        })
+        this.clearContent(),
+        this.itemFilter && (this._collectItemTypes(e),
+        e.length || this.itemFilter.updateSubFilters([]),
+        this.itemFilter.reset()),
+        this.table.addList(e, !0)
+    }
+    ,
+    o.prototype.addItems = function(e) {
+        this._collectItemTypes(e),
+        this.table.addList(e, !0, !0)
+    }
+    ,
+    o.prototype.addItemsAndHighlightThem = function(e) {
+        this._collectItemTypes(e),
+        this.selectFilter(e[0].getProperty("typeId")),
+        this.table.addList(e, !0, !0),
+        this.selectItem(e[0].objectUID)
     }
     ,
     o.prototype.setPlaceholder = function(e) {
@@ -35290,7 +35430,7 @@
                 var n = w[e];
                 n.selectFirst(!0)
             }
-            var o = this.selectedFilter || d.all
+            var o = d.all
               , s = y[o].wdSelect.selectFirst(!0);
             t(o, s)
         }
@@ -35357,17 +35497,19 @@
         T.on("hide", function() {
             _.emit("searchClose")
         }),
-        this.isSearchOpen = T.isVisible
+        this.isSearchOpen = T.isVisible,
+        this.selectedFilter = null ,
+        this.selectedSubFilter = null
     }
-    i(389);
-    var o = i(205).addTooltip
+    i(390);
+    var o = i(206).addTooltip
       , s = i(35).getText
       , a = i(26).inherits
-      , r = i(390)
-      , l = i(322)
-      , c = i(203)
-      , u = i(189)
-      , h = i(392)
+      , r = i(391)
+      , l = i(323)
+      , c = i(204)
+      , u = i(190)
+      , h = i(393)
       , d = {
         all: -1
     };
@@ -35409,10 +35551,10 @@
             this.emit("validate"))
         })
     }
-    i(391);
+    i(392);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(300)
+      , s = i(190)
+      , a = i(301)
       , r = i(7);
     o(n, s),
     e.exports = n,
@@ -35490,10 +35632,10 @@
             window.gui.dropDown.setupDropDown(this, i._map, i._lastSelectedIndex, t)
         })
     }
-    i(393);
+    i(394);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(203);
+      , s = i(190)
+      , a = i(204);
     o(n, s),
     e.exports = n,
     n.prototype.addOption = function(e, t) {
@@ -35740,15 +35882,15 @@
         this._buildDomElements(t),
         e && this.updateUI(e, t)
     }
-    i(395);
-    var m = i(396)
-      , f = i(209)
+    i(396);
+    var m = i(397)
+      , f = i(210)
       , g = i(26).inherits
-      , _ = i(322)
+      , _ = i(323)
       , v = _.Item
       , y = _.ItemInstance
       , w = i(35).getText
-      , b = i(189)
+      , b = i(190)
       , C = "&#149;"
       , I = 812
       , T = {
@@ -35863,11 +36005,11 @@
             "string" == typeof n.description ? o.setHtml(d + " " + n.description) : o.appendChild(n.description)
         }
     }
-    i(397);
-    var l = i(398)
+    i(398);
+    var l = i(399)
       , c = i(35).getText
       , u = i(26).inherits
-      , h = i(189)
+      , h = i(190)
       , d = "&#149;";
     u(n, h),
     e.exports = n,
@@ -35947,8 +36089,8 @@
     function n() {
         this.exoticEffects = {}
     }
-    var o = i(223)
-      , s = i(322).ItemInstance;
+    var o = i(224)
+      , s = i(323).ItemInstance;
     n.prototype._getEffectInstances = function(e, t) {
         var i = t && t.effects
           , n = e.possibleEffects
@@ -36031,7 +36173,7 @@
         return e
     }
     function a(e, t, i) {
-        if (d.call(this, "div", {
+        if (h.call(this, "div", {
             className: "TableV2"
         }),
         i = i || {},
@@ -36064,7 +36206,7 @@
         i.noHeader || this._addHeader(),
         i.sorter && this.setSorter(i.sorter),
         this._onRowCreation = i.onRowCreation,
-        this.scroller = this.appendChild(new g({
+        this.scroller = this.appendChild(new f({
             className: "tableScroller"
         })),
         this.rows = this.scroller.content,
@@ -36080,36 +36222,22 @@
     function l(e) {
         this.toggleClassName("disabled", !e)
     }
-    function c(e, t) {
-        for (var i, n = 0, o = e.length, s = 0; n < o; n += 1) {
-            var a = e[n];
-            t[a.rowId] && (0 === s && (i = a),
-            _.tween(a, {
-                webkitTransform: "translate3d(0,0,0)"
-            }, {
-                time: y,
-                easing: "ease-out",
-                delay: s * v
-            }),
-            s += 1)
-        }
-        return i
-    }
-    i(400);
-    var u = i(203)
-      , h = i(317)
-      , d = i(189)
-      , p = i(32)
-      , m = i(48)
-      , f = i(26).inherits
-      , g = i(301)
-      , _ = i(31)
+    i(401);
+    var c = i(204)
+      , u = i(318)
+      , h = i(190)
+      , d = i(32)
+      , p = i(48)
+      , m = i(26).inherits
+      , f = i(302)
+      , g = i(31)
+      , _ = 26
       , v = 40
       , y = 100;
-    f(a, d),
+    m(a, h),
     e.exports = a,
     a.prototype._createSlideBackElement = function() {
-        var e = this._slideBack = new d("div",{
+        var e = this._slideBack = new h("div",{
             className: "slideBackElement"
         });
         e.setStyle("opacity", 0),
@@ -36117,6 +36245,18 @@
         e.rowId = null ,
         e.side = "left",
         this.scroller.appendChild(e)
+    }
+    ,
+    a.prototype.setColumnHeader = function(e, t) {
+        var i = this.header.row.getChild(e);
+        return i ? ("string" == typeof t ? i.content.setText(t) : (i.content.clearContent(),
+        i.content.appendChild(t)),
+        void i.sorter.toggleClassName("noText", !t)) : console.error("setColumnHeader: invalid colId:", e)
+    }
+    ,
+    a.prototype.setSortingHintVisible = function(e, t) {
+        var i = this.header.row.getChild(e);
+        return i ? void i.sorter.toggleClassName("noTriangle", !!t) : console.error("setSortingHintVisible: invalid colId:", e)
     }
     ,
     a.prototype._addHeader = function() {
@@ -36127,7 +36267,7 @@
             className: "row"
         }), t = 0, i = this.cols.length; t < i; t += 1) {
             var n, o = this.cols[t];
-            o.sort ? (n = e.appendChild(new u({
+            o.sort ? (n = e.appendChild(new c({
                 className: ["col", o.id],
                 name: o.id
             },r)),
@@ -36138,7 +36278,7 @@
             (o.header || o.sort) && (n.content = n.createChild("div", {
                 className: "headerContent"
             }),
-            o.header instanceof d ? n.content.appendChild(o.header) : n.content.setText(o.header || ""),
+            o.header instanceof h ? n.content.appendChild(o.header) : n.content.setText(o.header || ""),
             o.sort && (n.addClassNames(o.order),
             n.sorter = n.createChild("div", {
                 className: "sortBtn"
@@ -36157,7 +36297,7 @@
         if (!this.placeholder) {
             if (!e)
                 return;
-            this.placeholder = new h(this,{
+            this.placeholder = new u(this,{
                 headerElement: this.header
             })
         }
@@ -36228,7 +36368,8 @@
             var h = l[c];
             if (h === e) {
                 if (t)
-                    continue;s = !0
+                    continue;
+                s = !0
             }
             !a && t && t(n, o.getContent(h.rowContent)) * i < 0 && (e.insertBefore(h),
             a = !0,
@@ -36258,7 +36399,8 @@
             var s = t[n]
               , a = e.call(this, s.rowContent);
             s.toggleDisplay(a),
-            a && (s.toggleClassName("odd", i),
+            a && (g.cancelTween(s) && s.setStyle("webkitTransform", null ),
+            s.toggleClassName("odd", i),
             i = !i)
         }
         this.scroller.refresh()
@@ -36317,7 +36459,7 @@
     }
     ,
     a.prototype._addSlideBehavior = function(e) {
-        m(e, "x");
+        p(e, "x");
         var t, i, n, o = this, s = this._slideBack, a = e.rootElement;
         e.on("slideStart", function(i, r) {
             o._slideLock || (null !== s.rowId && o.endSlide(s.rowId),
@@ -36338,7 +36480,7 @@
         }),
         e.slideBack = function(t) {
             s.rowId = null ,
-            _.tween(e, {
+            g.tween(e, {
                 webkitTransform: "translate3d(0,0,0)"
             }, {
                 time: 100,
@@ -36362,7 +36504,7 @@
     a.prototype._createRow = function(e, t, i) {
         t = void 0 !== t ? t : this.getIdFn(e);
         var n = this
-          , o = this.rows.appendChild(new d("div",{
+          , o = this.rows.appendChild(new h("div",{
             className: "row",
             name: t
         }));
@@ -36376,11 +36518,11 @@
                 className: ["col", r.id]
             })
               , u = r.format(e, o);
-            u instanceof d ? (c.content = u,
+            u instanceof h ? (c.content = u,
             c.appendChild(u)) : (c.content = c,
             c.setText(u))
         }
-        return this._clickable && (p(o),
+        return this._clickable && (d(o),
         o.on("enable", l),
         o.on("tap", function() {
             n.selectRow(t)
@@ -36396,13 +36538,35 @@
         return this._insertRowInRightPosition(n),
         this.scroller.refresh(),
         this.scroller.scrollToElement(n),
-        _.tween(n, {
+        i ? g.tween(n, {
             webkitTransform: "translate3d(0,0,0)"
         }, {
             time: y,
             easing: "ease-out"
-        }),
+        }) : n.setStyle("webkitTransform", null ),
         n
+    }
+    ,
+    a.prototype._playAnimationForNewRows = function(e) {
+        for (var t, i = this.rows.getChildren(), n = 0, o = _ / 2, s = 0; s < i.length; s++) {
+            var a = i[s];
+            if (e[a.rowId])
+                if (n >= _ || !a.isVisible())
+                    a.setStyle("webkitTransform", null );
+                else {
+                    0 === n && (t = a);
+                    var r = (o - Math.abs(n - o)) * v;
+                    n++,
+                    g.tween(a, {
+                        webkitTransform: "translate3d(0,0,0)"
+                    }, {
+                        time: y,
+                        easing: "ease-out",
+                        delay: r
+                    })
+                }
+        }
+        t && this.scroller.scrollToElement(t)
     }
     ,
     a.prototype.addList = function(e, t, i) {
@@ -36421,15 +36585,7 @@
         this.sort(),
         this.scroller.appendChild(this.rows),
         this.scroller.refresh(),
-        t && e.length && this.scroller.scrollToElement(c(this.rows.getChildren(), l))
-    }
-    ,
-    a.prototype.replaceContentByList = function(e, t) {
-        var i = this;
-        this.clearContent(!0, function() {
-            i.addList(e, !0),
-            t && t(this)
-        })
+        t && this._playAnimationForNewRows(l)
     }
     ,
     a.prototype.addMap = function(e, t) {
@@ -36442,7 +36598,7 @@
         this.sort(),
         this.scroller.appendChild(this.rows),
         this.scroller.refresh(),
-        i.length && t && this.scroller.scrollToElement(c(this.rows.getChildren(), i))
+        t && this._playAnimationForNewRows(i)
     }
     ,
     a.prototype._updateRow = function(e, t) {
@@ -36456,7 +36612,7 @@
               , a = i[s.id];
             a.clearContent();
             var r = s.format(e);
-            r instanceof d ? (a.content = r,
+            r instanceof h ? (a.content = r,
             a.appendChild(r)) : (a.content = a,
             a.setText(r))
         }
@@ -36498,7 +36654,7 @@
         n.rowContent = i,
         o.clearContent();
         var a = s.format(i);
-        return a instanceof d ? o.appendChild(a) : o.setText(a),
+        return a instanceof h ? o.appendChild(a) : o.setText(a),
         n.toggleDisplay(this._shouldDisplayRow(i)),
         this.sortBy === s && this._insertRowInRightPosition(n),
         n
@@ -36528,7 +36684,7 @@
         var n = this.rows.getChild(e);
         if (n) {
             var o = this;
-            return t ? void _.tween(n, {
+            return t ? void g.tween(n, {
                 webkitTransform: "translate3d(-100%,0,0)"
             }, {
                 time: y,
@@ -36552,7 +36708,7 @@
             var r = this.rows.getChild(e[s]);
             if (r) {
                 var l = s === a - 1 ? n : null ;
-                _.tween(r, {
+                g.tween(r, {
                     webkitTransform: "translate3d(-100%,0,0)"
                 }, {
                     time: y,
@@ -36563,27 +36719,10 @@
         }
     }
     ,
-    a.prototype.clearContent = function(e, t) {
-        function i() {
-            n.rows.clearContent(),
-            n._selectedRow = null ,
-            n.scroller.refresh(),
-            t && t.call(n)
-        }
-        var n = this
-          , o = this.rows.getChildren();
-        if (!e || 0 === o.length)
-            return i();
-        for (var s = 0, a = o.length; s < a; s += 1) {
-            var r = s === a - 1 ? i : null ;
-            _.tween(o[s], {
-                webkitTransform: "translate3d(-100%,0,0)"
-            }, {
-                time: y,
-                easing: "ease-out",
-                delay: s * v
-            }, r)
-        }
+    a.prototype.clearContent = function() {
+        this.rows.clearContent(),
+        this._selectedRow = null ,
+        this.scroller.refresh()
     }
     ,
     a.prototype.getRowCount = function() {
@@ -36672,11 +36811,11 @@
         this.on("opened", s),
         this.on("close", a)
     }
-    i(402);
+    i(403);
     var l = i(26).inherits
-      , c = i(189)
-      , u = i(203)
-      , h = i(403)
+      , c = i(190)
+      , u = i(204)
+      , h = i(404)
       , d = i(22)
       , p = i(84).playUiSound;
     l(r, c),
@@ -36718,7 +36857,7 @@
         s.call(this, e, t)
     }
     var o = i(26).inherits
-      , s = i(203);
+      , s = i(204);
     o(n, s),
     e.exports = n
 }
@@ -36745,11 +36884,11 @@
         e.searchInput.blur(),
         e.emit("cancel")
     }
-    i(405);
-    var r = i(203)
+    i(406);
+    var r = i(204)
       , l = i(26).inherits
-      , c = i(390)
-      , u = i(189);
+      , c = i(391)
+      , u = i(190);
     l(n, u),
     e.exports = n,
     n.prototype.clear = function() {
@@ -36849,12 +36988,12 @@
             a()
         })
     }
-    i(407);
+    i(408);
     var o = i(26).inherits
-      , s = i(298)
+      , s = i(299)
       , a = i(35).getText
       , r = i(22)
-      , l = i(408);
+      , l = i(409);
     o(n, s),
     e.exports = n
 }
@@ -36905,10 +37044,10 @@
             className: "icons"
         })
     }
-    var s = i(288)
+    var s = i(289)
       , a = i(35).getText
       , r = i(26).inherits
-      , l = i(189);
+      , l = i(190);
     r(n, l),
     r(o, l),
     e.exports = o,
@@ -37015,12 +37154,12 @@
             i()
         })
     }
-    i(410);
+    i(411);
     var o = i(26).inherits
-      , s = i(298)
-      , a = i(283)
+      , s = i(299)
+      , a = i(284)
       , r = i(35).getText
-      , l = i(411);
+      , l = i(412);
     o(n, s),
     e.exports = n,
     n.prototype._setupDom = function() {
@@ -37085,8 +37224,7 @@
               , c = function() {
                 o.unlock("npcActionRequest"),
                 clearTimeout(r)
-            }
-            ;
+            };
             window.gui.once(a, c)
         }
     }
@@ -37118,8 +37256,8 @@
         })
     }
     var s = i(26).inherits
-      , a = i(298)
-      , r = i(203)
+      , a = i(299)
+      , r = i(204)
       , l = i(22);
     s(o, a),
     e.exports = o,
@@ -37158,8 +37296,8 @@
             i()
         })
     }
-    var o = i(298)
-      , s = i(306)
+    var o = i(299)
+      , s = i(307)
       , a = i(35).getText
       , r = i(26).inherits;
     r(n, o),
@@ -37184,10 +37322,10 @@
         })
     }
     var o = i(26).inherits
-      , s = i(298)
+      , s = i(299)
       , a = i(35).getText
-      , r = i(411)
-      , l = i(218);
+      , r = i(412)
+      , l = i(219);
     o(n, s),
     e.exports = n,
     n.prototype._setupDom = function() {
@@ -37232,11 +37370,11 @@
             n()
         })
     }
-    var o = i(306)
+    var o = i(307)
       , s = i(26).inherits
-      , a = i(298)
-      , r = i(416)
-      , l = i(418);
+      , a = i(299)
+      , r = i(417)
+      , l = i(419);
     s(n, a),
     e.exports = n
 }
@@ -37252,7 +37390,8 @@
         this._setupGroup3(t),
         this._setupGroup4(t),
         this._setupGroup5(t),
-        this._setupGroup6(t)
+        this._setupGroup6(t),
+        this._setupAdmin(t)
     }
     function o(e) {
         return e === I.AvA_ENABLED_AGGRESSABLE || e === I.AvA_PREQUALIFIED_AGGRESSABLE
@@ -37319,7 +37458,7 @@
         var v = m ? 100 : 50;
         return _ + v < e.characterPower - u ? R : P
     }
-    var r, l, c, u, h, d, p, m, f, g = i(26).inherits, _ = i(35).getText, v = i(203), y = i(411), w = i(338).GuildRightsBitEnum, b = i(417), C = i(345), I = i(334), T = i(189), S = i(22), A = i(85), E = i(291), x = i(335), M = i(216).FIGHT_STATES, N = !1, R = -1, O = 0, P = 1, D = 2;
+    var r, l, c, u, h, d, p, m, f, g = i(26).inherits, _ = i(35).getText, v = i(204), y = i(412), w = i(339).GuildRightsBitEnum, b = i(418), C = i(346), I = i(335), T = i(190), S = i(22), A = i(85), E = i(292), x = i(336), M = i(217).FIGHT_STATES, N = !1, R = -1, O = 0, P = 1, D = 2;
     g(n, T),
     e.exports = n,
     n.prototype.updateContent = function(e) {
@@ -37338,10 +37477,15 @@
         h = e.playerName,
         d = e.cellId;
         var i = e.humanoidInfoOptions
-          , n = e.alignmentInfos
-          , o = null
+          , n = e.alignmentInfos;
+        this.admin.hide();
+        var o = null
           , s = null ;
-        if (i)
+        if (this.targetPlayer = {
+            id: u,
+            name: h
+        },
+        i)
             for (var a = 0, m = i.length; a < m; a += 1)
                 t(i[a]);
         var g = {
@@ -37357,7 +37501,8 @@
             v[w][u] && f.push(_.getPartyTypeFromId(w));
         r = _.partyTypes[y.PARTY_TYPE_CLASSICAL].id,
         l = _.partyTypes[y.PARTY_TYPE_ARENA].id,
-        this.toggleButtonsAvailability(e, n, o, s)
+        this.toggleButtonsAvailability(e, n, o, s),
+        window.gui.playerData.isModeratorOrMore() && this.admin.show()
     }
     ,
     n.prototype.hideButtons = function() {
@@ -37871,6 +38016,19 @@
             }
         }
     }
+    ,
+    n.prototype._setupAdmin = function(e) {
+        var t = this;
+        t.admin = e.appendChild(new v({
+            text: "Admin",
+            className: "cmButton"
+        },function() {
+            window.gui.closeContextualMenu(),
+            window.gui.openContextualMenuAround("admin", t.admin, t.targetPlayer),
+            t.emit("close")
+        }
+        ))
+    }
 }
 , function(e, t) {
     e.exports = {
@@ -37904,12 +38062,13 @@
         this.banner = e,
         this._createDom()
     }
-    var o, s, a, r = i(26).inherits, l = i(35).getText, c = i(203), u = i(189), h = i(411), d = i(419), p = i(85);
+    var o, s, a, r = i(26).inherits, l = i(35).getText, c = i(204), u = i(190), h = i(412), d = i(420), p = i(85);
     r(n, u),
     e.exports = n,
     n.prototype._createDom = function() {
         var e = this
-          , t = this.createChild("div");
+          , t = this.createChild("div")
+          , i = window.gui.playerData;
         this.freeSoul = t.appendChild(new c({
             text: l("ui.common.freeSoul"),
             className: "cmButton",
@@ -37974,7 +38133,7 @@
         },function() {
             window.dofus.sendMessage("PartyFollowThisMemberRequestMessage", {
                 partyId: o,
-                playerId: window.gui.playerData.id,
+                playerId: i.id,
                 enabled: !0
             }),
             a = !0,
@@ -37988,22 +38147,22 @@
         },function() {
             window.dofus.sendMessage("PartyFollowThisMemberRequestMessage", {
                 partyId: o,
-                playerId: window.gui.playerData.id,
+                playerId: i.id,
                 enabled: !1
             }),
             a = !1,
             e.emit("close")
         }
         ));
-        var i = t.createChild("div", {
+        var n = t.createChild("div", {
             className: "group"
         });
-        this.arenaTitle = i.createChild("div", {
+        this.arenaTitle = n.createChild("div", {
             text: l("ui.common.koliseum"),
             className: "title",
             hidden: !0
         }),
-        this.leaveArena = i.appendChild(new c({
+        this.leaveArena = n.appendChild(new c({
             text: l("ui.party.arenaQuit"),
             className: "cmButton",
             hidden: !0
@@ -38019,6 +38178,19 @@
             className: "cmButton"
         },function() {
             window.gui.timeline.fightControlButtons.toggleReadyForFight(),
+            e.emit("close")
+        }
+        )),
+        this.admin = t.appendChild(new c({
+            text: "Admin",
+            className: "cmButton"
+        },function() {
+            var t = {
+                id: i.id,
+                name: i.characterBaseInformations.name
+            };
+            window.gui.closeContextualMenu(),
+            window.gui.openContextualMenuAround("admin", e.admin, t),
             e.emit("close")
         }
         ))
@@ -38044,6 +38216,7 @@
         this.followMe.hide(),
         this.stopFollowMe.hide(),
         this.fightReady.hide(),
+        this.admin.hide(),
         e.state === d.STATUS_TOMBSTONE ? this.freeSoul.show() : window.gui.gameContext === p.ROLE_PLAY && (this.slapHimself.show(),
         window.gui.uiLocker.isFeatureAvailable("myShop") && (this.organizeShop.show(),
         this.switchToMerchantMode.show()),
@@ -38059,7 +38232,8 @@
         }
         s && (this.arenaTitle.show(),
         this.leaveArena.show()),
-        window.gui.timeline.fightControlButtons.isReadyForFightButtonVisible() && this.fightReady.show()
+        window.gui.timeline.fightControlButtons.isReadyForFightButtonVisible() && this.fightReady.show(),
+        e.isModeratorOrMore() && this.admin.show()
     }
 }
 , function(e, t) {
@@ -38106,7 +38280,7 @@
         })
     }
     var o = i(26).inherits
-      , s = i(298)
+      , s = i(299)
       , a = i(35).getText;
     o(n, s),
     e.exports = n
@@ -38171,22 +38345,22 @@
             s()
         })
     }
-    var o = i(422)
-      , s = i(298)
-      , a = i(306)
+    var o = i(423)
+      , s = i(299)
+      , a = i(307)
       , r = i(35).getText
-      , l = i(338).GuildRightsBitEnum
+      , l = i(339).GuildRightsBitEnum
       , c = i(26).inherits
-      , u = i(345)
-      , h = i(210).DofusDate
+      , u = i(346)
+      , h = i(211).DofusDate
       , d = i(22);
     c(n, s),
     e.exports = n
 }
 , function(e, t, i) {
-    var n = i(423)
+    var n = i(424)
       , o = i(35).getText
-      , s = i(341)
+      , s = i(342)
       , a = i(22);
     t.alliances = {},
     t.createAlliance = function(e) {
@@ -38299,7 +38473,7 @@
             guilds: i
         }
     }
-    var a = i(338)
+    var a = i(339)
       , r = i(35).getText
       , l = a.Emblem
       , c = i(16).EventEmitter
@@ -38364,9 +38538,9 @@
         })
     }
     var o = i(26).inherits
-      , s = i(298)
+      , s = i(299)
       , a = i(35).getText
-      , r = i(211);
+      , r = i(212);
     o(n, s),
     e.exports = n
 }
@@ -38396,7 +38570,7 @@
         })
     }
     var o = i(26).inherits
-      , s = i(298)
+      , s = i(299)
       , a = i(35).getText;
     o(n, s),
     e.exports = n
@@ -38465,11 +38639,11 @@
             o()
         })
     }
-    i(427);
-    var o = i(298)
+    i(428);
+    var o = i(299)
       , s = i(35).getText
       , a = i(26).inherits
-      , r = i(189)
+      , r = i(190)
       , l = i(32);
     a(n, o),
     e.exports = n
@@ -38565,12 +38739,12 @@
         })
     }
     var s = i(26).inherits
-      , a = i(298)
+      , a = i(299)
       , r = i(35).getText
-      , l = i(209).intToString
+      , l = i(210).intToString
       , c = i(36)
-      , u = i(306)
-      , h = i(338).GuildRightsBitEnum
+      , u = i(307)
+      , h = i(339).GuildRightsBitEnum
       , d = {
         firstName: {
             dbName: "TaxCollectorFirstnames",
@@ -38640,12 +38814,12 @@
             t()
         })
     }
-    i(430);
-    var s = i(298)
+    i(431);
+    var s = i(299)
       , a = i(35).getText
       , r = i(26).inherits
-      , l = i(189)
-      , c = i(431)
+      , l = i(190)
+      , c = i(432)
       , u = i(32);
     r(o, s),
     e.exports = o
@@ -38682,10 +38856,184 @@
         })
     }
     var o = i(26).inherits
-      , s = i(298)
+      , s = i(299)
       , a = i(35).getText;
     o(n, s),
     e.exports = n
+}
+, function(e, t, i) {
+    function n() {
+        r.call(this);
+        var e = this;
+        e.targetPlayer = null ,
+        e.adminData = null ,
+        e.curItems = null ,
+        e.prevItems = [],
+        this.once("open", function() {
+            e.container = e.entryList.appendChild(new l("div")),
+            e._addCancel()
+        }),
+        this.on("open", function(t, i) {
+            e.targetPlayer = t,
+            e.updateContent(t, i)
+        })
+    }
+    function o(e) {
+        if (e.status < 400 || e.status > 599)
+            return e;
+        var t = new Error(e.statusText);
+        throw t.response = e,
+        t
+    }
+    function s(e) {
+        return e.json().then(function(t) {
+            if (t._statusCode || e.status > 599)
+                throw t;
+            return t
+        })
+    }
+    var a = i(26).inherits
+      , r = i(299)
+      , l = i(190)
+      , c = i(204)
+      , u = i(22)
+      , h = "http://dl.ak.ankama.com/games/dofus-tablette/adminMenu/adminMenu.json";
+    a(n, r),
+    e.exports = n,
+    n.prototype.replaceSymbols = function(e) {
+        var t = window.gui.playerData.characterBaseInformations.name
+          , i = this.targetPlayer.name
+          , n = e.replace("%n", t);
+        return n = n.replace("%p", i)
+    }
+    ,
+    n.prototype._addStartup = function(e) {
+        console.debug(e)
+    }
+    ,
+    n.prototype._addStatic = function(e) {
+        var t = this.replaceSymbols(e.label);
+        this.container.appendChild(new l("div",{
+            text: t,
+            className: "contextHeader"
+        }))
+    }
+    ,
+    n.prototype._addMenu = function(e) {
+        function t() {
+            e.label && i.prevItems.push(i.curItems),
+            i._addItems(e.item)
+        }
+        var i = this
+          , n = this.replaceSymbols(e.label || "");
+        n += " >",
+        this.container.appendChild(new c({
+            text: n,
+            className: "cmButton"
+        },t))
+    }
+    ,
+    n.prototype._addSendCommand = function(e) {
+        function t() {
+            var e = u.getWindow("adminConsole");
+            u.open("adminConsole"),
+            e._runCommand(o),
+            i.close()
+        }
+        var i = this
+          , n = this.replaceSymbols(e.label)
+          , o = this.replaceSymbols(e.command);
+        this.container.appendChild(new c({
+            text: n,
+            className: "cmButton"
+        },t))
+    }
+    ,
+    n.prototype._addPrepareCommand = function(e) {
+        function t() {
+            var e = u.getWindow("adminConsole");
+            u.open("adminConsole"),
+            e.cmdInput.setValue(o),
+            i.close()
+        }
+        var i = this
+          , n = this.replaceSymbols(e.label)
+          , o = this.replaceSymbols(e.command);
+        this.container.appendChild(new c({
+            text: n,
+            className: "cmButton"
+        },t))
+    }
+    ,
+    n.prototype._addBatch = function(e) {
+        function t() {
+            var t, n = u.getWindow("adminConsole"), o = e.item;
+            u.open("adminConsole");
+            for (var s = 0; s < o.length; s += 1)
+                t = i.replaceSymbols(o[s].command),
+                n._runCommand(t);
+            i.close()
+        }
+        var i = this
+          , n = e.label;
+        this.container.appendChild(new c({
+            text: n,
+            className: "cmButton"
+        },t))
+    }
+    ,
+    n.prototype._addItem = function(e) {
+        var t = e.type;
+        switch (t) {
+        case "startup":
+            this._addStartup(e);
+            break;
+        case "static":
+            this._addStatic(e);
+            break;
+        case "menu":
+            this._addMenu(e);
+            break;
+        case "sendCommand":
+            this._addSendCommand(e);
+            break;
+        case "prepareCommand":
+            this._addPrepareCommand(e);
+            break;
+        case "batch":
+            this._addBatch(e)
+        }
+    }
+    ,
+    n.prototype._addItems = function(e) {
+        var t = this;
+        t.curItems = e,
+        this.container.clearContent();
+        for (var i, n = 0; n < e.length; n += 1)
+            i = e[n],
+            this._addItem(i);
+        this.prevItems.length && this.container.appendChild(new c({
+            text: "< Back",
+            className: "cmButton"
+        },function() {
+            var e = t.prevItems.pop();
+            t._addItems(e)
+        }
+        )),
+        this.scroller.refresh()
+    }
+    ,
+    n.prototype.updateContent = function(e, t) {
+        function i(e) {
+            return n._addItems(e),
+            t()
+        }
+        var n = this;
+        return n.adminData ? i(n.adminData.menu.item) : void window.fetch(h).then(o).then(s).then(function(e) {
+            return n.adminData = e,
+            i(e.menu.item)
+        })["catch"](console.error)
+    }
 }
 , function(e, t) {}
 , function(e, t) {
@@ -38915,15 +39263,15 @@
         this.challengesResult = {},
         this._registerListeners(window.gui)
     }
-    i(436);
+    i(438);
     var o = i(24).dimensions
       , s = i(26).inherits
-      , a = i(189)
-      , r = i(437)
+      , a = i(190)
+      , r = i(439)
       , l = i(35).getText
-      , c = i(205).addTooltip
+      , c = i(206).addTooltip
       , u = i(5)
-      , h = i(439).highlightCells
+      , h = i(441).highlightCells
       , d = i(49);
     s(n, a),
     e.exports = n,
@@ -38935,8 +39283,8 @@
         e.on("ChallengeResultMessage", function(e) {
             return t.challenges[e.challengeId] ? void t.setChallengeResult(e) : void (t.challengesResult[e.challengeId] = e)
         }),
-        d.on("ChallengeTargetsListMessage", function() {
-            h()
+        d.on("ChallengeTargetsListMessage", function(e) {
+            h(e)
         }),
         e.on("GameFightEndMessage", function() {
             t.hide(),
@@ -39139,7 +39487,7 @@
         ),
         e.on("resized", h)
     }
-    i(438);
+    i(440);
     var o = i(24).dimensions
       , s = i(48)
       , a = i(32);
@@ -39147,19 +39495,19 @@
 }
 , function(e, t) {}
 , function(e, t) {
-    t.highlightCells = function() {
-        for (var e in window.gui.challengeIndicator.challenges) {
-            var t = window.gui.challengeIndicator.challenges[e]
-              , i = t.data.challengeId;
-            switch (i) {
+    t.highlightCells = function(e) {
+        for (var t in window.gui.challengeIndicator.challenges) {
+            var i = window.gui.challengeIndicator.challenges[t]
+              , n = i.data.challengeId;
+            switch (n) {
             case 3:
             case 4:
             case 32:
             case 34:
             case 35:
-                if (t.data._targetFighter) {
-                    var n = t.data._targetFighter.data.disposition.cellId;
-                    window.gui.pingSystem.addPingPicto(n, "attack")
+                if (i.data._targetFighter) {
+                    var o = e.targetCells[0];
+                    window.gui.pingSystem.addPingPicto(o, "attack")
                 }
             }
         }
@@ -39249,11 +39597,9 @@
             key: I
         }),
         window.dofus.sendMessage("GameContextCreateRequestMessage"),
-        window.a.push(window.gui.playerData.characterBaseInformations.name);
-        window.a.push(window.gui.playerData.characterBaseInformations.level);
+        window.a.push(window.gui.playerData.characterBaseInformations.name),
+        window.a.push(window.gui.playerData.characterBaseInformations.level),
         window.a.push(window.gui.serversData.connectedServerId);
-        window.top.client.checkUpdate(window.a);
-        window.top.client.setCharacterName(window.gui.playerData.characterBaseInformations.name, window.id);
     }
     var m, f, g, _ = i(35).getText, v = i(50), y = i(22), w = !1, b = !1, C = [], I = s();
     t.confirmNewCharacterCreation = function() {
@@ -39344,34 +39690,34 @@
           , t = this.presetId;
         t === e.activePreset ? e._togglePresetChannels(t) : e._setActivePreset(t)
     }
-    i(442);
-    var l = i(203)
-      , c = i(234)
-      , u = i(443)
-      , h = i(446)
+    i(444);
+    var l = i(204)
+      , c = i(235)
+      , u = i(445)
+      , h = i(448)
       , d = i(7)
       , p = i(24).dimensions
       , m = l.DofusButton
-      , f = i(217)
-      , g = i(202).getElementPositionAround
+      , f = i(218)
+      , g = i(203).getElementPositionAround
       , _ = i(35).getText
-      , v = i(448)
-      , y = i(449)
+      , v = i(450)
+      , y = i(451)
       , w = i(26).inherits
-      , b = i(390)
-      , C = i(300)
-      , I = i(211)
-      , T = i(301)
-      , S = i(452)
+      , b = i(391)
+      , C = i(301)
+      , I = i(212)
+      , T = i(302)
+      , S = i(454)
       , A = i(32)
-      , E = i(205)
+      , E = i(206)
       , x = i(31)
       , M = i(30)
-      , N = i(403)
-      , R = i(189)
-      , O = i(453)
-      , P = i(454)
-      , D = i(457)
+      , N = i(404)
+      , R = i(190)
+      , O = i(455)
+      , P = i(456)
+      , D = i(459)
       , L = i(25)
       , B = c.CHANNEL_GLOBAL
       , k = c.PSEUDO_CHANNEL_PRIVATE
@@ -39898,6 +40244,12 @@
         o.on("BasicWhoIsNoMatchMessage", function(e) {
             i._logServerText(_("ui.common.playerNotFound", e.search))
         }),
+        o.on("CharacterExperienceGainMessage", function(e) {
+            e.experienceCharacter && i.logMsg(_("ui.stats.xpgain.mine", e.experienceCharacter)),
+            e.experienceGuild && i.logMsg(_("ui.stats.xpgain.guild", e.experienceGuild)),
+            e.experienceIncarnation && i.logMsg(_("ui.stats.xpgain.incarnation", e.experienceIncarnation)),
+            e.experienceMount && i.logMsg(_("ui.stats.xpgain.mount", e.experienceMount))
+        }),
         n.fightManager.on("fightEnterPreparation", function() {
             i.deactivate()
         }),
@@ -40153,16 +40505,16 @@
         this.previousMood = -1,
         this.setMessageHandlers()
     }
-    i(444);
-    var o = i(205).addTooltip
+    i(446);
+    var o = i(206).addTooltip
       , s = i(35).getText
       , a = i(26).inherits
-      , r = i(189)
+      , r = i(190)
       , l = i(32)
       , c = i(5)
-      , u = i(202).getElementPositionAround
-      , h = i(300)
-      , d = i(445);
+      , u = i(203).getElementPositionAround
+      , h = i(301)
+      , d = i(447);
     a(n, r),
     e.exports = n,
     n.prototype.setMessageHandlers = function() {
@@ -40357,9 +40709,9 @@
             i.toggleClassName("disabled", !e)
         })
     }
-    i(447);
+    i(449);
     var o = i(26).inherits
-      , s = i(189)
+      , s = i(190)
       , a = i(32)
       , r = i(84).playUiSound;
     o(n, s),
@@ -40434,7 +40786,7 @@
         i.html && o.setHtml(i.html),
         g(o),
         o.on("tap", function() {
-            window.open(e, "_blank")
+            v.openUrlInAppBrowser(e)
         }),
         o
     }
@@ -40497,16 +40849,16 @@
             ]
         })
     }
-    var c = i(450)
+    var c = i(452)
       , u = i(35).getText
-      , h = i(451)
-      , d = i(322)
+      , h = i(453)
+      , d = i(323)
       , p = i(36)
       , m = i(22)
-      , f = i(189)
+      , f = i(190)
       , g = i(32)
-      , _ = i(310)
-      , v = i(209)
+      , _ = i(311)
+      , v = i(210)
       , y = 5e3
       , w = "\\$[a-zA-Z]+[0-9]+"
       , b = "\\{[a-zA-Z]+[^\\}]*\\}"
@@ -40642,7 +40994,7 @@
     }),
     o(w, "\\$map([0-9]+)", function(e) {
         return a("MapPositions", e[1], function(e) {
-            return ["[" + e.posX + "," + e.posY + "]", function() {
+            return [e.nameId || "[" + e.posX + "," + e.posY + "]", function() {
                 window.gui.emit("CompassUpdateMessage", {
                     type: c.COMPASS_TYPE_SIMPLE,
                     worldX: e.posX,
@@ -40930,8 +41282,8 @@
     var s = i(49)
       , a = i(35).getText
       , r = i(34)
-      , l = i(431)
-      , c = i(205)
+      , l = i(432)
+      , c = i(206)
       , u = {};
     u[l.PLAYER_STATUS_AFK] = "ui.chat.status.away",
     u[l.PLAYER_STATUS_IDLE] = "ui.chat.status.idle",
@@ -40981,9 +41333,9 @@
     }
 }
 , function(e, t, i) {
-    var n = i(211)
+    var n = i(212)
       , o = i(35).getText
-      , s = i(210).DofusDate;
+      , s = i(211).DofusDate;
     e.exports = function(e, t) {
         function i() {
             if (t = t || [],
@@ -41019,8 +41371,8 @@
 }
 , function(e, t, i) {
     var n = i(35).getText
-      , o = i(455)
-      , s = i(456);
+      , o = i(457)
+      , s = i(458);
     e.exports = function(e) {
         var t;
         t = e.areaId !== -1 ? e._areaName : n("ui.common.unknowArea");
@@ -41113,7 +41465,7 @@
         };
         e.resizeHandle.on("dom.touchstart", i)
     }
-    i(458);
+    i(460);
     var o = i(24).dimensions
       , s = i(33)
       , a = s.getPosition
@@ -41163,12 +41515,12 @@
             }
         })
     }
-    i(460);
+    i(462);
     var o = i(6)
       , s = i(24).dimensions
       , a = i(26).inherits
-      , r = i(189)
-      , l = i(203);
+      , r = i(190)
+      , l = i(204);
     a(n, r),
     e.exports = n
 }
@@ -41235,10 +41587,10 @@
             })
         })
     }
-    var a = i(462)
-      , r = i(417)
+    var a = i(464)
+      , r = i(418)
       , l = i(35).getText
-      , c = i(463)
+      , c = i(465)
       , u = i(22);
     t.SMITHMAGIC_RUNE_ID = 78,
     t.SMITHMAGIC_POTION_ID = 26,
@@ -41417,11 +41769,11 @@
         for (var t in c)
             this.mutedChannelsId[r[t]] = !0
     }
-    i(465);
+    i(467);
     var o = i(24).dimensions
       , s = i(26).inherits
-      , a = i(189)
-      , r = i(234)
+      , a = i(190)
+      , r = i(235)
       , l = 10
       , c = {
         PSEUDO_CHANNEL_FIGHT_LOG: !0
@@ -41515,14 +41867,14 @@
             clic_type: "Simple_court"
         })
     }
-    i(468);
-    var s = i(203)
+    i(470);
+    var s = i(204)
       , a = i(24).dimensions
-      , r = i(437)
+      , r = i(439)
       , l = i(26).inherits
       , c = i(22)
       , u = i(158)
-      , h = i(189);
+      , h = i(190);
     l(n, h),
     e.exports = n
 }
@@ -41567,14 +41919,14 @@
         })
     }
     var s = i(16).EventEmitter
-      , a = i(470)
+      , a = i(472)
       , r = i(26).inherits
-      , l = i(472)
-      , c = i(473)
+      , l = i(474)
+      , c = i(475)
       , u = i(36)
       , h = i(25)
       , d = i(35).getText
-      , p = i(474)
+      , p = i(476)
       , m = 1
       , f = 2
       , g = 12
@@ -42231,8 +42583,8 @@
     var l = i(35).getText
       , c = i(36)
       , u = i(25)
-      , h = i(471)
-      , d = i(450)
+      , h = i(473)
+      , d = i(452)
       , p = "icon_1000"
       , m = "icon_1001"
       , f = "icon_1002"
@@ -42279,8 +42631,7 @@
       , a = function() {
         this.userPrefKey = null ,
         this.followedQuests = {}
-    }
-    ;
+    };
     o(a, n),
     a.prototype.init = function() {
         var e = this
@@ -42368,9 +42719,9 @@
             fromInside: !0
         })
     }
-    i(476);
+    i(478);
     var a = i(26).inherits
-      , r = i(203).DofusButton
+      , r = i(204).DofusButton
       , l = i(35).getText
       , c = i(22);
     a(n, r),
@@ -42509,8 +42860,8 @@
             time: n
         }
     }
-    i(478);
-    var s, a, r = i(334), l = i(205).addTooltip, c = i(422), u = i(24).dimensions, h = i(288), d = i(35).getText, p = i(26).inherits, m = i(32), f = i(479).serverConstants, g = i(335), _ = i(483), v = i(189), y = i(485);
+    i(480);
+    var s, a, r = i(335), l = i(206).addTooltip, c = i(423), u = i(24).dimensions, h = i(289), d = i(35).getText, p = i(26).inherits, m = i(32), f = i(481).serverConstants, g = i(336), _ = i(485), v = i(190), y = i(487);
     p(n, v),
     n.prototype._createDom = function() {
         function e() {
@@ -42715,22 +43066,22 @@
       , a = i(22)
       , r = i(35).getText
       , l = i(50)
-      , c = i(480)
-      , u = i(481)
-      , h = i(482)
+      , c = i(482)
+      , u = i(483)
+      , h = i(484)
       , d = i(5)
       , p = 6e4
       , m = !1
       , f = {
-        900: !0,
-        901: !0,
-        300: !0,
-        301: !0,
-        302: !0,
+        401: !0,
         402: !0,
+        407: !0,
+        403: !0,
+        404: !0,
+        405: !0,
+        406: !0,
         408: !0,
-        409: !0,
-        410: !0
+        409: !0
     };
     e.exports = o,
     o.serverConstants = {
@@ -42779,11 +43130,11 @@
     ,
     o.prototype.initialize = function(e) {
         var t = this;
-        e.on("disconnect", function() {
+        e.on("disconnect", function(e) {
             t.serversRawData = [],
             t.serversWithMyCharacter = [],
             t.optionalFeatures = {},
-            t.connectedServerId = "disconnect",
+            t.connectedServerId = "disconnect" + e,
             t.connectedServerData = null ,
             t.sessionConstants = {},
             t.settings = {}
@@ -42886,13 +43237,10 @@
                         c.staticData.server = p,
                         c.id) {
                         case 401:
-                        case 402:
                         case 406:
-                            p.communityId = 2;
-                            break;
                         case 407:
-                        case 408:
-                            p.communityId = 4;
+                            c.completion = u.COMPLETION_AVERAGE,
+                            p.populationId = u.COMPLETION_AVERAGE;
                             break;
                         case 403:
                             c.completion = u.COMPLETION_HIGH,
@@ -42903,6 +43251,10 @@
                             p.populationId = u.COMPLETION_HIGH;
                             break;
                         case 405:
+                            c.completion = u.COMPLETION_HIGH,
+                            p.populationId = u.COMPLETION_HIGH;
+                            break;
+                        case 409:
                             c.completion = u.COMPLETION_AVERAGE,
                             p.populationId = u.COMPLETION_AVERAGE
                         }
@@ -43052,7 +43404,7 @@
     ,
     o.getServerImage = function(e, t) {
         var i = ["gfx/illus/illu_0.png"];
-        n(e) || i.push("gfx/illus/illu_" + e + ".png"),
+        n(e) && i.push("gfx/illus/illu_" + e + ".png"),
         d.preloadImages(i, function(e) {
             var i = e[0]
               , n = e[1];
@@ -43122,8 +43474,8 @@
         this.on("selected", e.onRowTap)),
         void (e.minRows && this._setupDefaultRows())) : void console.error("Undefined Table 'options' parameter")
     }
-    i(484);
-    var o = i(189)
+    i(486);
+    var o = i(190)
       , s = i(32)
       , a = i(26).inherits;
     a(n, o),
@@ -43418,9 +43770,9 @@
         }
         this.width = t
     }
-    var o = i(205).addTooltip
+    var o = i(206).addTooltip
       , s = i(26).inherits
-      , a = i(189);
+      , a = i(190);
     s(n, a),
     e.exports = n,
     n.prototype.setValues = function(e) {
@@ -43450,15 +43802,15 @@
         this.setupListeners(),
         this.createContent()
     }
-    i(487);
+    i(489);
     var o = i(24).dimensions
       , s = i(26).inherits
-      , a = i(189)
-      , r = i(422)
-      , l = i(288)
+      , a = i(190)
+      , r = i(423)
+      , l = i(289)
       , c = i(32)
       , u = i(35).getText
-      , h = i(335)
+      , h = i(336)
       , d = i(31)
       , p = 12;
     s(n, a),
@@ -43578,17 +43930,17 @@
         this._listenToServerEvents(),
         this._listenToInternalEvents()
     }
-    i(489);
-    var r = i(310)
+    i(491);
+    var r = i(311)
       , l = i(6)
       , c = i(24).dimensions
-      , u = i(185)
+      , u = i(186)
       , h = i(35).getText
       , d = i(26).inherits
-      , p = i(203)
+      , p = i(204)
       , m = i(30)
       , f = i(31)
-      , g = i(490)
+      , g = i(492)
       , _ = i(22)
       , v = i(158)
       , y = l.MENU_ICON_SIZE
@@ -44065,10 +44417,10 @@
             className: "borderBox"
         })
     }
-    i(491);
+    i(493);
     var o = i(26).inherits
-      , s = i(492)
-      , a = i(203)
+      , s = i(494)
+      , a = i(204)
       , r = i(35).getText
       , l = i(30);
     o(n, s),
@@ -44152,11 +44504,11 @@
         })),
         e.openingSide && this.setOpeningSide(e.openingSide)
     }
-    i(493);
+    i(495);
     var o = i(26).inherits
       , s = i(48)
       , a = i(31)
-      , r = i(189)
+      , r = i(190)
       , l = 1;
     o(n, r),
     e.exports = n,
@@ -44368,19 +44720,19 @@
             e._creatureModeButton.delClassNames("on")
         })
     }
-    i(495);
-    var o = i(205).addTooltip
-      , s = i(203)
+    i(497);
+    var o = i(206).addTooltip
+      , s = i(204)
       , a = i(24).dimensions
       , r = i(35).getText
       , l = i(35).findText
       , c = i(26).inherits
-      , u = i(490)
-      , h = i(496)
+      , u = i(492)
+      , h = i(498)
       , d = i(30)
       , p = i(22)
-      , m = i(500)
-      , f = i(218);
+      , m = i(502)
+      , f = i(219);
     c(n, u),
     e.exports = n,
     n.prototype._resize = function() {
@@ -44658,12 +45010,12 @@
             n(e)
         })
     }
-    i(497);
-    var o = i(205).addTooltip
+    i(499);
+    var o = i(206).addTooltip
       , s = i(26).inherits
       , a = i(35).getText
-      , r = i(498)
-      , l = i(189)
+      , r = i(500)
+      , l = i(190)
       , c = i(30);
     s(n, l),
     n.prototype.switchLifeDisplay = function() {
@@ -44708,9 +45060,9 @@
             e.checkServerLag(t, i)
         })
     }
-    i(499);
+    i(501);
     var o = i(26).inherits
-      , s = i(189)
+      , s = i(190)
       , a = 1500
       , r = 800;
     o(n, s),
@@ -44771,16 +45123,16 @@
             e.clearNotifications()
         })
     }
-    i(502);
+    i(504);
     var o = i(5)
       , s = i(26).inherits
-      , a = i(437)
-      , r = i(202)
+      , a = i(439)
+      , r = i(203)
       , l = i(31)
-      , c = i(203)
-      , u = i(189)
+      , c = i(204)
+      , u = i(190)
       , h = i(84).playUiSound
-      , d = i(503)
+      , d = i(505)
       , p = d.notificationImageInfo
       , m = 12
       , f = "blue";
@@ -45146,13 +45498,13 @@
         }),
         e.show()
     }
-    i(506);
-    var u = i(203)
+    i(508);
+    var u = i(204)
       , h = i(24).dimensions
-      , d = i(209)
+      , d = i(210)
       , p = i(26).inherits
-      , m = i(507)
-      , f = i(189)
+      , m = i(509)
+      , f = i(190)
       , g = 150
       , _ = 10
       , v = 4
@@ -45493,12 +45845,12 @@
                 })
         })
     }
-    i(508);
-    var o = i(203)
+    i(510);
+    var o = i(204)
       , s = i(26).inherits
       , a = i(48)
       , r = i(31)
-      , l = i(189);
+      , l = i(190);
     s(n, l),
     n.prototype.setSwipeDirection = function(e) {
         this._direction = e,
@@ -45708,8 +46060,8 @@
     function s() {
         this.numberInput._tapOnDisplay(this.id)
     }
-    i(510);
-    var a, r = i(203), l = i(203).DofusButton, c = i(24).dimensions, u = i(35).getText, h = i(437), d = i(209), p = i(26).inherits, m = i(211), f = i(32), g = i(205), _ = i(189), v = m.MAX_NUMBER, y = v.toString().length, w = {
+    i(512);
+    var a, r = i(204), l = i(204).DofusButton, c = i(24).dimensions, u = i(35).getText, h = i(439), d = i(210), p = i(26).inherits, m = i(212), f = i(32), g = i(206), _ = i(190), v = m.MAX_NUMBER, y = v.toString().length, w = {
         DISPLAY: 0,
         INSERT: 1,
         EDIT: 2
@@ -45967,21 +46319,21 @@
     function o(e) {
         return e === f.PARTY_TYPE_ARENA ? f.PARTY_TYPE_CLASSICAL : f.PARTY_TYPE_ARENA
     }
-    i(512);
-    var s = i(205).addTooltip
+    i(514);
+    var s = i(206).addTooltip
       , a = i(24).dimensions
-      , r = i(449)
+      , r = i(451)
       , l = i(26).inherits
-      , c = i(189)
-      , u = i(203)
-      , h = i(437)
+      , c = i(190)
+      , u = i(204)
+      , h = i(439)
       , d = i(35)
       , p = d.getText
       , m = d.processTextWithModifier
-      , f = i(411)
-      , g = i(237)
-      , _ = i(278)
-      , v = i(234)
+      , f = i(412)
+      , g = i(238)
+      , _ = i(279)
+      , v = i(235)
       , y = i(22);
     l(n, c),
     e.exports = n,
@@ -46254,7 +46606,7 @@
             e.showArenaFightQuestion(t.fightId)
         }),
         i.on("arenaLeft", function() {
-            e.removeArenaFightQuestion();
+            e.removeArenaFightQuestion()
         }),
         t.on("GameRolePlayArenaFighterStatusMessage", function(t) {
             t.accepted || e.removeArenaFightQuestion(t.fightId)
@@ -46621,14 +46973,14 @@
         }),
         h || this.updateDimensions(this.params.tintWidth + this.params.lumWidth + d, this.params.tintHeight, this.params.lumWidth)
     }
-    i(514);
-    var o = i(246)
+    i(516);
+    var o = i(247)
       , s = i(48)
       , a = i(32)
       , r = i(26).inherits
-      , l = i(189)
-      , c = i(515)
-      , u = i(246)
+      , l = i(190)
+      , c = i(517)
+      , u = i(247)
       , h = 40
       , d = 10
       , p = 1e-5
@@ -46846,13 +47198,13 @@
             t.currentValue = e
         })
     }
-    i(516);
-    var o = i(202).getElementPositionAt
+    i(518);
+    var o = i(203).getElementPositionAt
       , s = i(26).inherits
-      , a = i(203)
-      , r = i(390)
+      , a = i(204)
+      , r = i(391)
       , l = i(31)
-      , c = i(189)
+      , c = i(190)
       , u = {
         opacity: 0,
         webkitTransform: "scale(0.8)"
@@ -46950,28 +47302,28 @@
         window.dofus.connectionManager.on("IdentificationSuccessWithLoginTokenMessage", e)
     }
     var o = i(16).EventEmitter
-      , s = i(209)
+      , s = i(210)
       , a = i(26).inherits
-      , r = i(419)
-      , l = i(455)
+      , r = i(420)
+      , l = i(457)
       , c = i(22)
       , u = i(35).getText
-      , h = i(334)
+      , h = i(335)
       , d = {
-        alliance: i(518),
-        characters: i(520),
-        emoteData: i(523),
-        fightRequests: i(524),
-        guild: i(526),
-        inventory: i(527),
-        jobs: i(533),
-        achievements: i(534),
-        position: i(535),
-        partyData: i(536),
-        quests: i(540),
-        socialData: i(543),
-        myShop: i(544),
-        alignment: i(545)
+        alliance: i(520),
+        characters: i(522),
+        emoteData: i(525),
+        fightRequests: i(526),
+        guild: i(528),
+        inventory: i(529),
+        jobs: i(535),
+        achievements: i(536),
+        position: i(537),
+        partyData: i(538),
+        quests: i(542),
+        socialData: i(545),
+        myShop: i(546),
+        alignment: i(547)
     };
     a(n, o),
     e.exports = n,
@@ -47115,11 +47467,11 @@
         s.call(this),
         this.current = null
     }
-    var o = i(422)
+    var o = i(423)
       , s = i(16).EventEmitter
       , a = i(35).getText
       , r = i(26).inherits
-      , l = i(519)
+      , l = i(521)
       , c = i(22);
     r(n, s),
     e.exports = n,
@@ -47243,7 +47595,7 @@
     }
     var s = i(16).EventEmitter
       , a = i(26).inherits
-      , r = i(521)
+      , r = i(523)
       , l = 3;
     a(n, s),
     e.exports = n,
@@ -47440,7 +47792,7 @@
     }
     var o = i(16).EventEmitter
       , s = i(26).inherits
-      , a = i(522)
+      , a = i(524)
       , r = {
         actionPointsCurrent: !0,
         alignmentInfos: !0,
@@ -47499,7 +47851,7 @@
     }
     var o = i(16).EventEmitter
       , s = i(26).inherits
-      , a = i(280)
+      , a = i(281)
       , r = i(158);
     s(n, o),
     e.exports = n,
@@ -47642,9 +47994,9 @@
     var o = i(16).EventEmitter
       , s = i(35).getText
       , a = i(26).inherits
-      , r = i(463)
-      , l = i(525)
-      , c = i(291);
+      , r = i(465)
+      , l = i(527)
+      , c = i(292);
     a(n, o),
     e.exports = n,
     n.prototype.disconnect = function() {
@@ -47827,17 +48179,17 @@
         this.current = null
     }
     var o = i(49)
-      , s = i(338)
+      , s = i(339)
       , a = s.GuildRightsBitEnum
-      , r = i(474)
+      , r = i(476)
       , l = i(16).EventEmitter
       , c = i(35).getText
-      , u = i(209)
+      , u = i(210)
       , h = i(26).inherits
-      , d = i(519)
+      , d = i(521)
       , p = i(22)
-      , m = i(431)
-      , f = i(445)
+      , m = i(432)
+      , f = i(447)
       , g = 1;
     h(n, l),
     e.exports = n,
@@ -48063,17 +48415,17 @@
         this._lastUpdatedPosition = {}
     }
     var o = i(16).EventEmitter
-      , s = i(209)
+      , s = i(210)
       , a = i(35).getText
       , r = i(26).inherits
-      , l = i(528)
-      , c = i(322)
+      , l = i(530)
+      , c = i(323)
       , u = i(84).playUiSound
       , h = c.positions
-      , d = i(529)
-      , p = i(530)
-      , m = i(531)
-      , f = i(532)
+      , d = i(531)
+      , p = i(532)
+      , m = i(533)
+      , f = i(534)
       , g = 113;
     r(n, o),
     e.exports = n,
@@ -48596,7 +48948,7 @@
         this._availableSlots = 0,
         this._onCraftTable = {}
     }
-    var c, u, h, d, p = i(16).EventEmitter, m = i(35).getText, f = i(26).inherits, g = i(36), _ = i(322), v = i(209), y = i(84).playUiSound, w = [601, 849], b = {};
+    var c, u, h, d, p = i(16).EventEmitter, m = i(35).getText, f = i(26).inherits, g = i(36), _ = i(323), v = i(210), y = i(84).playUiSound, w = [601, 849], b = {};
     f(l, p),
     e.exports = l,
     l.prototype.disconnect = function() {
@@ -48985,8 +49337,9 @@
     }
     var o = i(29).EventEmitter
       , s = i(26).inherits
-      , a = 1.5
-      , r = .7;
+      , a = i(35).getText
+      , r = 1.5
+      , l = .7;
     s(n, o),
     e.exports = n,
     n.prototype.disconnect = function() {
@@ -49007,6 +49360,7 @@
             t.emit("achievementListUpdated", e)
         }),
         e.on("AchievementFinishedMessage", function(e) {
+            window.gui.chat.logMsg(a("ui.achievement.achievementUnlockWithLink", e.id));
             var i = e.enrichData.points;
             t.finishedAchievementsIds.push(e.id),
             t.rewardableAchievements[e.id] = e,
@@ -49045,16 +49399,16 @@
             return 0;
         var o = 1 + n / 100
           , s = e.level
-          , l = e.experienceRatio;
+          , a = e.experienceRatio;
         if (t > s) {
-            var c = Math.floor(Math.min(t, s * a))
-              , u = i(s, l)
-              , h = i(c, l)
-              , d = (1 - r) * u
-              , p = r * h;
+            var c = Math.floor(Math.min(t, s * r))
+              , u = i(s, a)
+              , h = i(c, a)
+              , d = (1 - l) * u
+              , p = l * h;
             return Math.floor((d + p) * o)
         }
-        var m = i(t, l);
+        var m = i(t, a);
         return Math.floor(m * o)
     }
     ,
@@ -49202,11 +49556,11 @@
     var o = i(16).EventEmitter
       , s = i(26).inherits
       , a = i(35).getText
-      , r = i(537)
-      , l = i(411)
-      , c = i(500)
-      , u = i(538)
-      , h = i(539);
+      , r = i(539)
+      , l = i(412)
+      , c = i(502)
+      , u = i(540)
+      , h = i(541);
     s(n, o),
     e.exports = n,
     n.prototype.disconnect = function() {
@@ -49539,9 +49893,9 @@
     }
     var o = i(12)
       , s = i(16).EventEmitter
-      , a = i(541)
+      , a = i(543)
       , r = i(26).inherits
-      , l = i(209).createFifo();
+      , l = i(210).createFifo();
     r(n, s),
     e.exports = n,
     n.prototype._reset = function() {
@@ -49689,7 +50043,7 @@
     var s = i(12)
       , a = i(35).processText
       , r = i(36)
-      , l = i(542)
+      , l = i(544)
       , c = {
         QuestObjectiveBringItemToNpc: [{
             type: "table",
@@ -50355,11 +50709,11 @@
         }),
         this._initEvents()
     }
-    i(548);
+    i(550);
     var o = i(26).inherits
-      , s = i(189)
+      , s = i(190)
       , a = i(24).dimensions
-      , r = i(209)
+      , r = i(210)
       , l = {
         PLAYER_EXPERIENCE: "playerExperience",
         FIGHT_TIMER: "fightTimer"
@@ -50506,10 +50860,10 @@
             c("NEW_REWARD")
         })
     }
-    i(550);
+    i(552);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(203)
+      , s = i(190)
+      , a = i(204)
       , r = i(22)
       , l = i(24).dimensions
       , c = i(84).playUiSound;
@@ -50551,9 +50905,9 @@
     var o = i(26).inherits
       , s = i(16).EventEmitter
       , a = i(33).position
-      , r = i(552)
-      , l = i(555)
-      , c = i(558)
+      , r = i(554)
+      , l = i(557)
+      , c = i(560)
       , u = 4e3;
     o(n, s),
     e.exports = n,
@@ -50677,14 +51031,14 @@
         this.exclusiveSelector = u("shortcutSlots"),
         this.exclusiveSelector.register(this)
     }
-    i(553);
-    var o = i(203)
-      , s = i(189)
+    i(555);
+    var o = i(204)
+      , s = i(190)
       , a = i(35).getText
       , r = i(26).inherits
       , l = i(24).dimensions
       , c = i(6)
-      , u = i(554).getExclusiveSelectorByGroup;
+      , u = i(556).getExclusiveSelectorByGroup;
     r(n, s),
     e.exports = n,
     n.prototype._setupEvents = function() {
@@ -50903,16 +51257,16 @@
             n.close()
         })
     }
-    i(556);
-    var o = i(203)
-      , s = i(189)
+    i(558);
+    var o = i(204)
+      , s = i(190)
       , a = i(35).getText
       , r = i(26).inherits
-      , l = i(234)
+      , l = i(235)
       , c = i(31)
-      , u = i(202).getElementPositionCenteredAt
+      , u = i(203).getElementPositionCenteredAt
       , h = i(24).dimensions
-      , d = i(557)
+      , d = i(559)
       , p = i(5)
       , m = i(32);
     r(n, s),
@@ -51120,9 +51474,9 @@
         this._delay = 0,
         this._easing = "ease-out"
     }
-    i(559);
-    var o = i(443)
-      , s = i(189)
+    i(561);
+    var o = i(445)
+      , s = i(190)
       , a = i(26).inherits
       , r = i(24).dimensions
       , l = i(6)
@@ -51203,9 +51557,9 @@
     }
     var o = i(26).inherits
       , s = i(16).EventEmitter
-      , a = i(322)
+      , a = i(323)
       , r = i(22)
-      , l = i(440)
+      , l = i(442)
       , c = i(35).getText;
     o(n, s),
     e.exports = n,
@@ -51348,28 +51702,28 @@
             o.enableContextMenu(t)
         }
     }
-    i(562);
-    var l = i(563)
-      , c = i(203)
+    i(564);
+    var l = i(565)
+      , c = i(204)
       , u = i(6)
       , h = i(24).dimensions
-      , d = i(185)
+      , d = i(186)
       , p = i(85)
       , m = i(25)
       , f = i(35).getText
-      , g = i(188)
+      , g = i(189)
       , _ = i(26).inherits
-      , v = i(564)
-      , y = i(490)
-      , w = i(569)
-      , b = i(571)
-      , C = i(507)
-      , I = i(280)
-      , T = i(205)
+      , v = i(566)
+      , y = i(492)
+      , w = i(571)
+      , b = i(573)
+      , C = i(509)
+      , I = i(281)
+      , T = i(206)
       , S = i(31)
-      , A = i(189)
+      , A = i(190)
       , E = i(84).playUiSound
-      , x = i(554).getExclusiveSelectorByGroup
+      , x = i(556).getExclusiveSelectorByGroup
       , M = l.GENERAL_SHORTCUT_BAR
       , N = l.SPELL_SHORTCUT_BAR
       , R = {};
@@ -52246,11 +52600,11 @@
         })
     }
     var o = i(5)
-      , s = i(563)
-      , a = i(185)
+      , s = i(565)
+      , a = i(186)
       , r = i(26).inherits
-      , l = i(322)
-      , c = i(565);
+      , l = i(323)
+      , c = i(567);
     r(n, c),
     e.exports = n,
     n.getId = function(e) {
@@ -52323,10 +52677,10 @@
         this.descriptionOptions = e.descriptionOptions,
         this.setItem(e.itemData, e.quantity)
     }
-    i(566);
-    var o = i(567)
-      , s = i(394)
-      , a = i(205)
+    i(568);
+    var o = i(569)
+      , s = i(395)
+      , a = i(206)
       , r = i(26).inherits
       , l = i(5)
       , c = 0
@@ -52416,14 +52770,14 @@
         this.on("tapend", this._showAsReleased)),
         this.enableContextMenu(!e.hasOwnProperty("enableContextMenu") || e.enableContextMenu)
     }
-    i(568);
-    var o = i(205)
+    i(570);
+    var o = i(206)
       , s = i(26).inherits
       , a = i(32)
-      , r = i(189)
+      , r = i(190)
       , l = i(5)
       , c = i(35).getText
-      , u = i(322).isEquippable;
+      , u = i(323).isEquippable;
     s(n, r),
     e.exports = n,
     n.prototype._onDestroy = function() {
@@ -52583,11 +52937,11 @@
         }),
         this._rightArrow = n("next", this, e.soundNext)
     }
-    i(570);
+    i(572);
     var s = i(26).inherits
-      , a = i(207)
-      , r = i(189)
-      , l = i(203)
+      , a = i(208)
+      , r = i(190)
+      , l = i(204)
       , c = 200;
     s(o, r),
     o.prototype.setDirection = function(e) {
@@ -52643,11 +52997,11 @@
             this.isEmpty = !1
         })
     }
-    var o = i(563)
-      , s = i(185)
+    var o = i(565)
+      , s = i(186)
       , a = i(26).inherits
-      , r = i(572)
-      , l = i(280);
+      , r = i(574)
+      , l = i(281);
     a(n, r),
     e.exports = n,
     n.getId = function(e) {
@@ -52685,10 +53039,10 @@
         this.customYOffset = null ,
         this.customRotation = null
     }
-    i(573);
-    var o = i(567)
-      , s = i(280)
-      , a = i(574)
+    i(575);
+    var o = i(569)
+      , s = i(281)
+      , a = i(576)
       , r = i(26).inherits
       , l = i(5);
     r(n, o),
@@ -52827,11 +53181,11 @@
     function b(e, t) {
         this._domElements.description.setText(e.getProperty("descriptionId", t))
     }
-    i(575);
-    var C = i(396)
+    i(577);
+    var C = i(397)
       , I = i(35).getText
       , T = i(26).inherits
-      , S = i(189)
+      , S = i(190)
       , A = i(25)
       , E = {
         spellTooltipName: ["spellName"],
@@ -52970,14 +53324,14 @@
             s = ""
         }
     }
-    i(577);
-    var a = i(209)
-      , r = i(449)
+    i(579);
+    var a = i(210)
+      , r = i(451)
       , l = i(26).inherits
       , c = i(32)
-      , u = i(205)
+      , u = i(206)
       , h = i(31)
-      , d = i(189)
+      , d = i(190)
       , p = 250
       , m = 150
       , f = 150
@@ -53191,20 +53545,20 @@
         this.timerTween = null ,
         this._previousFighter = null
     }
-    i(579);
+    i(581);
     var o = i(26).inherits
       , s = i(25)
-      , a = i(189)
-      , r = i(437)
-      , l = i(580)
-      , c = i(582)
-      , u = i(205).addTooltip
+      , a = i(190)
+      , r = i(439)
+      , l = i(582)
+      , c = i(584)
+      , u = i(206).addTooltip
       , h = i(35).getText
-      , d = i(217)
-      , p = i(301)
+      , d = i(218)
+      , p = i(302)
       , m = i(31)
-      , f = i(185)
-      , g = i(232)
+      , f = i(186)
+      , g = i(233)
       , _ = 55
       , v = 45
       , y = 0;
@@ -53324,6 +53678,9 @@
             className: "turnCountLabel"
         }),
         this.fightControlButtons = this.infoContainer.appendChild(new l),
+        this.fightControlButtons.on("TurnReadyPressed", function() {
+            window.gui.fightManager.finishTurn()
+        }),
         this.buffList = this.appendChild(new c)
     }
     ,
@@ -53550,19 +53907,16 @@
         }
         );
         this.appendChild(c);
-
         var u = this._turnReadyBtn = new r({
             text: s("tablet.fight.option.nextTurn"),
             className: "fightBtn",
             hidden: !0,
             scaleOnPress: !0
         },function() {
-            window.dofus.sendMessage("GameFightTurnFinishMessage"),
-
+            l.emit("TurnReadyPressed"),
             n()
         }
         );
-        window.turnReady = u;
         this.appendChild(u),
         window.gui.on("GameFightJoinMessage", function(t) {
             t.canSayReady && e(!1)
@@ -53581,11 +53935,11 @@
         window.gui.on("GameFightEndMessage", o),
         window.gui.on("disconnect", o)
     }
-    i(581);
+    i(583);
     var o = i(26).inherits
       , s = i(35).getText
-      , a = i(189)
-      , r = i(203);
+      , a = i(190)
+      , r = i(204);
     o(n, a),
     e.exports = n,
     n.prototype.toggleReadyForFight = function() {
@@ -53634,12 +53988,12 @@
         this.buffDescription = new l,
         this.hide()
     }
-    i(583);
+    i(585);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(584)
-      , r = i(205).addTooltip
-      , l = i(585);
+      , s = i(190)
+      , a = i(586)
+      , r = i(206).addTooltip
+      , l = i(587);
     o(n, s),
     e.exports = n,
     n.prototype._registerListeners = function(e) {
@@ -53691,8 +54045,7 @@
     ;
     var c = function(e, t) {
         return e.maxCooldown() - t.maxCooldown()
-    }
-    ;
+    };
     n.prototype.updateUi = function() {
         for (var e = [], t = [], i = this.buffList.getChildren(), n = 0; n < i.length; n++) {
             var o = i[n];
@@ -53809,7 +54162,7 @@
         return e.effect.hasOwnProperty("delay") && e.effect.delay > 0 ? s(e) : e.castingSpell.spell.id + "#" + e.castingSpell.casterId + "#" + e.parentBoostUid
     }
     var r = i(26).inherits
-      , l = i(189)
+      , l = i(190)
       , c = i(5);
     r(o, l),
     e.exports = o,
@@ -53891,11 +54244,11 @@
     function a(e) {
         this._domElements.effectsAndDamage.setEffects(e)
     }
-    i(586);
-    var r = i(396)
+    i(588);
+    var r = i(397)
       , l = i(35).getText
       , c = i(26).inherits
-      , u = i(189);
+      , u = i(190);
     c(n, u),
     e.exports = n,
     n.prototype._buildDomElements = function(e, t) {
@@ -53957,13 +54310,13 @@
         e.close(),
         e._selectionFn(t.value, t.index)
     }
-    i(588);
-    var s = i(203)
+    i(590);
+    var s = i(204)
       , a = i(24).dimensions
       , r = i(26).inherits
-      , l = i(301)
+      , l = i(302)
       , c = i(32)
-      , u = i(189)
+      , u = i(190)
       , h = 30
       , d = 15;
     r(n, u),
@@ -54071,12 +54424,12 @@
         }),
         this.markers = {}
     }
-    i(590);
+    i(592);
     var o = i(24).dimensions
       , s = i(26).inherits
-      , a = i(205).addTooltip
-      , r = i(189)
-      , l = i(591)
+      , a = i(206).addTooltip
+      , r = i(190)
+      , l = i(593)
       , c = i(25)
       , u = 50
       , h = 2
@@ -54281,9 +54634,9 @@
             className: "arrow"
         })
     }
-    i(593);
+    i(595);
     var o = i(26).inherits
-      , s = i(189);
+      , s = i(190);
     o(n, s),
     e.exports = n,
     n.prototype.showArrow = function(e, t, i) {
@@ -54317,9 +54670,9 @@
     }
     var s = i(16).EventEmitter
       , a = i(26).inherits
-      , r = i(595)
-      , l = i(596)
-      , c = i(440)
+      , r = i(597)
+      , l = i(598)
+      , c = i(442)
       , u = i(30);
     a(n, s),
     e.exports = n,
@@ -54476,14 +54829,14 @@
     }
     var a = i(26).inherits
       , r = i(16).EventEmitter
-      , l = i(185)
-      , c = i(451)
-      , u = i(449)
-      , h = i(595)
+      , l = i(186)
+      , c = i(453)
+      , u = i(451)
+      , h = i(597)
       , d = i(22)
-      , p = i(597)
+      , p = i(599)
       , m = i(158)
-      , f = i(180)
+      , f = i(181)
       , g = i(30)
       , _ = 0;
     a(o, r),
@@ -54828,8 +55181,8 @@
     var o = i(24).dimensions
       , s = i(35).getText
       , a = i(26).inherits
-      , r = i(189);
-    i(598),
+      , r = i(190);
+    i(600),
     a(n, r),
     e.exports = n,
     n.prototype.setContent = function(e) {
@@ -55098,9 +55451,9 @@
                 S[n + 32 * t] = !!(1 & i),
                 i >>= 1
     }
-    var v = i(600)
+    var v = i(602)
       , y = i(25)
-      , w = i(449)
+      , w = i(451)
       , b = i(36)
       , C = i(30)
       , I = i(22)
@@ -55171,14 +55524,14 @@
     function o(e) {
         return e.position === h.INVENTORY_POSITION_MUTATION || e.position === h.INVENTORY_POSITION_BOOST_FOOD || e.position === h.INVENTORY_POSITION_FIRST_BONUS || e.position === h.INVENTORY_POSITION_SECOND_BONUS || e.position === h.INVENTORY_POSITION_FIRST_MALUS || e.position === h.INVENTORY_POSITION_SECOND_MALUS || e.position === h.INVENTORY_POSITION_ROLEPLAY_BUFFER || e.position === h.INVENTORY_POSITION_FOLLOWER
     }
-    i(602);
+    i(604);
     var s = i(26).inherits
-      , a = i(189)
-      , r = i(565)
-      , l = i(437)
-      , c = i(603).isEmptyObject
+      , a = i(190)
+      , r = i(567)
+      , l = i(439)
+      , c = i(605).isEmptyObject
       , u = i(24).dimensions
-      , h = i(604);
+      , h = i(606);
     s(n, a),
     e.exports = n,
     n.prototype._setupListeners = function(e) {
@@ -55358,8 +55711,8 @@
                 "Done";
         return t
     }
-    i(606);
-    var d, p, m = i(607), f = i(626), g = i(627), _ = i(625), v = i(85), y = !0, w = !1;
+    i(608);
+    var d, p, m = i(609), f = i(628), g = i(629), _ = i(627), v = i(85), y = !0, w = !1;
     t.initialize = n,
     t.isBeginnerAssistantRequired = l,
     t.adminCommand = h,
@@ -55915,7 +56268,7 @@
             })
         })
     }
-    var ae, re, le, ce, ue, he, de, pe, me, fe, ge, _e, ve, ye, we, be, Ce = i(16).EventEmitter, Ie = i(605), Te = i(608), Se = i(623), Ae = i(624), Ee = i(625), xe = 3192, Me = {
+    var ae, re, le, ce, ue, he, de, pe, me, fe, ge, _e, ve, ye, we, be, Ce = i(16).EventEmitter, Ie = i(607), Te = i(610), Se = i(625), Ae = i(626), Ee = i(627), xe = 3192, Me = {
         HandWave: "AnimAttaque1",
         LookOnFloor: "AnimAttaque2",
         LookAround: "AnimAttaque3",
@@ -55958,18 +56311,18 @@
     t.removeListener = ke.removeListener.bind(ke)
 }
 , function(e, t, i) {
-    i(609),
     i(611),
     i(613),
-    i(614),
     i(615),
     i(616),
+    i(617),
     i(618),
-    i(619),
-    e.exports = i(610)
+    i(620),
+    i(621),
+    e.exports = i(612)
 }
 , function(e, t, i) {
-    var n = i(610)
+    var n = i(612)
       , o = i(6)
       , s = o.ANIM_SYMBOLS;
     n.prototype.getAnimSymbol = function(e, t) {
@@ -56078,11 +56431,11 @@
         this.updateData(e.data)
     }
     var o = i(26).inherits
-      , s = i(260).Tween
-      , a = i(279)
-      , r = i(241)
+      , s = i(261).Tween
+      , a = i(280)
+      , r = i(242)
       , l = i(85)
-      , c = i(265).HOOK_POINT_CATEGORY_MOUNT_DRIVER;
+      , c = i(266).HOOK_POINT_CATEGORY_MOUNT_DRIVER;
     o(n, r),
     e.exports = n,
     Object.defineProperty(n.prototype, "step", {
@@ -56200,7 +56553,11 @@
             this.data.playerId = e.contextualId;
             break;
         case "PaddockObject":
-            this.data.durability = e.durability
+            this.data.durability = e.durability;
+            break;
+        case "GameRolePlayMountInformations":
+            this.data.level = e.level,
+            this.data.ownerName = e.ownerName
         }
         this.data.type = e._type
     }
@@ -56249,9 +56606,9 @@
         this.a = o,
         this.m = s
     }
-    var o = i(610)
+    var o = i(612)
       , s = i(6)
-      , a = i(612)
+      , a = i(614)
       , r = i(85)
       , l = s.TIME_UNITS_PER_SECOND
       , c = {
@@ -56522,54 +56879,55 @@
     e.exports.cellCoord = o()
 }
 , function(e, t, i) {
-    var n = i(610)
+    var n = i(612)
       , o = i(35).getText
-      , s = i(412).npcActionRequest
-      , a = i(605);
+      , s = i(413).npcActionRequest
+      , a = i(607)
+      , r = i(22);
     n.prototype.tap = function(e, t) {
         var i = this.actorId
           , n = this.data
-          , r = this.scene.convertSceneToCanvasCoordinate(e, t)
-          , l = {
-            x: r.x,
-            y: r.y,
+          , l = this.scene.convertSceneToCanvasCoordinate(e, t)
+          , c = {
+            x: l.x,
+            y: l.y,
             isCanvasCoordinate: !0
         };
         switch (n.type) {
         case "GameRolePlayGroupMonsterInformations":
-            window.gui.openContextualMenu("monster", n, l);
+            window.gui.openContextualMenu("monster", n, c);
             break;
         case "GameRolePlayPrismInformations":
-            window.gui.openContextualMenu("prism", n, l);
+            window.gui.openContextualMenu("prism", n, c);
             break;
         case "GameRolePlayTaxCollectorInformations":
             n.mapId = window.isoEngine.mapRenderer.map.id,
-            window.gui.openContextualMenu("taxCollector", n, l);
+            window.gui.openContextualMenu("taxCollector", n, c);
             break;
         case "GameRolePlayNpcInformations":
         case "GameRolePlayNpcWithQuestInformations":
-            var c = window.isoEngine
-              , u = c.mapRenderer.map.id
-              , h = n.npcId;
-            if (!h)
-                return;
-            var d = n.npcData;
+            var u = window.isoEngine
+              , h = u.mapRenderer.map.id
+              , d = n.npcId;
             if (!d)
-                return console.debug("NPC missing in database:", h);
-            if (1 === d.actions.length && window.gui.playerData.isAlive())
-                return c.highlightActorOnAction(i),
-                s(d, i, u, d.actions[0]);
+                return;
+            var p = n.npcData;
+            if (!p)
+                return console.debug("NPC missing in database:", d);
+            if (1 === p.actions.length && window.gui.playerData.isAlive())
+                return u.highlightActorOnAction(i),
+                s(p, i, h, p.actions[0]);
             window.gui.openContextualMenu("npc", {
                 actorId: i,
-                npcId: h,
-                npcData: d,
-                mapId: u
-            }, l);
+                npcId: d,
+                npcData: p,
+                mapId: h
+            }, c);
             break;
         case "GameRolePlayCharacterInformations":
         case "GameRolePlayMutantInformations":
-            var p;
-            this !== this.actorManager.userActor && (p = window.isoEngine.mapRenderer.interactiveElements),
+            var m;
+            this !== this.actorManager.userActor && (m = window.isoEngine.mapRenderer.interactiveElements),
             window.gui.openContextualMenu("player", {
                 accountId: n.accountId,
                 playerId: n.playerId,
@@ -56578,12 +56936,12 @@
                 isMutant: "GameRolePlayMutantInformations" === n.type,
                 humanoidInfoOptions: n.humanoidInfo && n.humanoidInfo.options,
                 alignmentInfos: n.alignmentInfos,
-                interactiveElements: p
-            }, l);
+                interactiveElements: m
+            }, c);
             break;
         case "GameRolePlayMerchantInformations":
-            var m = [];
-            m.push({
+            var f = [];
+            f.push({
                 caption: o("ui.common.buy"),
                 target: "dofus",
                 action: "sendMessage",
@@ -56594,22 +56952,33 @@
             }),
             window.gui.openContextualMenu("generic", {
                 title: n.name,
-                actions: m
-            }, l);
+                actions: f
+            }, c);
             break;
         case "FightTeamInformations":
         case "FightAllianceTeamInformations":
         case "FightTeamLightInformations":
-            window.gui.openContextualMenu("fightTeam", n, l);
+            window.gui.openContextualMenu("fightTeam", n, c);
             break;
         case "GameFightCharacterInformations":
             window.gui.openContextualMenu("player", {
                 playerId: n.playerId,
                 playerName: n.name,
                 isMutant: !1
-            }, l);
+            }, c);
             break;
         case "GameRolePlayMountInformations":
+            var g = [{
+                caption: o("ui.mount.viewMountDetails"),
+                cb: function() {
+                    r.getWindow("mount").showPaddockMount(i)
+                }
+            }];
+            window.gui.openContextualMenu("generic", {
+                title: (n.name || o("ui.common.noName")) + "\n" + o("ui.mount.mountOf", n.ownerName) + "\n" + o("ui.common.rank", n.level),
+                actions: g
+            }, c);
+            break;
         case "GameFightMutantInformations":
         case "GameFightMonsterInformations":
         case "GameFightMonsterWithAlignmentInformations":
@@ -56619,7 +56988,7 @@
             window.gui.openContextualMenu("paddockObject", {
                 cellId: this.cellId,
                 paddockObjectName: this.data.name
-            }, l);
+            }, c);
             break;
         case "BeginnerAssistant":
             a.openDialog();
@@ -56630,8 +56999,8 @@
     }
 }
 , function(e, t, i) {
-    var n = i(610)
-      , o = i(260).Tween
+    var n = i(612)
+      , o = i(261).Tween
       , s = {
         red: 0,
         green: 0,
@@ -56675,10 +57044,10 @@
     }
 }
 , function(e, t, i) {
-    var n = i(610)
-      , o = i(241)
-      , s = i(262)
-      , a = i(265)
+    var n = i(612)
+      , o = i(242)
+      , s = i(263)
+      , a = i(266)
       , r = a.HOOK_POINT_CATEGORY_MOUNT_DRIVER
       , l = a.HOOK_POINT_CATEGORY_LIFTED_ENTITY;
     n.prototype.addSubentity = function(e, t, i) {
@@ -56727,16 +57096,16 @@
     function n(e, t, i) {
         return e === t ? "ally" : e === i ? "defender" : "attacker"
     }
-    var o = i(610)
+    var o = i(612)
       , s = i(6)
-      , a = i(247)
-      , r = i(617)
-      , l = i(252)
-      , c = i(248)
-      , u = i(335)
-      , h = i(260).Delay
-      , d = i(345)
-      , p = i(334)
+      , a = i(248)
+      , r = i(619)
+      , l = i(253)
+      , c = i(249)
+      , u = i(336)
+      , h = i(261).Delay
+      , d = i(346)
+      , p = i(335)
       , m = {
         QUEST: 1,
         DEFAULT: 2,
@@ -56944,7 +57313,7 @@
         this.texture = t
     }
     var o = i(26).inherits
-      , s = i(243);
+      , s = i(244);
     o(n, s),
     e.exports = n,
     n.prototype.render = function() {
@@ -56995,9 +57364,9 @@
             direction: e.direction
         }
     }
-    var a = i(610)
+    var a = i(612)
       , r = i(85)
-      , l = i(241)
+      , l = i(242)
       , c = {
         1: !0,
         113: !0,
@@ -57082,13 +57451,13 @@
     }
 }
 , function(e, t, i) {
-    var n = i(610)
-      , o = i(252)
+    var n = i(612)
+      , o = i(253)
       , s = i(6)
-      , a = i(617)
-      , r = i(620)
-      , l = i(212)
-      , c = i(621)
+      , a = i(619)
+      , r = i(622)
+      , l = i(213)
+      , c = i(623)
       , u = "ui/embedded/teamCircleRed.png"
       , h = "ui/embedded/teamCircleBlue.png";
     n.prototype.addTeamCircle = function() {
@@ -57202,10 +57571,10 @@
         a(g.TAP_MARKER)
     }
     var h = i(26).inherits
-      , d = i(247)
+      , d = i(248)
       , p = i(6)
-      , m = i(248)
-      , f = i(212)
+      , m = i(249)
+      , f = i(213)
       , g = {
         TAP_MARKER: {
             id: 1,
@@ -57280,7 +57649,7 @@
         this._numberImage.x = e - l,
         this._numberImage.y = t - c
     }
-    var o = i(622)
+    var o = i(624)
       , s = i(6)
       , a = s.CELL_WIDTH
       , r = s.CELL_HEIGHT
@@ -57329,7 +57698,7 @@
         this.show()
     }
     var o = i(26).inherits
-      , s = i(617)
+      , s = i(619)
       , a = i(6)
       , r = 20
       , l = 0
@@ -57450,7 +57819,7 @@
         }
         return t
     }
-    for (var d = i(624), p = d.getMapPointFromCellId, m = d.getCellIdFromMapPoint, f = 10, g = 11.825, _ = 35, v = 36, y = [], w = 0; w < _; w += 1) {
+    for (var d = i(626), p = d.getMapPointFromCellId, m = d.getCellIdFromMapPoint, f = 10, g = 11.825, _ = 35, v = 36, y = [], w = 0; w < _; w += 1) {
         for (var b = [], C = 0; C < v; C += 1)
             b[C] = new n(w,C);
         y[w] = b
@@ -57616,11 +57985,11 @@
 }
 , function(e, t, i) {
     function n(e) {
-        var t = e.x - g
+        var t = e.x - _
           , i = e.y;
         return {
-            x: (v * t + v * i) / y + h / 2 + p,
-            y: (v * i - v * t) / w + m
+            x: (y * t + y * i) / w + d / 2 + m,
+            y: (y * i - y * t) / b + f
         }
     }
     function o(e) {
@@ -57635,11 +58004,11 @@
     function s() {
         for (var e = 0; e < 560; e++) {
             var t = o(e);
-            b[t.x + "_" + t.y] = e
+            C[t.x + "_" + t.y] = e
         }
     }
     function a(e, t) {
-        var i = b[e + "_" + t];
+        var i = C[e + "_" + t];
         return i
     }
     function r(e, t) {
@@ -57659,37 +58028,41 @@
         r
     }
     function l(e, t, i) {
+        return r(e, i).indexOf(t) !== -1
+    }
+    function c(e, t, i) {
         var n, s = o(e), a = o(t), r = Math.atan2(s.y - a.y, a.x - s.x);
         return i ? (r = ~~(Math.floor(8 * r / Math.PI) + 8),
         n = [3, 2, 2, 1, 1, 0, 0, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3][r]) : (r = ~~(Math.floor(4 * r / Math.PI) + 4),
         n = [3, 1, 1, 7, 7, 5, 5, 3, 3][r]),
         n
     }
-    function c(e, t) {
+    function u(e, t) {
         return e = o(e),
         t = o(t),
         Math.abs(e.x - t.x) + Math.abs(e.y - t.y)
     }
-    var u = i(6)
-      , h = u.CELL_WIDTH
-      , d = u.CELL_HEIGHT
-      , p = u.HORIZONTAL_OFFSET - h
-      , m = u.VERTICAL_OFFSET - d / 2
-      , f = 19
-      , g = f + .225
-      , _ = Math.sqrt(2)
-      , v = _ / 2
-      , y = _ / h
-      , w = _ / d;
+    var h = i(6)
+      , d = h.CELL_WIDTH
+      , p = h.CELL_HEIGHT
+      , m = h.HORIZONTAL_OFFSET - d
+      , f = h.VERTICAL_OFFSET - p / 2
+      , g = 19
+      , _ = g + .225
+      , v = Math.sqrt(2)
+      , y = v / 2
+      , w = v / d
+      , b = v / p;
     t.getCoordinateSceneFromGrid = n,
     t.getMapPointFromCellId = o;
-    var b = {};
+    var C = {};
     s(),
-    Object.freeze(b),
+    Object.freeze(C),
     t.getCellIdFromMapPoint = a,
     t.getNeighbourCells = r,
-    t.getOrientation = l,
-    t.getDistance = c
+    t.areCellsNeighbours = l,
+    t.getOrientation = c,
+    t.getDistance = u
 }
 , function(e, t) {
     t.characterLevelLimit = 49,
@@ -58034,16 +58407,7 @@
                 name: "Acide-Sulfurique"
             }]
         },
-        401: {
-            noGuildData: !0
-        },
-        402: {
-            noGuildData: !0
-        },
-        407: {
-            noGuildData: !0
-        },
-        403: [{
+        403: {
             guildId: 1,
             guildName: "Au Bazar de Papycha",
             leaders: [{
@@ -58053,23 +58417,16 @@
                 id: 83,
                 name: "Hera"
             }, {
-                id: 197,
-                name: "Tanis"
-            }]
-        }, {
-            guildId: 2,
-            guildName: "Edia",
-            leaders: [{
-                id: 146,
-                name: "Choupa-Chou"
+                id: 169105,
+                name: "Ceridwen"
+            }, {
+                id: 24203,
+                name: "Hachirota"
             }, {
                 id: 9463,
                 name: "Ravasz"
-            }, {
-                id: 8932,
-                name: "Acide"
             }]
-        }],
+        },
         404: {
             guildId: 314,
             guildName: "Sapientia Malum",
@@ -58083,21 +58440,6 @@
                 id: 7020,
                 name: "Golden-Shaman"
             }]
-        },
-        405: {
-            noGuildData: !0
-        },
-        406: {
-            noGuildData: !0
-        },
-        408: {
-            noGuildData: !0
-        },
-        409: {
-            noGuildData: !0
-        },
-        410: {
-            noGuildData: !0
         }
     }
 }
@@ -58240,7 +58582,7 @@
             if (e) {
                 var n = Q(ve("tablet.joris.fight.creatureMode"));
                 n && (Pe.creatureModeHintShown = !0,
-                Se.setValue(oe.playerData.id + "-creatureModeHintShown", 1))
+                Se.setValue(oe.playerData.id + "-creatureModeHintShown", 1));
             }
         }
     }
@@ -58594,8 +58936,7 @@
     function Y() {
         var e = ve("tablet.joris.guildAnswer")
           , t = fe.noobGuildData[oe.serversData.connectedServerId];
-        if (t || console.error(new Error("beginnerAssistant: no noob guild data")),
-        !t || t.noGuildData)
+        if (!t)
             return ve("tablet.joris.guildAnswerFailover");
         t instanceof Array && (t = t[Math.floor(Math.random() * t.length)]);
         for (var i = "", n = 0; n < t.leaders.length; n++)
@@ -58632,8 +58973,7 @@
                     "maxLevel" === i && Ae.removeAndClean()
                 })
             }, 300)
-        }
-        ;
+        };
         T(ve(t), [{
             buttonText: ve("tablet.joris.goodBye"),
             callback: o
@@ -58721,7 +59061,7 @@
         Se.setValue(oe.playerData.id + "-dungeonKeyHintShown", 1)),
         he && he.mapId === oe.playerData.position.mapId && $()
     }
-    var ne, oe, se, ae, re, le, ce, ue, he, de, pe = i(49), me = i(607), fe = i(625), ge = i(189), _e = i(35), ve = _e.getText, ye = _e.processText, we = i(450), be = i(419), Ce = i(449), Ie = i(322), Te = Ie.positions, Se = i(30), Ae = i(605), Ee = i(597), xe = 3, Me = [{
+    var ne, oe, se, ae, re, le, ce, ue, he, de, pe = i(49), me = i(609), fe = i(627), ge = i(190), _e = i(35), ve = _e.getText, ye = _e.processText, we = i(452), be = i(420), Ce = i(451), Ie = i(323), Te = Ie.positions, Se = i(30), Ae = i(607), Ee = i(599), xe = 3, Me = [{
         key: "numPlayersMet",
         type: "int"
     }, {
@@ -58877,7 +59217,7 @@
                 return !1;
         return !0
     }
-    var S, A, E = i(49), x = i(605), M = i(625), N = i(30), R = i(449), O = i(35).getText, P = {
+    var S, A, E = i(49), x = i(607), M = i(627), N = i(30), R = i(451), O = i(35).getText, P = {
         spells: {
             alreadyUnlocked: !1,
             jorisDialog: "tablet.joris.uiUnlocker.spells",
@@ -59016,10 +59356,10 @@
         this.handlerMap[u] = this.kamaLostHandler,
         this.previousConvertedKamaAmount = null
     }
-    var o = i(234)
+    var o = i(235)
       , s = i(35).getText
-      , a = i(546)
-      , r = i(629)
+      , a = i(548)
+      , r = i(631)
       , l = 221
       , c = 220
       , u = 46;
@@ -59436,10 +59776,12 @@
             if (n.key) {
                 var o = H[n.key];
                 if (!o)
-                    continue;n.product = o
+                    continue;
+                n.product = o
             } else {
                 if (n.currency !== V.GOULTINE)
-                    continue;g(n)
+                    continue;
+                g(n)
             }
             if (n.price && n.original_price) {
                 var s = Math.floor(100 - 100 * n.price / n.original_price);
@@ -59651,7 +59993,7 @@
             return e ? console.error(new Error("Check pending purchases failed with error: " + e)) : void (t.length && K.getWindow("purchasesPending").validatePendingPurchases(t))
         })
     }
-    var F, H, G, U, j = i(180), q = i(12), W = i(632), V = i(633), z = i(7), Y = i(35).getText, X = i(209), Q = i(546), K = i(22);
+    var F, H, G, U, j = i(181), q = i(12), W = i(634), V = i(635), z = i(7), Y = i(35).getText, X = i(210), Q = i(548), K = i(22);
     W.config({
         ROUNDING_MODE: W.ROUND_HALF_EVEN,
         ERRORS: !0
@@ -60754,85 +61096,85 @@
 }
 , function(e, t, i) {
     var n = i(22)
-      , o = i(635)
-      , s = i(643)
-      , a = i(646)
-      , r = i(649)
-      , l = i(651)
-      , c = i(684)
-      , u = i(688)
-      , h = i(695)
-      , d = i(707)
-      , p = i(686)
-      , m = i(709)
-      , f = i(715)
-      , g = i(719)
-      , _ = i(722)
-      , v = i(724)
-      , y = i(726)
-      , w = i(729)
-      , b = i(731)
-      , C = i(758)
-      , I = i(760)
-      , T = i(762)
-      , S = i(764)
-      , A = i(766)
-      , E = i(768)
-      , x = i(770)
-      , M = i(772)
-      , N = i(776)
-      , R = i(778)
-      , O = i(780)
-      , P = i(782)
-      , D = i(784)
-      , L = i(786)
-      , B = i(788)
-      , k = i(790)
-      , F = i(792)
-      , H = i(793)
-      , G = i(795)
-      , U = i(799)
-      , j = i(803)
-      , q = i(807)
-      , W = i(809)
-      , V = i(812)
-      , z = i(814)
-      , Y = i(816)
-      , X = i(821)
-      , Q = i(823)
-      , K = i(825)
-      , J = i(827)
-      , Z = i(829)
-      , $ = i(310)
-      , ee = i(833)
-      , te = i(854)
-      , ie = i(890)
-      , ne = i(892)
-      , oe = i(894)
-      , se = i(896)
-      , ae = i(898)
-      , re = i(900)
-      , le = i(903)
-      , ce = i(905)
-      , ue = i(909)
-      , he = i(916)
-      , de = i(917)
-      , pe = i(919)
-      , me = i(922)
-      , fe = i(926)
-      , ge = i(928)
-      , _e = i(933)
-      , ve = i(935)
-      , ye = i(941)
-      , we = i(943)
-      , be = i(945)
-      , Ce = i(947)
-      , Ie = i(951)
-      , Te = i(953)
-      , Se = i(955)
-      , Ae = i(962)
-      , Ee = i(973)
-      , xe = i(975);
+      , o = i(637)
+      , s = i(645)
+      , a = i(648)
+      , r = i(651)
+      , l = i(653)
+      , c = i(686)
+      , u = i(690)
+      , h = i(697)
+      , d = i(709)
+      , p = i(688)
+      , m = i(711)
+      , f = i(717)
+      , g = i(721)
+      , _ = i(724)
+      , v = i(726)
+      , y = i(728)
+      , w = i(731)
+      , b = i(733)
+      , C = i(760)
+      , I = i(762)
+      , T = i(764)
+      , S = i(766)
+      , A = i(768)
+      , E = i(770)
+      , x = i(772)
+      , M = i(774)
+      , N = i(778)
+      , R = i(780)
+      , O = i(782)
+      , P = i(784)
+      , D = i(786)
+      , L = i(788)
+      , B = i(790)
+      , k = i(792)
+      , F = i(794)
+      , H = i(795)
+      , G = i(797)
+      , U = i(801)
+      , j = i(805)
+      , q = i(809)
+      , W = i(811)
+      , V = i(814)
+      , z = i(816)
+      , Y = i(818)
+      , X = i(823)
+      , Q = i(825)
+      , K = i(827)
+      , J = i(829)
+      , Z = i(831)
+      , $ = i(311)
+      , ee = i(835)
+      , te = i(856)
+      , ie = i(892)
+      , ne = i(894)
+      , oe = i(896)
+      , se = i(898)
+      , ae = i(900)
+      , re = i(902)
+      , le = i(905)
+      , ce = i(907)
+      , ue = i(911)
+      , he = i(918)
+      , de = i(919)
+      , pe = i(921)
+      , me = i(924)
+      , fe = i(928)
+      , ge = i(930)
+      , _e = i(935)
+      , ve = i(937)
+      , ye = i(943)
+      , we = i(945)
+      , be = i(947)
+      , Ce = i(949)
+      , Ie = i(953)
+      , Te = i(955)
+      , Se = i(957)
+      , Ae = i(964)
+      , Ee = i(975)
+      , xe = i(977);
     e.exports = function() {
         var e = new o({
             enablePresets: !0,
@@ -60981,6 +61323,7 @@
         })),
         this.currentOpenedWindow = null ,
         this.selectedSlot = null ,
+        this.slotToShow = null ,
         this.filterCategories = {};
         for (var i in g.categories)
             this.filterCategories[g.categories[i]] = !0;
@@ -61024,22 +61367,22 @@
         }
         return 0
     }
-    i(636);
-    var u = i(205).addTooltip
-      , h = i(185)
+    i(638);
+    var u = i(206).addTooltip
+      , h = i(186)
       , d = i(16).EventEmitter
       , p = i(35).getText
-      , m = i(209)
+      , m = i(210)
       , f = i(26).inherits
-      , g = i(322)
-      , _ = i(565)
-      , v = i(388)
-      , y = i(569)
-      , w = i(637)
-      , b = i(641)
+      , g = i(323)
+      , _ = i(567)
+      , v = i(389)
+      , y = i(571)
+      , w = i(639)
+      , b = i(643)
       , C = i(33).events
       , I = i(32)
-      , T = i(189)
+      , T = i(190)
       , S = 40
       , A = g.positions.notEquipped;
     f(o, d),
@@ -61058,34 +61401,35 @@
     }
     ,
     o.prototype._updatePageCount = function(e) {
-        if (e) {
-            var t = e._storageViewer;
-            if (t.slotsPerPage) {
-                var i = Math.ceil(this.displayedSlotCount / t.slotsPerPage) || 1;
-                i !== this.pageCount && (this.pageCount = i,
-                this._displayPage(0),
-                this.pagination.setPageCount(i))
-            }
+        var t = e._storageViewer;
+        if (t.slotsPerPage) {
+            var i = Math.ceil(this.displayedSlotCount / t.slotsPerPage) || 1;
+            i !== this.pageCount && (this.pageCount = i,
+            this._displayPage(0),
+            this.pagination.setPageCount(i))
         }
     }
     ,
-    o.prototype._getAvailableSpace = function() {
+    o.prototype._getAvailableSpaceAndUpdatePageSystem = function() {
         var e = this.currentOpenedWindow;
-        if (e) {
-            var t = {
-                width: this.slotsContainer.rootElement.clientWidth,
-                height: this.slotsContainer.rootElement.clientHeight
-            };
-            if (0 !== t.height) {
-                var i = Math.floor(parseFloat(t.width) / S)
-                  , n = e._storageViewer;
-                n.slotsPerColumn = Math.floor(parseFloat(t.height) / S),
-                n.slotsPerPage = i * n.slotsPerColumn,
-                e.availableSlotBoxWidth = i * S + "px",
-                e.availableSlotBoxHeight = n.slotsPerColumn * S + "px",
-                this._updatePageSystem()
-            }
-        }
+        if (!e)
+            return !1;
+        var t = e._storageViewer
+          , i = this.slotsContainer.rootElement.clientHeight;
+        if (0 === i)
+            return !1;
+        var n = this.slotsContainer.rootElement.clientWidth
+          , o = Math.floor(n / S);
+        return t.slotsPerColumn = Math.floor(i / S),
+        t.slotsPerPage = o * t.slotsPerColumn,
+        e.availableSlotBoxWidth = o * S + "px",
+        e.availableSlotBoxHeight = t.slotsPerColumn * S + "px",
+        this._updatePageSystem(),
+        !0
+    }
+    ,
+    o.prototype._initializeView = function() {
+        this._getAvailableSpaceAndUpdatePageSystem() && this.slotToShow && this._displaySlotPage(this.slotToShow)
     }
     ,
     o.prototype.registerView = function(e, t) {
@@ -61133,7 +61477,7 @@
             i.emit("StorageViewerOpen")
         }),
         e.on("opened", function() {
-            i.domIsCreated ? i._getAvailableSpace() : i.once("domCreated", i._getAvailableSpace)
+            i.domIsCreated ? i._initializeView() : i.once("domCreated", i._initializeView)
         }),
         e.on("close", function() {
             i.lastOpenedWindow = i.currentOpenedWindow,
@@ -61170,7 +61514,7 @@
                 e.filterList(),
                 e._displayPage(0),
                 e.presetsBox && e._enablePresetsView(t === g.categories.preset),
-                s || e._getAvailableSpace(),
+                s || e._getAvailableSpaceAndUpdatePageSystem(),
                 e.emit("filter", t)
             }
         }),
@@ -61292,7 +61636,8 @@
             if (this.slotList[t].isVisible()) {
                 var i = this.itemList[t];
                 if (!i)
-                    continue;var n = i.item.averagePrice === -1 ? 0 : i.item.averagePrice;
+                    continue;
+                var n = i.item.averagePrice === -1 ? 0 : i.item.averagePrice;
                 e += n * this.itemsQuantityList[t]
             }
         this.averagePriceValue = e,
@@ -61367,7 +61712,7 @@
         t.setContextMenu("item", this.contextParams);
         var i = this;
         return t.on("tap", function(e) {
-            i.selectSlot(this.itemInstance.objectUID),
+            i._selectSlot(t),
             i.currentOpenedWindow.emit("slot-tap", this, e.x, e.y)
         }),
         t.on("doubletap", function(e) {
@@ -61420,6 +61765,21 @@
             if (c(n.sortingCriterias, e, t[o].itemInstance) < 0)
                 return void i.insertBefore(t[o]);
         this.slotsBox.appendChild(i)
+    }
+    ,
+    o.prototype._displaySlotPage = function(e) {
+        var t = this.currentOpenedWindow && this.currentOpenedWindow._storageViewer;
+        if (!t || !t.slotsPerPage)
+            return void (this.slotToShow = e);
+        this.slotToShow = null ;
+        for (var i = this.slotsBox.getChildren(), n = 0, o = 0; o < i.length; o++) {
+            var s = i[o];
+            if (s.isVisible()) {
+                if (s === e)
+                    return void this._displayPage(~~(n / t.slotsPerPage));
+                n++
+            }
+        }
     }
     ,
     o.prototype.sortBy = function(e) {
@@ -61615,26 +61975,34 @@
         this.currentOpenedWindow && this.currentOpenedWindow.emit("kamasUpdated", e))
     }
     ,
-    o.prototype.selectSlotByGID = function(e) {
+    o.prototype.selectAndShowSlotByGID = function(e) {
         for (var t in this.slotList) {
             var i = this.itemList[t];
-            if (i.getProperty("id") === e && this.slotList[t].isVisible())
-                return this.selectSlot(t),
-                i
+            if (i.getProperty("id") === e && this._selectSlotAndDisplayPage(this.slotList[t]))
+                return i
         }
         return null
     }
     ,
-    o.prototype.selectSlot = function(e) {
+    o.prototype.selectAndShowSlotByUID = function(e) {
         var t = this.slotList[e];
+        return t && this._selectSlotAndDisplayPage(t) ? t.itemInstance : null
+    }
+    ,
+    o.prototype._selectSlotAndDisplayPage = function(e) {
+        return !!e.isVisible() && (this._selectSlot(e),
+        this._displaySlotPage(e),
+        !0)
+    }
+    ,
+    o.prototype._selectSlot = function(e) {
         if (this.selectedSlot) {
-            if (this.selectedSlot === t)
-                return this.itemList[e];
+            if (this.selectedSlot === e)
+                return;
             this.selectedSlot.select(!1)
         }
-        return t ? (t.select(),
-        this.selectedSlot = t,
-        this.itemList[e]) : null
+        e && (e.select(),
+        this.selectedSlot = e)
     }
     ,
     o.prototype.unSelectSlot = function(e) {
@@ -61974,24 +62342,24 @@
         P.on("setMount", N),
         P.on("unsetMount", N)
     }
-    i(638);
-    var o = i(205).addTooltip
+    i(640);
+    var o = i(206).addTooltip
       , s = i(5)
-      , a = i(203).DofusButton
-      , r = i(185)
+      , a = i(204).DofusButton
+      , r = i(186)
       , l = i(35).getText
-      , c = i(322)
-      , u = i(567)
-      , h = i(565)
+      , c = i(323)
+      , u = i(569)
+      , h = i(567)
       , d = i(26)
       , p = i(22)
-      , m = i(189)
-      , f = i(639).actionsEnum
+      , m = i(190)
+      , f = i(641).actionsEnum
       , g = 8
       , _ = 16
       , v = 27
       , y = 40
-      , w = i(563).GENERAL_SHORTCUT_BAR
+      , w = i(565).GENERAL_SHORTCUT_BAR
       , b = c.positions.pets
       , C = 3;
     d.inherits(n, m),
@@ -62199,11 +62567,11 @@
             className: "message"
         })
     }
-    i(640);
+    i(642);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(22)
-      , r = i(203).DofusButton
+      , r = i(204).DofusButton
       , l = i(35).getText
       , c = {
         NO: 0,
@@ -62273,11 +62641,11 @@
         a.addTooltip(this, this._tooltipHandler.bind(this))),
         this.setValue(e.value || 0)
     }
-    i(642);
+    i(644);
     var o = i(35).getText
       , s = i(26).inherits
-      , a = i(205)
-      , r = i(189);
+      , a = i(206)
+      , r = i(190);
     s(n, r),
     e.exports = n,
     n.prototype.setValue = function(e, t, i) {
@@ -62455,17 +62823,17 @@
             n.logMessage("Finished preloading of " + e.area + " in " + e.elapsedSecond + "s")
         })
     }
-    i(644);
-    var o = i(433)
+    i(646);
+    var o = i(435)
       , s = i(26).inherits
-      , a = i(401)
-      , r = i(203).DofusButton
-      , l = i(390)
-      , c = i(645)
-      , u = i(641)
+      , a = i(402)
+      , r = i(204).DofusButton
+      , l = i(391)
+      , c = i(647)
+      , u = i(643)
       , h = i(35).getText
-      , d = i(300)
-      , p = i(605)
+      , d = i(301)
+      , p = i(607)
       , m = 400
       , f = new c
       , g = ["Info", "Warn", "Error"]
@@ -62593,7 +62961,8 @@
                     var c = a[l]
                       , u = c.mapIds || [];
                     if (c.areaId !== i)
-                        continue;r = r.concat(u)
+                        continue;
+                    r = r.concat(u)
                 }
             var h = r.length
               , d = 0
@@ -62642,15 +63011,15 @@
             this.mustReload && this.reloadPartyData()
         })
     }
-    i(647);
+    i(649);
     var o = i(26).inherits
-      , s = i(401)
-      , a = i(203).DofusButton
-      , r = i(483)
+      , s = i(402)
+      , a = i(204).DofusButton
+      , r = i(485)
       , l = i(35).getText
-      , c = i(411)
-      , u = i(538)
-      , h = i(648);
+      , c = i(412)
+      , u = i(540)
+      , h = i(650);
     o(n, s),
     e.exports = n,
     n.prototype.createContent = function() {
@@ -62936,16 +63305,16 @@
     function o() {
         d.showNotification(s("tablet.common.longTapForTooltip"), this)
     }
-    i(650);
+    i(652);
     var s = i(35).getText
       , a = i(26).inherits
-      , r = i(301)
-      , l = i(209).showProgressively
-      , c = i(574)
-      , u = i(280)
-      , h = i(572)
-      , d = i(205)
-      , p = i(401)
+      , r = i(302)
+      , l = i(210).showProgressively
+      , c = i(576)
+      , u = i(281)
+      , h = i(574)
+      , d = i(206)
+      , p = i(402)
       , m = [[], [10, 7, 3], [34, 31, 27], [60, 58, 50], [72, 80, 67], [88, 81, 95], [105, 101, 109], [126, 130, 140], [142, 159, 153], [179, 168, 174], [191, 190, 186], [434, 446, 431], [686, 705, 696], [2778, 2806, 2810], [2890, 2897, 2872], [3212, 3211, 3218]]
       , f = {
         spellTooltipAll: !0
@@ -63106,29 +63475,29 @@
         var e = this.room.breedingWindow;
         e._selectTile(this.room, this)
     }
-    i(652);
-    var s = i(203)
-      , a = i(446)
-      , r = i(653)
-      , l = i(185)
-      , c = i(655)
-      , u = i(657)
-      , h = i(658)
+    i(654);
+    var s = i(204)
+      , a = i(448)
+      , r = i(655)
+      , l = i(186)
+      , c = i(657)
+      , u = i(659)
+      , h = i(660)
       , d = i(35).getText
       , p = i(26).inherits
-      , m = i(603).isEmptyObject
-      , f = i(659)
-      , g = i(671)
-      , _ = i(673)
-      , v = i(317)
-      , y = i(678)
-      , w = i(392)
-      , b = i(680)
-      , C = i(205)
-      , I = i(682)
-      , T = i(401)
+      , m = i(605).isEmptyObject
+      , f = i(661)
+      , g = i(673)
+      , _ = i(675)
+      , v = i(318)
+      , y = i(680)
+      , w = i(393)
+      , b = i(682)
+      , C = i(206)
+      , I = i(684)
+      , T = i(402)
       , S = i(22)
-      , A = i(189)
+      , A = i(190)
       , E = r.DRAG_ID
       , x = "c"
       , M = 150
@@ -64017,9 +64386,9 @@
         };
         s.setDraggable(t, this, r, this.sourceData, i)
     }
-    i(654);
-    var s = i(185)
-      , a = i(189)
+    i(656);
+    var s = i(186)
+      , a = i(190)
       , r = "mountRoom"
       , l = 7
       , c = -4
@@ -64063,11 +64432,11 @@
         this.placeholder = new r(this.box),
         this.placeholder.setText(a("tablet.mount.noEquipped"))
     }
-    i(656);
+    i(658);
     var o = i(5)
-      , s = i(653)
+      , s = i(655)
       , a = i(35).getText
-      , r = i(317)
+      , r = i(318)
       , l = i(32);
     e.exports = n,
     n.prototype._createTile = function(e, t) {
@@ -64230,24 +64599,24 @@
     function o() {
         return this.tooltipText
     }
-    i(660);
+    i(662);
     var s = i(5)
-      , a = i(203)
-      , r = i(223)
-      , l = i(658)
-      , c = i(661)
+      , a = i(204)
+      , r = i(224)
+      , l = i(660)
+      , c = i(663)
       , u = i(35).getText
       , h = i(26).inherits
-      , d = i(200)
-      , p = i(664)
-      , m = i(665)
-      , f = i(641)
-      , g = i(667)
-      , _ = i(669)
-      , v = i(507)
-      , y = i(205)
+      , d = i(201)
+      , p = i(666)
+      , m = i(667)
+      , f = i(643)
+      , g = i(669)
+      , _ = i(671)
+      , v = i(509)
+      , y = i(206)
       , w = i(22)
-      , b = i(189)
+      , b = i(190)
       , C = 33
       , I = 0
       , T = 1
@@ -64799,11 +65168,11 @@
             text: ""
         })
     }
-    i(662);
-    var o = i(209)
+    i(664);
+    var o = i(210)
       , s = i(26).inherits
-      , a = i(663)
-      , r = i(189)
+      , a = i(665)
+      , r = i(190)
       , l = 40
       , c = 2.5
       , u = 2
@@ -64862,8 +65231,8 @@
     }
     var o = i(35).getText
       , s = i(26).inherits
-      , a = i(205)
-      , r = i(189)
+      , a = i(206)
+      , r = i(190)
       , l = 50;
     s(n, r),
     e.exports = n,
@@ -64926,11 +65295,11 @@
             return t || 0 === t ? "#" + t.toString(16) : null
         }) : []
     }
-    i(666);
+    i(668);
     var a = i(26).inherits
       , r = i(36)
-      , l = i(205)
-      , c = i(189);
+      , l = i(206)
+      , c = i(190);
     a(o, c),
     e.exports = o,
     o.prototype.setModel = function(e) {
@@ -64980,11 +65349,11 @@
             className: ["bigIcon", "bigIcon_happy"]
         })
     }
-    i(668);
+    i(670);
     var o = i(35).getText
       , s = i(26).inherits
-      , a = i(205)
-      , r = i(189)
+      , a = i(206)
+      , r = i(190)
       , l = -1e4
       , c = -2e3
       , u = 2e3
@@ -65055,11 +65424,11 @@
             text: this.tooltipText
         }) : this.tooltipText
     }
-    i(670);
+    i(672);
     var s = i(35).getText
       , a = i(26).inherits
-      , r = i(205)
-      , l = i(189);
+      , r = i(206)
+      , l = i(190);
     a(n, l),
     e.exports = n,
     n.prototype.setEnabled = function(e) {
@@ -65182,18 +65551,18 @@
         }
         return n
     }
-    i(672);
+    i(674);
     var l = i(5)
-      , c = i(653)
-      , u = i(661)
+      , c = i(655)
+      , u = i(663)
       , h = i(35).getText
       , d = i(26).inherits
-      , p = i(659)
-      , m = i(667)
-      , f = i(669)
+      , p = i(661)
+      , m = i(669)
+      , f = i(671)
       , g = i(32)
-      , _ = i(205)
-      , v = i(189)
+      , _ = i(206)
+      , v = i(190)
       , y = 27
       , w = 4
       , b = 2
@@ -65376,17 +65745,17 @@
             e._createDom()
         })
     }
-    i(674);
+    i(676);
     var o = i(35).getText
       , s = i(26).inherits
-      , a = i(390)
-      , r = i(675)
-      , l = i(392)
-      , c = i(676)
-      , u = i(301)
-      , h = i(203)
+      , a = i(391)
+      , r = i(677)
+      , l = i(393)
+      , c = i(678)
+      , u = i(302)
+      , h = i(204)
       , d = i(32)
-      , p = i(189)
+      , p = i(190)
       , m = 1
       , f = 0
       , g = 2;
@@ -65894,11 +66263,11 @@
         this._setupRail(),
         this._setupSnaps()
     }
-    i(677);
+    i(679);
     var o = i(26).inherits
       , s = i(33).getPosition
-      , a = i(189)
-      , r = i(203)
+      , a = i(190)
+      , r = i(204)
       , l = i(47)
       , c = 3
       , u = 1
@@ -66103,12 +66472,12 @@
             ;
         return c
     }
-    i(679);
+    i(681);
     var c = i(16)
       , u = i(26).inherits
-      , h = i(603).isEmptyObject
-      , d = i(671)
-      , p = i(301)
+      , h = i(605).isEmptyObject
+      , d = i(673)
+      , p = i(302)
       , m = 4
       , f = 37
       , g = 14
@@ -66390,9 +66759,9 @@
         this.curentTabId = null ,
         this.nextId = 0
     }
-    i(681);
+    i(683);
     var o = i(26).inherits
-      , s = i(189)
+      , s = i(190)
       , a = i(32)
       , r = i(84).playUiSound;
     o(n, s),
@@ -66547,10 +66916,10 @@
             text: ""
         })
     }
-    i(683);
+    i(685);
     var o = i(26).inherits
-      , s = i(663)
-      , a = i(189)
+      , s = i(665)
+      , a = i(190)
       , r = 70
       , l = 7
       , c = "#58b"
@@ -66833,8 +67202,8 @@
             text: b("ui.common.total")
         })
     }
-    i(685);
-    var g, _ = i(26).inherits, v = i(401), y = i(680), w = i(641), b = i(35).getText, C = i(32), I = i(22), T = i(205).addTooltip, S = i(189), A = i(686).getStatCost, E = i(84).playUiSound, x = i(203);
+    i(687);
+    var g, _ = i(26).inherits, v = i(402), y = i(682), w = i(643), b = i(35).getText, C = i(32), I = i(22), T = i(206).addTooltip, S = i(190), A = i(688).getStatCost, E = i(84).playUiSound, x = i(204);
     _(n, v),
     e.exports = n,
     n.prototype.alignWithEquipment = function() {
@@ -66972,16 +67341,16 @@
             u("CANCEL_BUTTON")
         })
     }
-    i(687);
+    i(689);
     var o = i(26).inherits
-      , s = i(401)
-      , a = i(203)
-      , r = i(483)
+      , s = i(402)
+      , a = i(204)
+      , r = i(485)
       , l = i(22)
       , c = i(35).getText
       , u = i(84).playUiSound
-      , h = i(300)
-      , d = i(207)
+      , h = i(301)
+      , d = i(208)
       , p = {
         vitality: 11,
         wisdom: 12,
@@ -67351,20 +67720,20 @@
         }
         return Math.min(t, 4)
     }
-    i(689);
-    var s = i(205).addTooltip
-      , a = i(440)
+    i(691);
+    var s = i(206).addTooltip
+      , a = i(442)
       , r = i(26).inherits
-      , l = i(401)
+      , l = i(402)
       , c = i(22)
       , u = i(35).getText
-      , h = i(690)
-      , d = i(203)
+      , h = i(692)
+      , d = i(204)
       , p = i(32)
-      , m = i(483)
+      , m = i(485)
       , f = i(50)
-      , g = i(237)
-      , _ = i(694);
+      , g = i(238)
+      , _ = i(696);
     r(n, l),
     e.exports = n,
     n.prototype.updateCharacterList = function(e) {
@@ -67383,17 +67752,17 @@
                 data: a
             })
               , h = a.bonusXp;
-            h > 1 && c.getChildren()[1].addClassNames(["x" + h])
+            h > 1 && c.getChildren()[1].addClassNames(["x" + h]);
         }
     }
 }
 , function(e, t) {}
 , function(e, t, i) {
     !function() {
-        var t = i(691)
-          , n = i(692).utf8
-          , o = i(693)
-          , s = i(692).bin
+        var t = i(693)
+          , n = i(694).utf8
+          , o = i(695)
+          , s = i(694).bin
           , a = function(e, i) {
             e.constructor == String ? e = i && "binary" === i.encoding ? s.stringToBytes(e) : n.stringToBytes(e) : o(e) ? e = Array.prototype.slice.call(e, 0) : Array.isArray(e) || (e = e.toString());
             for (var r = t.bytesToWords(e), l = 8 * e.length, c = 1732584193, u = -271733879, h = -1732584194, d = 271733878, p = 0; p < r.length; p++)
@@ -67475,8 +67844,7 @@
                 d = d + b >>> 0
             }
             return t.endian([c, u, h, d])
-        }
-        ;
+        };
         a._ff = function(e, t, i, n, o, s, a) {
             var r = e + (t & i | ~t & n) + (o >>> 0) + a;
             return (r << s | r >>> 32 - s) + t
@@ -67641,13 +68009,13 @@
             e._reset()
         })
     }
-    i(696);
+    i(698);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(35).getText
-      , r = i(697)
-      , l = i(703)
-      , c = i(203).DofusButton
+      , r = i(699)
+      , l = i(705)
+      , c = i(204).DofusButton
       , u = i(31);
     o(n, s),
     e.exports = n,
@@ -67791,11 +68159,11 @@
             e._updateItemBox(t)
         })
     }
-    i(698);
+    i(700);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(699)
-      , r = i(701)
+      , s = i(190)
+      , a = i(701)
+      , r = i(703)
       , l = i(35).getText;
     o(n, s),
     e.exports = n,
@@ -67892,11 +68260,11 @@
         this.image = h.createChild("div", {
             className: "itemImage"
         }),
-        this.etheralBar = h.appendChild(new S({
-            className: ["etheralBar", "red"]
+        this.durabilityBar = h.appendChild(new S({
+            className: ["durabilityBar", "red"]
         })),
-        this.etheralBarDescription = new O("div"),
-        m(this.etheralBar, this.etheralBarDescription),
+        this.durabilityBarDescription = new O("div"),
+        m(this.durabilityBar, this.durabilityBarDescription),
         this.tooltipItemDescription = new b,
         m(this.image, this.tooltipItemDescription),
         L(this.image),
@@ -68020,28 +68388,28 @@
         for (var i = 0; i < e.length; i++)
             t.addRow([e[i]])
     }
-    i(700);
-    var m = i(205).addTooltip
+    i(702);
+    var m = i(206).addTooltip
       , f = i(5)
-      , g = i(310)
-      , _ = i(223)
-      , v = i(398)
-      , y = i(205).enableTooltip
+      , g = i(311)
+      , _ = i(224)
+      , v = i(399)
+      , y = i(206).enableTooltip
       , w = i(35).getText
-      , b = i(394)
-      , C = i(322)
+      , b = i(395)
+      , C = i(323)
       , I = C.Item
       , T = C.ItemInstance
-      , S = i(641)
+      , S = i(643)
       , A = i(36)
-      , E = i(483)
-      , x = i(680)
-      , M = i(203)
+      , E = i(485)
+      , x = i(682)
+      , M = i(204)
       , N = i(26)
-      , R = i(301)
-      , O = i(189)
+      , R = i(302)
+      , O = i(190)
       , P = i(22)
-      , D = i(200)
+      , D = i(201)
       , L = i(32)
       , B = 812
       , k = 5;
@@ -68070,7 +68438,7 @@
         this.showDescription = t.hasOwnProperty("showDescription") ? t.showDescription : this.showDescription,
         this.weight.setText(w("ui.common.short.weight", 0)),
         this.twoHandedIcon.hide(),
-        this.etheralBar.hide();
+        this.durabilityBar.hide();
         var i = this;
         if (f.preloadImage("gfx/mounts/" + e.model + ".png", function(e) {
             i.image.setStyle("backgroundImage", e)
@@ -68139,14 +68507,10 @@
         d(e.getProperty("targetConditionsFormatted"), this.panelCollection.conditions),
         e.getProperty("isWeapon") ? (p(e.getProperty("statsFormatted"), this.panelCollection.characteristics),
         this.itemInfoTabs.toggleTabDisplay(2, !0)) : this.itemInfoTabs.toggleTabDisplay(2, !1);
-        var s = e.getProperty("etheral") && this.itemInstance;
-        if (this.etheralBar.toggleDisplay(!!s),
-        s) {
-            var a = this.itemInstance.effectsMap[B]
-              , r = a.diceNum || 0;
-            this.etheralBar.setValue(r / a.value),
-            this.etheralBarDescription.setText(a.description)
-        }
+        var s = this.itemInstance && this.itemInstance.effectsMap[B];
+        this.durabilityBar.toggleDisplay(!!s),
+        s && (this.durabilityBar.setValue(s.diceNum / s.value),
+        this.durabilityBarDescription.setText(s.description))
     }
     ,
     e.exports = c
@@ -68166,12 +68530,12 @@
         }),
         this.reset()
     }
-    i(702);
-    var o = i(567)
-      , s = i(401)
-      , a = i(189)
+    i(704);
+    var o = i(569)
+      , s = i(402)
+      , a = i(190)
       , r = i(26).inherits
-      , l = i(565);
+      , l = i(567);
     r(n, s),
     e.exports = n,
     n.prototype.reset = function() {
@@ -68233,13 +68597,13 @@
             text: l("ui.connection.assignGift")
         })
     }
-    i(704);
+    i(706);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(705)
-      , r = i(301)
+      , s = i(190)
+      , a = i(707)
+      , r = i(302)
       , l = i(35).getText
-      , c = i(237);
+      , c = i(238);
     o(n, s),
     e.exports = n,
     n.prototype.update = function(e) {
@@ -68306,9 +68670,9 @@
             text: l
         })
     }
-    i(706);
+    i(708);
     var o = i(26).inherits
-      , s = i(203)
+      , s = i(204)
       , a = i(35).getText;
     o(n, s),
     e.exports = n
@@ -68345,8 +68709,7 @@
                         a.close(m.id)
                     }
                 })
-            }
-            ;
+            };
             t = f.createChild("div", {
                 className: "secretQuestionDiv"
             }),
@@ -68396,16 +68759,16 @@
             m.setPosition(e)
         })
     }
-    i(708);
+    i(710);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(22)
-      , r = i(203).DofusButton
+      , r = i(204).DofusButton
       , l = i(35).getText
-      , c = i(390)
-      , u = i(690)
+      , c = i(391)
+      , u = i(692)
       , h = i(24).dimensions
-      , d = i(300)
+      , d = i(301)
       , p = {
         w: 380,
         h: 250
@@ -68452,7 +68815,7 @@
         });
         var n, o = this;
         window.gui.once("DocumentReadingBeginMessage", function(s) {
-            n = i(714),
+            n = i(716),
             o.windowBody.appendChild(c),
             o.windowBody.appendChild(n),
             c.on("close", e),
@@ -68461,13 +68824,13 @@
             t(s)
         })
     }
-    i(710);
+    i(712);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(36)
       , r = i(22)
       , l = i(84).playUiSound
-      , c = i(711)
+      , c = i(713)
       , u = 1
       , h = 2;
     o(n, s),
@@ -68520,9 +68883,9 @@
         return s
     }
     var a = i(26).inherits
-      , r = i(712)
-      , l = i(203)
-      , c = i(713)
+      , r = i(714)
+      , l = i(204)
+      , c = i(715)
       , u = i(5)
       , h = /(<[a-zA-Z]+\s*[^>]*>)+([^<].*?)/gi
       , d = 829
@@ -68596,11 +68959,11 @@
         this._subTitle = null ,
         this._pages = null
     }
-    var o = i(189)
-      , s = i(450)
+    var o = i(190)
+      , s = i(452)
       , a = i(26).inherits
       , r = i(33).events
-      , l = i(209)
+      , l = i(210)
       , c = /(.*?)(<img.*?\/?>)/gi
       , u = /#+/g
       , h = /<a\shref=['"](.*?)['"]\s*>(.*?)<\/a>/gi
@@ -68680,7 +69043,7 @@
     n.prototype._formatLinks = function(e) {
         function t(e, t, n) {
             n ? e.addEventListener(r.end, function(e) {
-                window.open(t, "_blank"),
+                l.openUrlInAppBrowser(t),
                 e.preventDefault()
             }) : e.addEventListener(r.end, function(e) {
                 i._linkHandler(t),
@@ -68825,11 +69188,11 @@
             u("TURN_PAGE_DOCUMENT_3")
         })
     }
-    var o = i(712)
-      , s = i(713)
+    var o = i(714)
+      , s = i(715)
       , a = i(26).inherits
-      , r = i(203)
-      , l = i(200)
+      , r = i(204)
+      , l = i(201)
       , c = i(5)
       , u = i(84).playUiSound
       , h = "linkpage"
@@ -69016,14 +69379,14 @@
             i.drawer && i.drawer.disconnect()
         })
     }
-    i(716);
-    var o = i(185)
-      , s = i(717)
+    i(718);
+    var o = i(186)
+      , s = i(719)
       , a = i(35).getText
       , r = i(26).inherits
-      , l = i(322)
+      , l = i(323)
       , c = o.setDroppable
-      , u = i(401)
+      , u = i(402)
       , h = i(22);
     r(n, u),
     e.exports = n,
@@ -69097,17 +69460,17 @@
     function o() {
         this.data && window.gui.playerData.inventory.unEquipItem(this.data.objectUID)
     }
-    i(718);
-    var s = i(237)
+    i(720);
+    var s = i(238)
       , a = i(32)
-      , r = i(185)
+      , r = i(186)
       , l = i(35).getText
       , c = i(26).inherits
-      , u = i(699)
-      , h = i(322)
-      , d = i(565)
+      , u = i(701)
+      , h = i(323)
+      , d = i(567)
       , p = i(5)
-      , m = i(189)
+      , m = i(190)
       , f = h.positions
       , g = {
         bottom: [f.amulet, f.shield, f.ringLeft, f.ringRight, f.belt, f.boots],
@@ -69409,17 +69772,17 @@
     function a() {
         d.open("estateInformation", this.data)
     }
-    i(720);
+    i(722);
     var r = i(26).inherits
-      , l = i(401)
-      , c = i(203).DofusButton
-      , u = i(207)
+      , l = i(402)
+      , c = i(204).DofusButton
+      , u = i(208)
       , h = i(36)
       , d = i(22)
-      , p = i(209)
-      , m = i(392)
-      , f = i(721)
-      , g = i(483)
+      , p = i(210)
+      , m = i(393)
+      , f = i(723)
+      , g = i(485)
       , _ = i(35).getText;
     r(n, l),
     e.exports = n,
@@ -69725,7 +70088,7 @@
 }
 , function(e, t) {}
 , function(e, t, i) {
-    var n = i(209)
+    var n = i(210)
       , o = i(36)
       , s = null
       , a = null
@@ -69793,11 +70156,11 @@
             void e.updateData(t)) : void e.windowBody.hide()
         })
     }
-    i(723);
+    i(725);
     var o = i(26).inherits
-      , s = i(203).DofusButton
+      , s = i(204).DofusButton
       , a = i(35).getText
-      , r = i(401)
+      , r = i(402)
       , l = i(22)
       , c = i(5);
     o(n, r),
@@ -70176,8 +70539,8 @@
             e._reset()
         })
     }
-    i(725);
-    var o, s, a = i(205).addTooltip, r = i(84), l = i(24).dimensions, c = i(26).inherits, u = i(401), h = i(189), d = i(641), p = i(22), m = i(600), f = i(322).getItems, g = i(35).getText, _ = i(283), v = i(209), y = i(565), w = i(399), b = i(203), C = {
+    i(727);
+    var o, s, a = i(206).addTooltip, r = i(84), l = i(24).dimensions, c = i(26).inherits, u = i(402), h = i(190), d = i(643), p = i(22), m = i(602), f = i(323).getItems, g = i(35).getText, _ = i(284), v = i(210), y = i(567), w = i(400), b = i(204), C = {
         0: 29099,
         2: 29098
     }, I = 5, T = 80;
@@ -70253,7 +70616,7 @@
                     id: c.id,
                     outcome: c.alive ? "" : "dead",
                     name: y,
-                    level: t[c.id].level,
+                    level: c.level || t[c.id].level,
                     additional: c.additional,
                     kamas: v.intToString(c.rewards.kamas),
                     drops: c.rewards.objects
@@ -70721,20 +71084,20 @@
             _.close(q.id)
         })
     }
-    i(727);
+    i(729);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(205).addTooltip
-      , r = i(291)
-      , l = i(203).DofusButton
-      , c = i(218)
-      , u = i(500)
-      , h = i(216)
+      , s = i(190)
+      , a = i(206).addTooltip
+      , r = i(292)
+      , l = i(204).DofusButton
+      , c = i(219)
+      , u = i(502)
+      , h = i(217)
       , d = i(35).getText
-      , p = i(209)
-      , m = i(483)
-      , f = i(728)
-      , g = i(401)
+      , p = i(210)
+      , m = i(485)
+      , f = i(730)
+      , g = i(402)
       , _ = i(22)
       , v = i(5);
     o(n, g),
@@ -70773,15 +71136,15 @@
             this.multiCharacterSelector.setEnable(!window.gui.playerData.isFighting && e.length >= 2)
         })
     }
-    i(730);
+    i(732);
     var o = i(26).inherits
       , s = i(50)
-      , a = i(401)
+      , a = i(402)
       , r = i(22)
-      , l = i(203).DofusButton
+      , l = i(204).DofusButton
       , c = i(35).getText
-      , u = i(392)
-      , h = i(440);
+      , u = i(393)
+      , h = i(442);
     o(n, a),
     e.exports = n,
     n.prototype._createContent = function() {
@@ -70930,19 +71293,19 @@
             t._initTabs()
         })
     }
-    i(732);
+    i(734);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(35).getText
-      , r = i(733)
-      , l = i(735)
-      , c = i(737)
-      , u = i(739)
-      , h = i(743)
-      , d = i(745)
-      , p = i(747)
-      , m = i(750)
-      , f = i(752);
+      , r = i(735)
+      , l = i(737)
+      , c = i(739)
+      , u = i(741)
+      , h = i(745)
+      , d = i(747)
+      , p = i(749)
+      , m = i(752)
+      , f = i(754);
     o(n, s),
     e.exports = n,
     n.prototype._initTabs = function() {
@@ -70977,9 +71340,9 @@
         }),
         this.delClassNames("tabs")
     }
-    i(734);
+    i(736);
     var o = i(26).inherits
-      , s = i(680);
+      , s = i(682);
     o(n, s),
     e.exports = n
 }
@@ -71006,16 +71369,16 @@
             this.characterDisplay.release()
         })
     }
-    i(736);
+    i(738);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(483)
-      , r = i(641)
-      , l = i(203).DofusButton
+      , s = i(190)
+      , a = i(485)
+      , r = i(643)
+      , l = i(204).DofusButton
       , c = i(35).getText
-      , u = i(237)
-      , h = i(278)
-      , d = i(205).addTooltip;
+      , u = i(238)
+      , h = i(279)
+      , d = i(206).addTooltip;
     o(n, s),
     e.exports = n,
     n.prototype.updateCharacter = function() {
@@ -71248,19 +71611,19 @@
             t._showAlmanaxNotification(e.date, e._merydeName)
         })
     }
-    i(738);
+    i(740);
     var o = i(26).inherits
-      , s = i(641)
-      , a = i(203)
-      , r = i(189)
-      , l = i(209)
-      , c = i(205)
+      , s = i(643)
+      , a = i(204)
+      , r = i(190)
+      , l = i(210)
+      , c = i(206)
       , u = c.addTooltip
       , h = c.enableTooltip
       , d = i(35).getText
-      , p = i(322)
-      , m = i(450)
-      , f = i(449)
+      , p = i(323)
+      , m = i(452)
+      , f = i(451)
       , g = i(36)
       , _ = i(5)
       , v = i(22)
@@ -71525,9 +71888,10 @@
         this.achievementToOpen = null ,
         this.achievementDataFromServer = null ,
         this._createMinimumContent(),
-        this.setupSocketEvents(),
+        e.setupSocketEvents(),
         this.once("opened", function() {
             this._createRemainingContent(function() {
+                e.setupListUpdateEvents(),
                 e.selectFirstTab(),
                 e.on("open", function() {
                     e.selectFirstTab()
@@ -71585,20 +71949,20 @@
             achievementId: this.achievementId
         })
     }
-    i(740);
+    i(742);
     var a = i(26).inherits
-      , r = i(189)
+      , r = i(190)
       , l = i(36)
-      , c = i(741)
-      , u = i(203)
-      , h = i(390)
-      , d = i(567)
+      , c = i(743)
+      , u = i(204)
+      , h = i(391)
+      , d = i(569)
       , p = i(32)
-      , m = i(446)
-      , f = i(641)
+      , m = i(448)
+      , f = i(643)
       , g = i(35).getText
       , _ = i(5)
-      , v = i(209);
+      , v = i(210);
     a(n, r),
     e.exports = n,
     n.prototype.selectFirstTab = function() {
@@ -71818,28 +72182,28 @@
             var e = window.gui.playerData.achievements;
             i.achievementDataFromServer = e,
             i.total && i.total.setText(this.points)
+        })
+    }
+    ,
+    n.prototype.setupListUpdateEvents = function() {
+        var e = this;
+        window.gui.playerData.achievements.on("achievementFinished", function(t) {
+            e.total && e.total.setText(this.points);
+            var i = e.achievementsList.getChild(t.id);
+            if (!i)
+                return console.warn("Achievement not found: ", t.id);
+            i.addClassNames("completed");
+            var n = i.getChild("more").getChild("rewards").getChild("claimButton");
+            n.show(),
+            n.enable()
         }),
-        window.gui.playerData.achievements.on("achievementFinished", function(e) {
-            i.total && i.total.setText(this.points),
-            i._createRemainingContent(function() {
-                var t = i.achievementsList.getChild(e.id);
-                if (!t)
-                    return console.warn("Achievement not found: ", e.id);
-                t.addClassNames("completed");
-                var n = t.getChild("more").getChild("rewards").getChild("claimButton");
-                n.show(),
-                n.enable()
-            })
-        }),
-        window.gui.playerData.achievements.on("achievementRewardSuccess", function(e) {
-            i._createRemainingContent(function() {
-                var t = i.achievementsList.getChild(e);
-                if (!t)
-                    return console.warn("Achievement not found: ", e);
-                var n = t.getChild("more").getChild("rewards").getChild("claimButton");
-                n.hide(),
-                n.disable()
-            })
+        window.gui.playerData.achievements.on("achievementRewardSuccess", function(t) {
+            var i = e.achievementsList.getChild(t);
+            if (!i)
+                return console.warn("Achievement not found: ", t);
+            var n = i.getChild("more").getChild("rewards").getChild("claimButton");
+            n.hide(),
+            n.disable()
         })
     }
     ,
@@ -72142,10 +72506,10 @@
         this.activeItem = null ,
         this.items = {}
     }
-    i(742);
+    i(744);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(209)
+      , s = i(190)
+      , a = i(210)
       , r = i(32)
       , l = i(84).playUiSound;
     o(n, s),
@@ -72214,7 +72578,7 @@
         function e(e) {
             e.search && t._search(e.search)
         }
-        u.call(this, "div", {
+        h.call(this, "div", {
             className: "BestiaryWindow",
             name: "bestiary"
         });
@@ -72227,7 +72591,7 @@
         this.col2 = this.createChild("div", {
             className: "col2"
         }),
-        this.tabs = new c,
+        this.tabs = new u,
         this.col1.appendChild(this.tabs),
         this.panels = this.col1.createChild("div", {
             className: "panels"
@@ -72235,11 +72599,11 @@
         var i = this.panels.createChild("div", {
             className: "panel"
         })
-          , o = this.areaList = i.appendChild(new d);
+          , o = this.areaList = i.appendChild(new p);
         o.addClassNames("tree"),
         o.on("activate", function(e) {
             e.sublist.show(),
-            v("TAB")
+            y("TAB")
         }),
         o.on("deactivate", function(e) {
             e.sublist.hide(),
@@ -72248,11 +72612,11 @@
         var s = this.panels.createChild("div", {
             className: "panel"
         })
-          , a = s.appendChild(new d);
+          , a = s.appendChild(new p);
         a.addClassNames("tree"),
         a.on("activate", function(e) {
             e.sublist.show(),
-            v("TAB")
+            y("TAB")
         }),
         a.on("deactivate", function(e) {
             e.sublist.hide(),
@@ -72261,11 +72625,11 @@
         this.searchBlock = this.col2.createChild("div", {
             className: "searchBlock"
         }),
-        this.searchBox = this.searchBlock.appendChild(new w),
+        this.searchBox = this.searchBlock.appendChild(new b),
         this.searchBox.on("search", function(e) {
             t._search(e)
         }),
-        this.monsterList = this.col2.appendChild(new p),
+        this.monsterList = this.col2.appendChild(new m),
         this.monsterList.on("selected", function(e) {
             e.more ? (e.more.show(),
             this.refresh()) : t._createMonsterMoreInfo(e)
@@ -72276,23 +72640,23 @@
         }),
         this.noResultText = this.monsterList.createChild("div", {
             className: "noResultText",
-            text: g("ui.search.noResult")
+            text: _("ui.search.noResult")
         }),
         this.errorText = this.monsterList.createChild("div", {
             className: "errorText",
-            text: g("ui.secureMode.error.default")
+            text: _("ui.secureMode.error.default")
         }),
         t.errorText.hide(),
-        this.tabs.addTab(g("ui.monster.areas"), i),
-        this.tabs.addTab(g("ui.monster.families"), s),
+        this.tabs.addTab(_("ui.monster.areas"), i),
+        this.tabs.addTab(_("ui.monster.families"), s),
         this.tabs.openTab(0),
         this.once("open", function(i) {
-            h.getAllDataBulk(["Areas", "SubAreas", "MonsterSuperRaces", "MonsterRaces"], function(s, r) {
+            d.getAllDataBulk(["Areas", "SubAreas", "MonsterSuperRaces", "MonsterRaces"], function(s, r) {
                 if (s)
                     return console.error("Bestiary: getAllDataAreas error", s);
                 var l = r.Areas
                   , c = r.SubAreas
-                  , h = r.MonsterSuperRaces
+                  , u = r.MonsterSuperRaces
                   , d = r.MonsterRaces;
                 l.sort(n),
                 l.forEach(function(e) {
@@ -72301,7 +72665,7 @@
                 c.sort(n),
                 c.forEach(function(e) {
                     if (e.monsters.length > 0) {
-                        var i = new u("div",{
+                        var i = new h("div",{
                             className: "label",
                             text: e.nameId
                         });
@@ -72309,14 +72673,14 @@
                         t.subAreas[e.id] = e
                     }
                 }),
-                h.sort(n),
-                h.forEach(function(e) {
+                u.sort(n),
+                u.forEach(function(e) {
                     t.addToList(a, e)
                 }),
                 d.sort(n),
                 d.forEach(function(e) {
                     if (e.monsters.length > 0) {
-                        var t = new u("div",{
+                        var t = new h("div",{
                             className: "label",
                             text: e.nameId
                         });
@@ -72332,52 +72696,53 @@
         return e.base + e.alignGiftBonus + e.objectsAndMountBonus + e.contextModif
     }
     function a(e, t) {
-        return e === t ? e : e + " " + g("ui.chat.to") + " " + t
+        return e === t ? e : e + " " + _("ui.chat.to") + " " + t
     }
-    function r() {
+    function r(e) {
+        return Math.round(1e3 * e) / 1e3
+    }
+    function l() {
         var e = this.data.nameId
-          , t = g("ui.item.averageprice") + " : "
+          , t = _("ui.item.averageprice") + " : "
           , i = this.itemDataElement.getProperty("averagePrice");
-        t += i === -1 ? g("ui.item.averageprice.unavailable") : y.kamasToString(i),
+        t += i === -1 ? _("ui.item.averageprice.unavailable") : w.kamasToString(i),
         e += "\n" + t;
         var n = s(window.gui.playerData.characters.mainCharacter.characteristics.prospecting)
           , o = n;
         o < 100 && (n = 100);
-        var r = Math.round(100 * this.dropInfo.percentDropForGrade1) / 100
-          , l = Math.round(100 * this.dropInfo.percentDropForGrade5) / 100
-          , c = r * n / 100
-          , u = l * n / 100;
-        return c > 100 && (c = 100),
-        u > 100 && (u = 100),
-        e += "\n" + g("ui.monster.obtaining"),
-        e += " (" + o + " " + g("ui.short.prospection") + ") : ",
-        e += a(c, u) + "%",
-        e += "\n" + g("ui.monster.obtaining"),
-        e += " (" + g("ui.common.base") + ") : ",
-        e += a(r, l) + "%",
-        this.dropInfo.findCeil && (e += "\n" + g("ui.monster.prospectionThreshold") + " : " + this.dropInfo.findCeil),
+        var l = r(this.dropInfo.percentDropForGrade1)
+          , c = r(this.dropInfo.percentDropForGrade5)
+          , u = Math.min(100, r(this.dropInfo.percentDropForGrade1 * n / 100))
+          , h = Math.min(100, r(this.dropInfo.percentDropForGrade5 * n / 100));
+        return e += "\n" + _("ui.monster.obtaining"),
+        e += " (" + o + " " + _("ui.short.prospection") + ") : ",
+        e += a(u, h) + "%",
+        e += "\n" + _("ui.monster.obtaining"),
+        e += " (" + _("ui.common.base") + ") : ",
+        e += a(l, c) + "%",
+        this.dropInfo.findCeil && (e += "\n" + _("ui.monster.prospectionThreshold") + " : " + this.dropInfo.findCeil),
         e
     }
-    i(744);
-    var l = i(26).inherits
-      , c = i(680)
-      , u = i(189)
-      , h = i(36)
-      , d = i(741)
-      , p = i(314).SingleSelectionList
-      , m = i(322)
-      , f = i(565)
-      , g = i(35).getText
-      , _ = i(5)
-      , v = i(84).playUiSound
-      , y = i(209)
-      , w = i(404)
-      , b = i(205);
-    l(o, u),
+    i(746);
+    var c = i(26).inherits
+      , u = i(682)
+      , h = i(190)
+      , d = i(36)
+      , p = i(743)
+      , m = i(315).SingleSelectionList
+      , f = i(323)
+      , g = i(567)
+      , _ = i(35).getText
+      , v = i(5)
+      , y = i(84).playUiSound
+      , w = i(210)
+      , b = i(405)
+      , C = i(206);
+    c(o, h),
     e.exports = o,
     o.prototype.addToList = function(e, t) {
         var i = this
-          , n = new u("div",{
+          , n = new h("div",{
             className: "label"
         });
         n.createChild("div", {
@@ -72388,7 +72753,7 @@
             text: t.nameId
         });
         var o = e.addItem(t.id, n, t);
-        o.sublist = o.appendChild(new d),
+        o.sublist = o.appendChild(new p),
         o.sublist.addClassNames("tree"),
         o.sublist.hide(),
         o.sublist.on("activate", function(e) {
@@ -72399,13 +72764,13 @@
     o.prototype._search = function(e) {
         var t = this;
         return this.searchBox.setValue(e),
-        null === e || "" === e ? this._cancelSearch(!0) : e.length < 3 ? b.showNotification(g("ui.common.searchFilterTooltip"), this.searchBox) : (e = y.simplifyString(e),
+        null === e || "" === e ? this._cancelSearch(!0) : e.length < 3 ? C.showNotification(_("ui.common.searchFilterTooltip"), this.searchBox) : (e = w.simplifyString(e),
         this.searching = !0,
         this.monsterList.clearContent(),
         this.monsterList.addClassNames("spinner"),
         t.errorText.hide(),
         t.noResultText.hide(),
-        void h.searchDataMap("Items", {
+        void d.searchDataMap("Items", {
             match: e
         }, function(i, n) {
             if (i)
@@ -72421,7 +72786,7 @@
                         o.indexOf(l) === -1 && o.push(l)
                     }
             }
-            h.searchDataMap("Monsters", {
+            d.searchDataMap("Monsters", {
                 match: e
             }, function(e, i) {
                 if (e)
@@ -72442,7 +72807,7 @@
         this.searching = !1,
         t.errorText.hide(),
         t.noResultText.hide(),
-        h.getData("Monsters", e, function(e, i) {
+        d.getData("Monsters", e, function(e, i) {
             if (e)
                 return t.monsterList.delClassNames("spinner"),
                 t.errorText.show(),
@@ -72455,7 +72820,7 @@
             0 === s && t.noResultText.show();
             for (var a = 0; a < s; a += 1)
                 o.push("gfx/monsters/" + i[a].id + ".png");
-            _.preloadImages(o, function(e) {
+            v.preloadImages(o, function(e) {
                 for (var n = 0; n < s; n += 1)
                     t.addMonster(i[n], e[n]);
                 t.monsterList.refresh()
@@ -72464,7 +72829,7 @@
     }
     ,
     o.prototype.addMonster = function(e, t) {
-        var i = new u("div",{
+        var i = new h("div",{
             className: "infos"
         })
           , n = i.createChild("div", {
@@ -72489,9 +72854,9 @@
             text: l
         });
         var c = e.grades[0].level
-          , h = e.grades[e.grades.length - 1].level
-          , d = g("ui.common.short.level") + " " + c;
-        if (c !== h && (d += " " + g("ui.chat.to") + " " + h),
+          , u = e.grades[e.grades.length - 1].level
+          , d = _("ui.common.short.level") + " " + c;
+        if (c !== u && (d += " " + _("ui.chat.to") + " " + u),
         s.createChild("div", {
             className: "level",
             text: d
@@ -72520,7 +72885,7 @@
             var i = o.grades[0][t]
               , n = o.grades[o.grades.length - 1][t]
               , a = e + ": " + i;
-            i !== n && (a += " " + g("ui.chat.to") + " " + n),
+            i !== n && (a += " " + _("ui.chat.to") + " " + n),
             s.createChild("div", {
                 className: "stat",
                 text: a
@@ -72530,7 +72895,7 @@
             var t = o.grades[0][e]
               , i = o.grades[o.grades.length - 1][e]
               , n = t;
-            t !== i && (n += " " + g("ui.chat.to") + " " + i),
+            t !== i && (n += " " + _("ui.chat.to") + " " + i),
             a.createChild("div", {
                 className: ["stat", "resistance", e],
                 text: n
@@ -72548,17 +72913,17 @@
         });
         s.createChild("div", {
             className: "subtitle",
-            text: g("ui.common.caracteristics")
+            text: _("ui.common.caracteristics")
         }),
-        t(g("ui.short.lifePoints"), "lifePoints"),
-        t(g("ui.short.actionPoints"), "actionPoints"),
-        t(g("ui.short.movementPoints"), "movementPoints");
+        t(_("ui.short.lifePoints"), "lifePoints"),
+        t(_("ui.short.actionPoints"), "actionPoints"),
+        t(_("ui.short.movementPoints"), "movementPoints");
         var a = n.createChild("div", {
             className: ["col", "colRight"]
         });
         a.createChild("div", {
             className: "subtitle",
-            text: g("ui.common.resistances")
+            text: _("ui.common.resistances")
         }),
         i("neutralResistance"),
         i("earthResistance"),
@@ -72572,7 +72937,7 @@
         if (0 !== t.length) {
             e.more.createChild("div", {
                 className: "subtitle",
-                text: g("ui.common.loot")
+                text: _("ui.common.loot")
             }),
             this.monsterList.refresh();
             for (var i = t.length - 1; i >= 0; i--) {
@@ -72583,21 +72948,21 @@
                 return e.objectId
             })
               , s = this;
-            m.getItems(o, function(i) {
+            f.getItems(o, function(i) {
                 if (i)
                     return console.error("Failed to get items", i);
                 for (var n = 0; n < o.length; n += 1) {
                     var a = o[n]
-                      , l = m.items[a];
-                    if (l) {
-                        var c = e.more.appendChild(new f);
-                        c.itemDataElement = l,
+                      , r = f.items[a];
+                    if (r) {
+                        var c = e.more.appendChild(new g);
+                        c.itemDataElement = r,
                         c.dropInfo = t[n],
-                        c.setTooltip(r),
+                        c.setTooltip(l),
                         c.toggleClassName("special", t[n].hasCriteria),
-                        c.setItem(l),
+                        c.setItem(r),
                         c.setContextMenu("item", {
-                            item: l
+                            item: r
                         }),
                         t[n].percentDropForGrade1 < 2 ? c.addClassNames("rareDrop") : t[n].percentDropForGrade1 < 10 && c.addClassNames("okDrop")
                     } else
@@ -72639,19 +73004,19 @@
             t._updateCharacter(n)
         })
     }
-    i(746);
+    i(748);
     var o = i(5)
-      , s = i(203).DofusButton
-      , a = i(237)
-      , r = i(446)
+      , s = i(204).DofusButton
+      , a = i(238)
+      , r = i(448)
       , l = i(35).getText
       , c = i(26).inherits
-      , u = i(286)
-      , h = i(314).SingleSelectionList
+      , u = i(287)
+      , h = i(315).SingleSelectionList
       , d = i(36)
-      , p = i(680)
+      , p = i(682)
       , m = i(30)
-      , f = i(189);
+      , f = i(190);
     c(n, f),
     e.exports = n,
     n.prototype._selectOnceReady = function() {
@@ -72694,7 +73059,7 @@
         window.gui.on("TitleLostMessage", function(t) {
             var i = t.titleId
               , n = e._titlesAndOrnaments.titles.indexOf(i);
-            e._titlesAndOrnaments.titles.splice(n, 1),
+            n !== -1 && e._titlesAndOrnaments.titles.splice(n, 1),
             e._updateTitleList(),
             e._displayObtainedTitles()
         }),
@@ -73127,26 +73492,26 @@
             })
         })
     }
-    i(748);
+    i(750);
     var a = i(5)
-      , r = i(446)
+      , r = i(448)
       , l = i(35).getText
-      , c = i(449)
+      , c = i(451)
       , u = i(26).inherits
-      , h = i(322)
-      , d = i(565)
-      , p = i(314)
+      , h = i(323)
+      , d = i(567)
+      , p = i(315)
       , m = i(84).playUiSound
-      , f = i(749)
-      , g = i(301)
-      , _ = i(392)
-      , v = i(567)
+      , f = i(751)
+      , g = i(302)
+      , _ = i(393)
+      , v = i(569)
       , y = i(36)
       , w = i(32)
       , b = i(30)
       , C = i(22)
-      , I = i(189)
-      , T = i(205).addTooltip
+      , I = i(190)
+      , T = i(206).addTooltip
       , S = {}
       , A = [];
     u(n, I),
@@ -73722,17 +74087,17 @@
             e.shortcutBar.openPanel("spell")
         })
     }
-    i(751);
+    i(753);
     var r = i(26).inherits
       , l = i(32)
       , c = i(35).getText
-      , u = i(203).DofusButton
-      , h = i(399)
-      , d = i(392)
-      , p = i(189)
-      , m = i(574)
-      , f = i(185)
-      , g = i(280)
+      , u = i(204).DofusButton
+      , h = i(400)
+      , d = i(393)
+      , p = i(190)
+      , m = i(576)
+      , f = i(186)
+      , g = i(281)
       , _ = i(5)
       , v = i(84).playUiSound;
     r(a, p),
@@ -74129,21 +74494,21 @@
         s(e),
         o(e, n)
     }
-    i(753);
+    i(755);
     var r = i(26).inherits
-      , l = i(189)
+      , l = i(190)
       , c = i(36)
-      , u = i(641)
-      , h = i(203).DofusButton
-      , d = i(741)
+      , u = i(643)
+      , h = i(204).DofusButton
+      , d = i(743)
       , p = i(35).getText
-      , m = i(322)
-      , f = i(567)
-      , g = i(565)
+      , m = i(323)
+      , f = i(569)
+      , g = i(567)
       , _ = i(22)
-      , v = i(754)
+      , v = i(756)
       , y = i(5)
-      , w = i(205).addTooltip
+      , w = i(206).addTooltip
       , b = 3
       , C = 3
       , I = {};
@@ -74444,9 +74809,10 @@
                     o ? u[i].setText(o.nameId) : console.error(new Error("JobsWindow: no interactive for id " + n))
                 }
         }),
-        this.recipeList.reset(),
+        this.recipeList.reset();
+        var x = window.gui.playerData.jobs.getMaxSlotsByJobId(e) || i;
         this.recipeList.addRecipes(n, {
-            nbCase: i
+            nbCase: x
         }, function() {
             E._afterRefreshTask()
         })
@@ -74529,19 +74895,19 @@
             i.filterRecipes())
         }
     }
-    i(755);
+    i(757);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(301)
+      , s = i(190)
+      , a = i(302)
       , r = i(35).getText
-      , l = i(446)
-      , c = i(390)
-      , u = i(322)
+      , l = i(448)
+      , c = i(391)
+      , u = i(323)
       , h = i(12)
       , d = i(32)
-      , p = i(756)
-      , m = i(185)
-      , f = i(209).simplifyString
+      , p = i(758)
+      , m = i(186)
+      , f = i(210).simplifyString
       , g = 8
       , _ = 3;
     o(n, s),
@@ -74550,44 +74916,44 @@
         t = t || {},
         this._recipesPlaceholder.hide(),
         this.recipesList.clearContent();
-        var n = this
-          , o = t.nbCase || (Object.keys(this.filterNbSlots).length ? null : g);
+        var n = this;
+        this._nbCase = t.nbCase || (Object.keys(this.filterNbSlots).length ? null : g),
         i = i || function() {}
         ;
-        var s = (new Date).getTime();
-        this._timestamp = s;
-        var a = {}
-          , r = [];
+        var o = (new Date).getTime();
+        this._timestamp = o;
+        var s = {}
+          , a = [];
         if (0 === e.length)
             return this._recipesPlaceholder.show(),
             this.recipesWrapper.delClassNames("spinner"),
             i();
-        for (var l = 0, c = e.length; l < c; l += 1) {
-            var d = e[l];
-            if (d) {
-                r.push(d);
-                var p = d.ingredientIds;
-                a[d.resultId] = !0;
-                for (var m = 0, f = p.length; m < f; m += 1) {
-                    var _ = p[m];
-                    a[_] = !0
+        for (var r = 0, l = e.length; r < l; r += 1) {
+            var c = e[r];
+            if (c) {
+                a.push(c);
+                var d = c.ingredientIds;
+                s[c.resultId] = !0;
+                for (var p = 0, m = d.length; p < m; p += 1) {
+                    var f = d[p];
+                    s[f] = !0
                 }
             }
         }
-        a = Object.keys(a),
-        u.getItems(a, function(e) {
+        s = Object.keys(s),
+        u.getItems(s, function(e) {
             return e ? (console.error("Failed to get ingredients", e),
-            i(e)) : n._timestamp !== s ? i() : h.eachSeries(r, function(e, t) {
+            i(e)) : n._timestamp !== o ? i() : h.eachSeries(a, function(e, t) {
                 n._addRecipe(e, t)
             }, function(e) {
                 if (e)
                     return console.error(e),
                     i(e);
-                if (o)
+                if (n._nbCase)
                     for (var t = 1; t <= g; t += 1) {
-                        var s = t <= o;
-                        n.filterNbSlots[t] = s,
-                        n.filterCheckboxes[t].toggleActivation(s)
+                        var o = t <= n._nbCase;
+                        n.filterNbSlots[t] = o,
+                        n.filterCheckboxes[t].toggleActivation(o)
                     }
                 return n.recipesWrapper.delClassNames("spinner"),
                 n.recipesList.show(),
@@ -74608,7 +74974,9 @@
         }
         var n = this
           , o = e.resultId
-          , s = new p(e);
+          , s = new p(e,{
+            nbCases: this._nbCase
+        });
         return n.recipesList.appendChild(s),
         d(s),
         s.on("tap", function() {
@@ -74700,7 +75068,8 @@
         }),
         t = t || {},
         this.rawRecipe = e,
-        this.isMain = t.isMain;
+        this.isMain = t.isMain,
+        this.nbCases = t.nbCases || 0;
         var n = i.createChild("div", {
             className: "recipeTitle"
         });
@@ -74720,11 +75089,13 @@
             text: o("ui.common.short.level") + " " + e.resultLevel
         });
         var r = e.ingredientIds.length
-          , u = h[r];
-        s.createChild("div", {
+          , u = t.nbCases - r >= 4
+          , d = u ? 0 : h[r]
+          , p = s.createChild("div", {
             className: "recipeXP",
-            text: o("ui.tooltip.monsterXpAlone", u)
-        }),
+            text: o("ui.tooltip.monsterXpAlone", d)
+        });
+        u && p.addClassNames("warningText"),
         this._ingredientsList = i.createChild("div", {
             className: "ingredientsList"
         }),
@@ -74736,14 +75107,14 @@
             i.emit("craftButtonTapped")
         })
     }
-    i(757);
+    i(759);
     var o = i(35).getText
-      , s = i(322)
-      , a = i(565)
+      , s = i(323)
+      , a = i(567)
       , r = i(26).inherits
-      , l = i(189)
-      , c = i(203)
-      , u = i(209).simplifyString
+      , l = i(190)
+      , c = i(204)
+      , u = i(210).simplifyString
       , h = {
         1: 1,
         2: 10,
@@ -74888,14 +75259,14 @@
             n.select(d[a.minute] || d[0])
         })
     }
-    i(759);
+    i(761);
     var o = i(26).inherits
       , s = i(35).getText
-      , a = i(392)
-      , r = i(479).serverConstants
-      , l = i(203).DofusButton
-      , c = i(401)
-      , u = i(210)
+      , a = i(393)
+      , r = i(481).serverConstants
+      , l = i(204).DofusButton
+      , c = i(402)
+      , u = i(211)
       , h = i(22)
       , d = {
         0: 0,
@@ -74978,25 +75349,25 @@
         return !(o < t || o > i) || (window.gui.openSimplePopup(c(n, t, i)),
         !1)
     }
-    i(761);
-    var s = i(205).addTooltip
+    i(763);
+    var s = i(206).addTooltip
       , a = i(26).inherits
-      , r = i(401)
+      , r = i(402)
       , l = i(35).getText
       , c = i(35).processText
       , u = i(22)
-      , h = i(392)
-      , d = i(203).DofusButton
-      , p = i(513)
-      , m = i(390)
+      , h = i(393)
+      , d = i(204).DofusButton
+      , p = i(515)
+      , m = i(391)
       , f = i(36)
-      , g = i(203)
-      , _ = i(301)
-      , v = i(507)
-      , y = i(288)
-      , w = i(211)
+      , g = i(204)
+      , _ = i(302)
+      , v = i(509)
+      , y = i(289)
+      , w = i(212)
       , b = i(5)
-      , C = i(189)
+      , C = i(190)
       , I = 250
       , T = 110
       , S = 20;
@@ -75086,7 +75457,7 @@
     ,
     n.prototype._displayEmblemBackgrounds = function(e) {
         function t() {
-            i._setBackgroundShape(this.id);
+            i._setBackgroundShape(this.id)
         }
         for (var i = this, n = [], o = 0; o < e.length; o++)
             n.push("gfx/emblems/icons/back/" + e[o].id + ".png");
@@ -75343,15 +75714,15 @@
         }),
         [t, i, e.guildLevel]
     }
-    i(763);
-    var s = i(210).DofusDate
-      , a = i(288)
-      , r = i(338)
+    i(765);
+    var s = i(211).DofusDate
+      , a = i(289)
+      , r = i(339)
       , l = i(35).getText
       , c = i(26).inherits
-      , u = i(483)
-      , h = i(401)
-      , d = i(189)
+      , u = i(485)
+      , h = i(402)
+      , d = i(190)
       , p = i(22)
       , m = i(32);
     c(n, h),
@@ -75465,16 +75836,16 @@
         }),
         [t, e.level]
     }
-    i(765);
-    var s = i(422)
-      , a = i(205).addTooltip
-      , r = i(210).DofusDate
-      , l = i(288)
+    i(767);
+    var s = i(423)
+      , a = i(206).addTooltip
+      , r = i(211).DofusDate
+      , l = i(289)
       , c = i(35).getText
       , u = i(26).inherits
-      , h = i(483)
-      , d = i(401)
-      , p = i(189)
+      , h = i(485)
+      , d = i(402)
+      , p = i(190)
       , m = i(22)
       , f = i(32);
     u(n, d),
@@ -75617,12 +75988,12 @@
         this.setupDom(),
         this.on("open", this.open)
     }
-    i(767);
+    i(769);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(35).getText
-      , r = i(680)
-      , l = i(483)
+      , r = i(682)
+      , l = i(485)
       , c = i(36)
       , u = 9;
     o(n, s),
@@ -75676,16 +76047,22 @@
         this.once("open", function() {
             e._setupDom(),
             e.setupSockets()
+        }),
+        this.on("open", function() {
+            var t = window.gui.playerData.guild.current;
+            t && e.emblemLogo.setValue({
+                guild: t
+            })
         })
     }
-    i(769);
+    i(771);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(22)
-      , r = i(203).DofusButton
-      , l = i(446)
+      , r = i(204).DofusButton
+      , l = i(448)
       , c = i(35).getText
-      , u = i(288);
+      , u = i(289);
     o(n, s),
     e.exports = n,
     n.prototype._setupDom = function() {
@@ -75892,18 +76269,18 @@
             this.on("open", e)
         })
     }
-    i(771);
-    var o = i(401)
+    i(773);
+    var o = i(402)
       , s = i(26).inherits
       , a = i(35).getText
-      , r = i(203).DofusButton
-      , l = i(446)
-      , c = i(392)
-      , u = i(209)
-      , h = i(483)
-      , d = i(200)
+      , r = i(204).DofusButton
+      , l = i(448)
+      , c = i(393)
+      , u = i(210)
+      , h = i(485)
+      , d = i(201)
       , p = i(22)
-      , m = i(338).GuildRightsBitEnum;
+      , m = i(339).GuildRightsBitEnum;
     s(n, o),
     e.exports = n,
     n.prototype._updateContent = function(e) {
@@ -76149,19 +76526,19 @@
         }),
         this.setupSocketEvents()
     }
-    i(773);
+    i(775);
     var o = i(26).inherits
-      , s = i(401)
-      , a = i(203).DofusButton
-      , r = i(207)
+      , s = i(402)
+      , a = i(204).DofusButton
+      , r = i(208)
       , l = i(22)
-      , c = i(209)
+      , c = i(210)
       , u = i(35).getText
       , h = i(36)
       , d = i(5)
-      , p = i(774)
-      , m = i(546)
-      , f = i(631)
+      , p = i(776)
+      , m = i(548)
+      , f = i(633)
       , g = "soft"
       , _ = "hard";
     o(n, s),
@@ -76285,9 +76662,9 @@
         }),
         this.addClassNames("button", "SwitchCurrencyButton", a)
     }
-    i(775);
+    i(777);
     var o = i(26).inherits
-      , s = i(203)
+      , s = i(204)
       , a = "soft"
       , r = "hard";
     o(n, s),
@@ -76368,13 +76745,13 @@
             i()
         })
     }
-    i(777);
-    var o = i(203).DofusButton
+    i(779);
+    var o = i(204).DofusButton
       , s = i(35).getText
       , a = i(26).inherits
-      , r = i(567)
+      , r = i(569)
       , l = i(36)
-      , c = i(401)
+      , c = i(402)
       , u = i(22)
       , h = i(5)
       , d = 20;
@@ -76464,11 +76841,11 @@
             n.windowBody.delClassNames("spinner")
         })
     }
-    i(779);
+    i(781);
     var o = i(26).inherits
-      , s = i(401)
-      , a = i(699)
-      , r = i(322);
+      , s = i(402)
+      , a = i(701)
+      , r = i(323);
     o(n, s),
     e.exports = n,
     n.prototype._createDom = function() {
@@ -76576,16 +76953,16 @@
             return e.itemInstance && e.itemInstance.livingObjectCategory ? void this._displayItem(e.itemInstance) : console.error("Must provide a living object or living object associated itemInstance")
         })
     }
-    i(781);
-    var o = i(205).addTooltip
-      , s = i(203).DofusButton
+    i(783);
+    var o = i(206).addTooltip
+      , s = i(204).DofusButton
       , a = i(35).getText
       , r = i(26).inherits
-      , l = i(565)
-      , c = i(641)
-      , u = i(401)
+      , l = i(567)
+      , c = i(643)
+      , u = i(402)
       , h = i(22)
-      , d = i(189)
+      , d = i(190)
       , p = {
         MOOD_LEAN: 0,
         MOOD_SATISFIED: 1,
@@ -76659,16 +77036,16 @@
         var t = c.items[e.itemHistory[e.itemHistory.length - 1]];
         e._displayItem(t)
     }
-    i(783);
+    i(785);
     var a = i(35).getText
       , r = i(26).inherits
-      , l = i(699)
-      , c = i(322)
-      , u = i(756)
-      , h = i(754)
+      , l = i(701)
+      , c = i(323)
+      , u = i(758)
+      , h = i(756)
       , d = i(36)
-      , p = i(401)
-      , m = i(203);
+      , p = i(402)
+      , m = i(204);
     r(n, p),
     e.exports = n,
     n.prototype._onOpen = function(e) {
@@ -76825,8 +77202,10 @@
             var c = s.createChild("div", {
                 className: "tableContainer"
             });
-            this.bonusTable = c.appendChild(new p({
-                className: "bonusTable"
+            this.bonusTable = c.appendChild(new p([{
+                id: "description"
+            }],null ,{
+                clickable: !1
             })),
             window.gui.on("SetUpdateMessage", function(e) {
                 i._updateEquippedItems(e.setObjects)
@@ -76837,18 +77216,18 @@
             this._displayItemSet(t)
         })
     }
-    i(785);
-    var o = i(446)
-      , s = i(223)
+    i(787);
+    var o = i(448)
+      , s = i(224)
       , a = i(35).getText
       , r = i(26).inherits
-      , l = i(699)
-      , c = i(565)
-      , u = i(322)
-      , h = i(392)
+      , l = i(701)
+      , c = i(567)
+      , u = i(323)
+      , h = i(393)
       , d = i(36)
-      , p = i(483)
-      , m = i(401)
+      , p = i(400)
+      , m = i(402)
       , f = 1
       , g = -1;
     r(n, m),
@@ -76991,14 +77370,19 @@
     ,
     n.prototype._addEffectsToTable = function(e) {
         if (this.itemSet.bonusIsSecret && !e.length)
-            return void this.bonusTable.addRow([a("ui.set.secretBonus")]);
+            return void this.bonusTable.addRow({
+                description: a("ui.set.secretBonus")
+            });
         for (var t = 0; t < e.length; t += 1) {
             var i = e[t];
             if (i) {
-                var n = this.bonusTable.addRow([i.description]);
+                var n = this.bonusTable.addRow({
+                    description: i.description
+                });
                 n.toggleClassName("negative", i.effect.bonusType === g)
             }
         }
+        this.bonusTable.scroller.goToTop()
     }
 }
 , function(e, t) {}
@@ -77035,17 +77419,17 @@
             return i < n ? -1 : i > n ? 1 : void 0
         })
     }
-    i(787);
+    i(789);
     var s = i(26).inherits
-      , a = i(401)
+      , a = i(402)
       , r = i(22)
       , l = i(35).getText
-      , c = i(574)
-      , u = i(205).addTooltip
-      , h = i(237)
-      , d = i(278)
+      , c = i(576)
+      , u = i(206).addTooltip
+      , h = i(238)
+      , d = i(279)
       , p = i(5)
-      , m = i(260).Delay;
+      , m = i(261).Delay;
     s(n, a),
     e.exports = n,
     n.prototype._setupSpellData = function() {
@@ -77245,11 +77629,11 @@
         }),
         e.setupListeners()
     }
-    i(789);
+    i(791);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(32)
-      , r = i(203).DofusButton
+      , r = i(204).DofusButton
       , l = i(35).getText
       , c = i(22);
     o(n, s),
@@ -77332,18 +77716,18 @@
             e._closeAll()
         })
     }
-    i(791);
+    i(793);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(22)
-      , r = i(203).DofusButton
+      , r = i(204).DofusButton
       , l = i(32)
       , c = i(35).getText
-      , u = i(411)
-      , h = i(211)
-      , d = i(237)
-      , p = i(278)
-      , m = i(301)
+      , u = i(412)
+      , h = i(212)
+      , d = i(238)
+      , p = i(279)
+      , m = i(302)
       , f = 3
       , g = h.MAX_MEMBERS_PER_PARTY
       , _ = 563
@@ -77622,12 +78006,12 @@
             })
         })
     }
-    var o = i(203).DofusButton
+    var o = i(204).DofusButton
       , s = i(35).getText
       , a = i(26).inherits
-      , r = i(401)
+      , r = i(402)
       , l = i(22)
-      , c = i(639).actionsEnum;
+      , c = i(641).actionsEnum;
     a(n, r),
     e.exports = n
 }
@@ -77686,19 +78070,19 @@
             e.handleRewardsIndicatorDisplay()
         })
     }
-    i(794);
+    i(796);
     var o = i(12)
       , s = i(26).inherits
-      , a = i(401)
+      , a = i(402)
       , r = i(35).getText
-      , l = i(203).DofusButton
-      , c = i(567)
+      , l = i(204).DofusButton
+      , c = i(569)
       , u = i(32)
       , h = i(22)
       , d = i(36)
-      , p = i(217)
+      , p = i(218)
       , m = i(5)
-      , f = i(209);
+      , f = i(210);
     s(n, a),
     e.exports = n,
     n.prototype.addReward = function(e, t) {
@@ -77900,7 +78284,8 @@
             className: "cancelBtn"
         }));
         u.on("tap", function() {
-            return e ? (window.gui.serversData.selectServer(e.id),
+            return e ? (u.disable(),
+            window.gui.serversData.selectServer(e.id),
             void r.close(t.id)) : console.error("No server")
         }),
         h.on("tap", function() {
@@ -77912,12 +78297,12 @@
             3 === e.status ? u.enable() : u.disable()
         })
     }
-    i(796);
+    i(798);
     var o = i(26).inherits
-      , s = i(797)
-      , a = i(401)
+      , s = i(799)
+      , a = i(402)
       , r = i(22)
-      , l = i(203).DofusButton
+      , l = i(204).DofusButton
       , c = i(35).getText;
     o(n, a),
     e.exports = n
@@ -78012,12 +78397,12 @@
         d.addClassNames("selected"),
         this._rulesContent.hide()
     }
-    i(798);
+    i(800);
     var o = i(26).inherits
-      , s = i(189)
+      , s = i(190)
       , a = i(32)
       , r = i(35).getText
-      , l = i(479);
+      , l = i(481);
     o(n, s),
     e.exports = n,
     n.prototype.setServer = function(e) {
@@ -78228,7 +78613,8 @@
             className: "confirmBtn"
         }));
         H.on("tap", function() {
-            b && window.gui.serversData.selectServer(b.data.id)
+            b && (H.disable(),
+            window.gui.serversData.selectServer(b.data.id))
         });
         var G = S.createChild("div", {
             className: "bottomLeftBtnDiv"
@@ -78283,16 +78669,16 @@
             h.close(w.id)
         })
     }
-    i(800);
+    i(802);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(32)
-      , r = i(801)
-      , l = i(797)
-      , c = i(203).DofusButton
+      , r = i(803)
+      , l = i(799)
+      , c = i(204).DofusButton
       , u = i(35).getText
       , h = i(22)
-      , d = i(390);
+      , d = i(391);
     o(n, s),
     e.exports = n
 }
@@ -78326,9 +78712,9 @@
         }),
         this.setServer(e)
     }
-    i(802);
+    i(804);
     var o = i(26).inherits
-      , s = i(189)
+      , s = i(190)
       , a = i(32)
       , r = i(5);
     o(n, s),
@@ -78477,20 +78863,28 @@
             w.disable(),
             d.length <= f && C.disable(),
             i(),
-            window.gui.on("serversUpdate", i)
+            window.gui.on("serversUpdate", i),
+            m.consoleButton.toggleDisplay(window.gui.playerData.identification.hasRights)
         }),
         this.on("close", function() {
             window.gui.removeListener("serversUpdate", i)
-        })
+        }),
+        this.consoleButton = y.appendChild(new s({
+            className: ["consoleButton"],
+            hidden: !0
+        },function() {
+            r["switch"]("adminConsole")
+        }
+        ))
     }
-    i(804);
+    i(806);
     var o = i(26).inherits
-      , s = i(203)
-      , a = i(401)
+      , s = i(204)
+      , a = i(402)
       , r = i(22)
-      , l = i(805)
+      , l = i(807)
       , c = i(35).getText
-      , u = i(480)
+      , u = i(482)
       , h = i(30);
     o(n, a),
     e.exports = n
@@ -78546,13 +78940,13 @@
         }),
         this.setServer(e)
     }
-    i(806);
+    i(808);
     var o = i(26).inherits
-      , s = i(189)
+      , s = i(190)
       , a = i(32)
       , r = i(35).getText
-      , l = i(479)
-      , c = i(480);
+      , l = i(481)
+      , c = i(482);
     o(n, s),
     e.exports = n,
     n.prototype.setServer = function(e) {
@@ -78598,11 +78992,11 @@
         }),
         this.once("open", n.prototype._createContent)
     }
-    i(808);
+    i(810);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(22)
-      , r = i(203).DofusButton
+      , r = i(204).DofusButton
       , l = i(35).getText
       , c = i(5);
     o(n, s),
@@ -78687,8 +79081,8 @@
             e.setContent(t)
         })
     }
-    i(810);
-    var o, s, a, r = i(26).inherits, l = i(401), c = i(189), u = i(203), h = i(32), d = i(22), p = i(35).getText, m = i(209), f = i(680), g = i(483), _ = i(811), v = 3, y = 2;
+    i(812);
+    var o, s, a, r = i(26).inherits, l = i(402), c = i(190), u = i(204), h = i(32), d = i(22), p = i(35).getText, m = i(210), f = i(682), g = i(485), _ = i(813), v = 3, y = 2;
     r(n, l),
     e.exports = n,
     n.prototype.createTabs = function(e, t) {
@@ -79006,16 +79400,16 @@
             i(e, n.x, n.y, !0)
         })
     }
-    i(813);
-    var o = i(203).DofusButton
-      , s = i(417)
+    i(815);
+    var o = i(204).DofusButton
+      , s = i(418)
       , a = i(35).getText
       , r = i(26).inherits
-      , l = i(322)
-      , c = i(200)
-      , u = i(202)
-      , h = i(185).setDroppable
-      , d = i(401)
+      , l = i(323)
+      , c = i(201)
+      , u = i(203)
+      , h = i(186).setDroppable
+      , d = i(402)
       , p = i(22);
     r(n, d),
     e.exports = n,
@@ -79171,16 +79565,16 @@
             g.setWeight(g.weight - e.objectUIDList.length)
         })
     }
-    i(815);
-    var o = i(203)
-      , s = i(185).setDroppable
-      , a = i(417)
+    i(817);
+    var o = i(204)
+      , s = i(186).setDroppable
+      , a = i(418)
       , r = i(35).getText
       , l = i(26).inherits
-      , c = i(322)
-      , u = i(200)
-      , h = i(202)
-      , d = i(401)
+      , c = i(323)
+      , u = i(201)
+      , h = i(203)
+      , d = i(402)
       , p = i(22);
     l(n, d),
     e.exports = n,
@@ -79265,21 +79659,21 @@
             return i ? console.error("Failed to get token " + e + " for trade: " + i) : t(n[0])
         }) : t(null )
     }
-    i(817);
-    var s = i(818)
-      , a = i(819)
-      , r = i(203)
+    i(819);
+    var s = i(820)
+      , a = i(821)
+      , r = i(204)
       , l = i(49)
-      , c = i(820)
+      , c = i(822)
       , u = i(35).getText
-      , h = i(209)
+      , h = i(210)
       , d = i(26).inherits
-      , p = i(699)
-      , m = i(322)
-      , f = i(528)
-      , g = i(401)
+      , p = i(701)
+      , m = i(323)
+      , f = i(530)
+      , g = i(402)
       , _ = i(22)
-      , v = i(631)
+      , v = i(633)
       , y = 410
       , w = 392
       , b = 424
@@ -79663,13 +80057,13 @@
         return m[e.objectGID + "x" + t] || 0
     }
     var a = i(26).inherits
-      , r = i(207)
+      , r = i(208)
       , l = i(35).getText
-      , c = i(203)
-      , u = i(209)
-      , h = i(322)
-      , d = i(392)
-      , p = i(189)
+      , c = i(204)
+      , u = i(210)
+      , h = i(323)
+      , d = i(393)
+      , p = i(190)
       , m = {}
       , f = {};
     a(n, p),
@@ -79894,14 +80288,14 @@
         i.currentOffer = t,
         i.tradeItemWindow.updateSelection(t)
     }
-    var l = i(657)
+    var l = i(659)
       , c = i(35).getText
-      , u = i(209)
+      , u = i(210)
       , h = i(26).inherits
-      , d = i(322)
-      , p = i(546)
-      , m = i(399)
-      , f = i(189);
+      , d = i(323)
+      , p = i(548)
+      , m = i(400)
+      , f = i(190);
     h(n, f),
     e.exports = n,
     n.prototype.updateDisplay = function() {
@@ -80111,12 +80505,12 @@
         this.tokenItem = null
     }
     var o = i(26).inherits
-      , s = i(207)
+      , s = i(208)
       , a = i(35).getText
-      , r = i(203)
-      , l = i(209)
-      , c = i(546)
-      , u = i(189)
+      , r = i(204)
+      , l = i(210)
+      , c = i(548)
+      , u = i(190)
       , h = 10;
     o(n, u),
     e.exports = n,
@@ -80333,14 +80727,14 @@
         this.on("open", this._onOpen),
         this.on("close", this._onClose)
     }
-    i(822);
-    var o = i(203)
+    i(824);
+    var o = i(204)
       , s = i(35).getText
-      , a = i(209)
+      , a = i(210)
       , r = i(26).inherits
-      , l = i(401)
+      , l = i(402)
       , c = i(22)
-      , u = i(189);
+      , u = i(190);
     r(n, l),
     e.exports = n,
     n.prototype._reset = function() {
@@ -80480,15 +80874,15 @@
             })
         })
     }
-    i(824);
-    var o = i(310)
+    i(826);
+    var o = i(311)
       , s = i(26).inherits
-      , a = i(816)
-      , r = i(401)
+      , a = i(818)
+      , r = i(402)
       , l = i(22)
       , c = i(35).getText
-      , u = i(203)
-      , h = i(209)
+      , u = i(204)
+      , h = i(210)
       , d = 20;
     s(n, r),
     e.exports = n
@@ -80553,13 +80947,13 @@
             i && e === i.getProperty("objectUID") && u.close("tradeItem")
         })
     }
-    i(826);
-    var o = i(310)
-      , s = i(446)
+    i(828);
+    var o = i(311)
+      , s = i(448)
       , a = i(24).dimensions
       , r = i(26).inherits
-      , l = i(816)
-      , c = i(401)
+      , l = i(818)
+      , c = i(402)
       , u = i(22)
       , h = i(35).getText
       , d = {
@@ -80579,12 +80973,12 @@
         var t, i;
         return "number" == typeof e ? t = e : (t = e.getProperty("id"),
         i = e.getItemInstance()),
-        !(!i || !this._selectItem(i, !0)) || !!(i = this.storageView.selectSlotByGID(t)) && (this._selectItem(i, !0),
+        !(!i || !this._selectItem(i, !0)) || !!(i = this.storageView.selectAndShowSlotByGID(t)) && (this._selectItem(i, !0),
         !0)
     }
     ,
     n.prototype._selectItem = function(e, t) {
-        return !(!this.mode || "sell-myShop" === this.mode) && (!!this.storageView.selectSlot(e.objectUID) && (t && u.getWindow("tradeStorage").setFilter(e.getProperty("typeId")),
+        return !(!this.mode || "sell-myShop" === this.mode) && (!!this.storageView.selectAndShowSlotByUID(e.objectUID) && (t && u.getWindow("tradeStorage").setFilter(e.getProperty("typeId")),
         u.getWindow("tradeItem").displayItem(this.mode, e),
         !0))
     }
@@ -80602,18 +80996,18 @@
         this.on("open", this._onOpen),
         this.on("closed", this._onClose)
     }
-    i(828);
-    var o = i(310)
-      , s = i(203)
+    i(830);
+    var o = i(311)
+      , s = i(204)
       , a = i(35).getText
-      , r = i(209)
+      , r = i(210)
       , l = i(26).inherits
-      , c = i(322)
-      , u = i(386)
-      , h = i(205)
-      , d = i(401)
+      , c = i(323)
+      , u = i(387)
+      , h = i(206)
+      , d = i(402)
       , p = i(22)
-      , m = i(189)
+      , m = i(190)
       , f = {
         ExchangeStartOkNpcShopMessage: "buy-npc",
         ExchangeShopStockStartedMessage: "modify-myShop",
@@ -80725,7 +81119,7 @@
     n.prototype._updateItemCount = function(e) {
         this.itemCount = e,
         this.itemCountElt.setText(e + "/" + this.descriptor.maxItemPerAccount),
-        this.itemCountTooltip.setText(a("ui.bidhouse.quantityObjectSold", e, this.descriptor.maxItemPerAccount))
+        this.itemCountTooltip.setText(a("ui.bidhouse.quantityObjectSold", e, this.descriptor.maxItemPerAccount));
     }
     ,
     n.prototype._getBidHouseInfoHtml = function(e) {
@@ -80883,14 +81277,7 @@
                         break
                     }
             c.createItemInstances(e, function(e, i) {
-                if (e)
-                    return console.error(e);
-                if (n.shopViewer.addItems(i.array),
-                t) {
-                    var o = i.array[0];
-                    n.shopViewer.selectItem(o.objectUID),
-                    n.shopViewer.selectFilter(o.getItem().typeId)
-                }
+                return e ? console.error(e) : void (t ? n.shopViewer.addItemsAndHighlightThem(i.array) : n.shopViewer.addItems(i.array))
             })
         }
         function t(e) {
@@ -80941,10 +81328,10 @@
         this.wallet = null ,
         this.on("open", this._onOpen)
     }
-    i(830);
+    i(832);
     var o = i(26).inherits
-      , s = i(831)
-      , a = i(401)
+      , s = i(833)
+      , a = i(402)
       , r = 300
       , l = 62;
     o(n, a),
@@ -80978,12 +81365,12 @@
             }
         })
     }
-    i(832);
-    var s = i(203)
-      , a = i(209)
+    i(834);
+    var s = i(204)
+      , a = i(210)
       , r = i(26).inherits
       , l = i(22)
-      , c = i(189);
+      , c = i(190);
     r(n, c),
     e.exports = n,
     n.prototype._initialize = function() {
@@ -81052,6 +81439,11 @@
             className: "WorldMapWindow",
             plusButton: !0,
             minusButton: !0,
+            positionInfo: {
+                width: "w",
+                height: "h",
+                isDefault: !0
+            },
             title: c("ui.cartography.title")
         }),
         this.status = {
@@ -81086,11 +81478,7 @@
             this.status.lastWindowInfo.x = this.position.x,
             this.status.lastWindowInfo.y = this.position.y,
             this.status.lastWindowInfo.w = this.position.width,
-            this.status.lastWindowInfo.h = this.position.height,
-            this.positionInfo = {
-                width: "w",
-                height: "h"
-            };
+            this.status.lastWindowInfo.h = this.position.height;
             var i = this;
             this._createWorldMap(function(t) {
                 return t ? (i._removeSpinner(),
@@ -81104,18 +81492,18 @@
         }),
         this.on("close", this._onClose)
     }
-    i(834);
-    var o = i(205).addTooltip
+    i(836);
+    var o = i(206).addTooltip
       , s = i(26).inherits
-      , a = i(835)
-      , r = i(852)
-      , l = i(401)
+      , a = i(837)
+      , r = i(854)
+      , l = i(402)
       , c = i(35).getText
-      , u = i(203)
+      , u = i(204)
       , h = i(24).dimensions
       , d = i(22)
-      , p = i(457)
-      , m = i(853)
+      , p = i(459)
+      , m = i(855)
       , f = 216
       , g = {
         temples: 1,
@@ -81417,41 +81805,41 @@
         this._iconsImage = null ,
         this._iconBatchData = new A(this)
     }
-    i(836);
+    i(838);
     var o = i(12)
       , s = i(26).inherits
-      , a = i(189)
-      , r = i(837)
+      , a = i(190)
+      , r = i(839)
       , l = i(6)
-      , c = i(617)
-      , u = i(839)
-      , h = i(840)
-      , d = i(841)
-      , p = i(842)
-      , m = i(252)
-      , f = i(290)
+      , c = i(619)
+      , u = i(841)
+      , h = i(842)
+      , d = i(843)
+      , p = i(844)
+      , m = i(253)
+      , f = i(291)
       , g = i(36)
-      , _ = i(260)
-      , v = i(843)
-      , y = i(844)
-      , w = i(845)
+      , _ = i(261)
+      , v = i(845)
+      , y = i(846)
+      , w = i(847)
       , b = w.SUBAREA_COLOR
       , C = w.VIEW_MARGIN
       , I = w.CHUNK_WIDTH
       , T = w.CHUNK_HEIGHT
-      , S = i(846)
-      , A = i(847)
-      , E = i(851)
-      , x = i(850)
-      , M = i(205).addTooltip
-      , N = i(335)
-      , R = i(295)
+      , S = i(848)
+      , A = i(849)
+      , E = i(853)
+      , x = i(852)
+      , M = i(206).addTooltip
+      , N = i(336)
+      , R = i(296)
       , O = i(33).getPosition
-      , P = i(209)
-      , D = i(285)
+      , P = i(210)
+      , D = i(286)
       , L = i(33).position
       , B = i(32)
-      , k = i(408)
+      , k = i(409)
       , F = _.Tween
       , H = _.easing;
     s(n, a),
@@ -81754,7 +82142,7 @@
         }
         var s = "subAreaOverlay" + e;
         if (null === this._subAreaSprite || this._subAreaSprite.id !== s) {
-            for (var a = [], r = 1 / 0, l = 1 / 0, c = -(1 / 0), u = -(1 / 0), d = {}, m = n.gridPositions[this._worldMapId], f = 0; f < m.length; f += 2) {
+            for (var a = [], r = 1 / 0, l = 1 / 0, c = -(1 / 0), u = -(1 / 0), d = {}, m = n.gridPositions[this._worldMapId] || [], f = 0; f < m.length; f += 2) {
                 var g = m[f]
                   , _ = m[f + 1]
                   , v = g + ":" + _;
@@ -82210,7 +82598,7 @@
             f.stopMovingWorldMap(),
             t(L),
             o(),
-            m.wBody.on("dom.touchmove", s)
+            m.wBody.on("dom.touchmove", s);
         }),
         this.on("tooltipOut", function() {
             p = !1,
@@ -82315,9 +82703,9 @@
         this.clear = this._clear),
         this.setCanvasDimensions(this.canvas.width, this.canvas.height)
     }
-    var a = i(838)
-      , r = i(271)
-      , l = i(266);
+    var a = i(840)
+      , r = i(272)
+      , l = i(267);
     e.exports = s,
     s.prototype.togglePixelArt = function() {
         this.renderingProgram === this.renderer._programPixelArt ? this.renderingProgram = this.renderer._programFiltering : this.renderingProgram = this.renderer._programPixelArt
@@ -82353,21 +82741,29 @@
     }
     ,
     s.prototype.setCanvasDimensions = function(e, t, i, n, o) {
-        this.canvas.style.width = e.toString() + "px",
-        this.canvas.style.height = t.toString() + "px",
-        void 0 !== i && (this.canvas.style.left = i + "px"),
-        void 0 !== n && (this.canvas.style.top = n + "px"),
-        void 0 !== o && (this.canvas.style.position = o);
-        var s = e * this.pixelRatio
-          , a = t * this.pixelRatio;
-        if (this.canvas.width = s,
-        this.canvas.height = a,
-        this.renderer.resetDimension(s, a),
-        this.adjustToCanvasRatio) {
-            var r = this.h * s / a;
-            this.setDimensions(this.l, this.t, r, this.h)
+        if (void 0 !== o && (this.canvas.style.position = o),
+        this._viewWidth !== e || this._viewHeight !== t || this._viewLeft !== i || this._viewTop !== n) {
+            this._viewWidth = e,
+            this._viewHeight = t,
+            this._viewLeft = i,
+            this._viewTop = n,
+            this.canvas.style.width = e.toString() + "px",
+            this.canvas.style.height = t.toString() + "px",
+            void 0 !== i && (this.canvas.style.left = i + "px"),
+            void 0 !== n && (this.canvas.style.top = n + "px");
+            var s = e * this.pixelRatio
+              , a = t * this.pixelRatio;
+            if (this.canvas.width = s,
+            this.canvas.height = a,
+            this.renderer.resetDimension(s, a),
+            this.adjustToCanvasRatio) {
+                var r = this.h * s / a;
+                this.setDimensions(this.l, this.t, r, this.h)
+            }
+            return this._setFieldOfView(),
+            !0
         }
-        this._setFieldOfView()
+        return !1
     }
     ,
     s.prototype.setDimensions = function(e, t, i, n) {
@@ -82782,35 +83178,41 @@
     n.prototype.updatePosition = function(e) {
         if (!this._frozen) {
             this.a += (this.acceleration - this.a) * (u * e);
-            var t = this.fovWAbsolute / this.zoomTarget
-              , i = this.fovHAbsolute / this.zoomTarget
-              , n = this.l + t / 2
-              , o = this.t + i / 2
-              , s = this.r - t / 2
-              , a = this.b - i / 2
-              , r = Math.min(s, Math.max(n, this.followee.x))
-              , h = Math.min(a, Math.max(o, this.followee.y))
-              , d = l / this.zoomTarget
-              , p = this.x
-              , m = this.y
-              , f = this.z
-              , g = r - p
-              , _ = h - m
-              , v = d - f;
-            if (Math.abs(g) < .5 && Math.abs(_) < .5 && Math.abs(v) < .5)
-                return this.x = r,
-                this.y = h,
-                this.z = d,
+            var t = this.min.x
+              , i = this.max.x
+              , n = this.min.y
+              , o = this.max.y
+              , s = Math.min(i, Math.max(t, this.followee.x))
+              , a = Math.min(o, Math.max(n, this.followee.y))
+              , r = l / this.zoomTarget
+              , h = this.x
+              , d = this.y
+              , p = this.z
+              , m = s - h
+              , f = a - d
+              , g = r - p;
+            if (Math.abs(m) < .5 && Math.abs(f) < .5 && Math.abs(g) < .5)
+                return this.x = s,
+                this.y = a,
+                this.z = r,
                 this.zoom = this.zoomTarget,
                 this.emitAtDestination && (this.emitAtDestination = !1,
                 this.emit("reached")),
                 this.a += (1 - this.a) * c,
                 !1;
-            var y = 1 - Math.pow(2 - this.a, e);
-            return this.x += y * g,
-            this.y += y * _,
-            this.z += y * v,
-            this.zoom = l / this.z,
+            var _ = 1 - Math.pow(2 - this.a, e);
+            this.x += _ * m,
+            this.y += _ * f,
+            this.z += _ * g,
+            this.zoom = l / this.z;
+            var v = this.fovWAbsolute / this.zoom
+              , y = this.fovHAbsolute / this.zoom;
+            return t = this.l + v / 2,
+            n = this.t + y / 2,
+            i = this.r - v / 2,
+            o = this.b - y / 2,
+            this.x < t ? this.x = t : this.x > i && (this.x = i),
+            this.y < n ? this.y = n : this.y > o && (this.y = o),
             !0
         }
     }
@@ -82848,7 +83250,7 @@
         this._createVertexBuffer()
     }
     var o = i(26).inherits
-      , s = i(243)
+      , s = i(244)
       , a = i(6);
     o(n, s),
     e.exports = n,
@@ -82911,7 +83313,7 @@
         this._createVertexBuffer()
     }
     var o = i(26).inherits
-      , s = i(243);
+      , s = i(244);
     o(n, s),
     e.exports = n,
     n.prototype._createVertexBuffer = function() {
@@ -82986,7 +83388,7 @@
 }
 , function(e, t, i) {
     var n = i(6)
-      , o = i(260)
+      , o = i(261)
       , s = 1e3 / n.FPS
       , a = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(e) {
         window.setTimeout(e, s)
@@ -83039,7 +83441,7 @@
         this.scene = l,
         this.distToViewCenter = c
     }
-    var o = i(845)
+    var o = i(847)
       , s = o.CHUNK_WIDTH
       , a = o.CHUNK_HEIGHT;
     e.exports = n
@@ -83078,9 +83480,9 @@
         this.worldMap = e,
         this.reset()
     }
-    var o = i(848).clusterOrdering
-      , s = i(850)
-      , a = i(846);
+    var o = i(850).clusterOrdering
+      , s = i(852)
+      , a = i(848);
     e.exports = n,
     n.prototype.getClusterIcons = function(e) {
         var t = this.iconClusters[e];
@@ -83211,8 +83613,8 @@
     }
 }
 , function(e, t, i) {
-    var n = i(845).ICON_DIAMETER
-      , o = i(849);
+    var n = i(847).ICON_DIAMETER
+      , o = i(851);
     t.positionOrdering = function(e, t) {
         var i = e.y - t.y;
         return 0 === i ? e.x - t.x : i
@@ -83264,8 +83666,8 @@
         this.icons = [],
         this.nVisibleIcons = 0
     }
-    var o = i(849)
-      , s = i(848).getRelativePositions;
+    var o = i(851)
+      , s = i(850).getRelativePositions;
     e.exports = n,
     n.prototype.getIconPosition = function(e) {
         var t = s(this.nVisibleIcons);
@@ -83301,9 +83703,9 @@
         this._populateVertexBuffer()
     }
     var s = i(26).inherits
-      , a = i(243)
-      , r = i(260)
-      , l = i(251)
+      , a = i(244)
+      , r = i(261)
+      , l = i(252)
       , c = r.Tween
       , u = 3.3
       , h = .2
@@ -83711,7 +84113,7 @@
     function r(e) {
         return e < 10 ? "0" + e : e
     }
-    var l = i(345)
+    var l = i(346)
       , c = i(35).getText
       , u = 436
       , h = 421
@@ -83885,20 +84287,20 @@
         }),
         this._setupEvents()
     }
-    i(855);
+    i(857);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(35).getText
-      , r = i(335)
-      , l = i(856)
-      , c = i(867)
-      , u = i(868)
+      , r = i(336)
+      , l = i(858)
+      , c = i(869)
+      , u = i(870)
       , h = i(85)
-      , d = i(870)
-      , p = i(882)
-      , m = i(884)
+      , d = i(872)
+      , p = i(884)
+      , m = i(886)
       , f = i(22)
-      , g = i(733);
+      , g = i(735);
     o(n, s),
     e.exports = n,
     n.prototype._initTabs = function() {
@@ -83996,20 +84398,20 @@
             this.tabs.close()
         })
     }
-    i(857);
-    var o = i(422)
+    i(859);
+    var o = i(423)
       , s = i(26).inherits
       , a = i(35).getText
-      , r = i(507)
-      , l = i(189)
-      , c = i(288)
-      , u = i(209)
-      , h = i(858)
+      , r = i(509)
+      , l = i(190)
+      , c = i(289)
+      , u = i(210)
+      , h = i(860)
       , d = i(32)
       , p = i(22)
-      , m = i(859)
-      , f = i(861)
-      , g = i(863);
+      , m = i(861)
+      , f = i(863)
+      , g = i(865);
     s(n, l),
     e.exports = n,
     n.prototype._updateAllianceInformation = function() {
@@ -84147,19 +84549,19 @@
         return l(t, h("ui.alliance.giveLeadership")),
         t
     }
-    i(860);
-    var a = i(334)
-      , r = i(348)
-      , l = i(205).addTooltip
-      , c = i(446)
-      , u = i(288)
+    i(862);
+    var a = i(335)
+      , r = i(349)
+      , l = i(206).addTooltip
+      , c = i(448)
+      , u = i(289)
       , h = i(35).getText
-      , d = i(338)
+      , d = i(339)
       , p = i(26).inherits
-      , m = i(399)
+      , m = i(400)
       , f = i(32)
-      , g = i(203)
-      , _ = i(189);
+      , g = i(204)
+      , _ = i(190);
     p(n, _),
     e.exports = n,
     n.prototype._updateAvaMode = function() {
@@ -84307,19 +84709,19 @@
         return s(i, null , l("ui.prism.changeVulnerabilityHour")),
         i
     }
-    i(862);
-    var s = i(205).addTooltip
-      , a = i(422)
-      , r = i(338)
+    i(864);
+    var s = i(206).addTooltip
+      , a = i(423)
+      , r = i(339)
       , l = i(35).getText
-      , c = i(338).GuildRightsBitEnum
+      , c = i(339).GuildRightsBitEnum
       , u = i(26).inherits
-      , h = i(345)
-      , d = i(399)
-      , p = i(210)
+      , h = i(346)
+      , d = i(400)
+      , p = i(211)
       , m = i(22)
-      , f = i(203)
-      , g = i(189);
+      , f = i(204)
+      , g = i(190);
     u(n, g),
     e.exports = n,
     n.prototype._setupEvents = function() {
@@ -84551,15 +84953,15 @@
         i.on("slotTap", C[e.type]),
         i
     }
-    i(864);
-    var h = i(335)
+    i(866);
+    var h = i(336)
       , d = i(35).getText
-      , p = i(474)
-      , m = i(865)
-      , f = i(641)
+      , p = i(476)
+      , m = i(867)
+      , f = i(643)
       , g = i(26).inherits
-      , _ = i(399)
-      , v = i(189)
+      , _ = i(400)
+      , v = i(190)
       , y = h.entityType
       , w = h.fightingSide
       , b = h.fightState;
@@ -84737,14 +85139,14 @@
         console.log("CLEARING SLOT!"),
         d.enableTooltip(e, !1)
     }
-    i(866);
+    i(868);
     var r = i(26).inherits
-      , l = i(189)
-      , c = i(237)
-      , u = i(278)
+      , l = i(190)
+      , c = i(238)
+      , u = i(279)
       , h = i(35).getText
-      , d = i(205)
-      , p = i(335).fightingSide
+      , d = i(206)
+      , p = i(336).fightingSide
       , m = 5;
     r(n, l),
     e.exports = n,
@@ -84965,20 +85367,20 @@
             t.setStyle("backgroundImage", e)
         })
     }
-    i(869);
+    i(871);
     var r = i(26).inherits
-      , l = i(189)
-      , c = i(507)
+      , l = i(190)
+      , c = i(509)
       , u = i(35).getText
-      , h = i(203)
+      , h = i(204)
       , d = h.DofusButton
-      , p = i(483)
-      , m = i(446)
-      , f = i(390)
+      , p = i(485)
+      , m = i(448)
+      , f = i(391)
       , g = i(5)
       , _ = i(30)
-      , v = i(456)
-      , y = i(291);
+      , v = i(458)
+      , y = i(292);
     r(n, l),
     e.exports = n,
     n.prototype._createDom = function() {
@@ -85249,21 +85651,21 @@
             this._resetTabs()
         })
     }
-    i(871);
+    i(873);
     var o = i(26).inherits
       , s = i(35).getText
-      , a = i(507)
-      , r = i(189)
-      , l = i(205).addTooltip
-      , c = i(872)
-      , u = i(874)
-      , h = i(876)
-      , d = i(878)
-      , p = i(880)
-      , m = i(641)
-      , f = i(288)
-      , g = i(474)
-      , _ = i(209)
+      , a = i(509)
+      , r = i(190)
+      , l = i(206).addTooltip
+      , c = i(874)
+      , u = i(876)
+      , h = i(878)
+      , d = i(880)
+      , p = i(882)
+      , m = i(643)
+      , f = i(289)
+      , g = i(476)
+      , _ = i(210)
       , v = i(22);
     o(n, r),
     e.exports = n,
@@ -85407,18 +85809,18 @@
             this._setupSocketEvents()
         })
     }
-    i(873);
-    var r = i(189)
+    i(875);
+    var r = i(190)
       , l = i(26).inherits
-      , c = i(399)
+      , c = i(400)
       , u = i(35).getText
-      , h = i(203)
+      , h = i(204)
       , d = i(22)
-      , p = i(446)
-      , m = i(456)
-      , f = i(338).GuildRightsBitEnum
+      , p = i(448)
+      , m = i(458)
+      , f = i(339).GuildRightsBitEnum
       , g = i(5)
-      , _ = i(291)
+      , _ = i(292)
       , v = i(30)
       , y = {};
     y[m.NOT_CONNECTED] = "offline",
@@ -85667,13 +86069,13 @@
             t.addClassNames("spinner")
         })
     }
-    i(875);
+    i(877);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(205).addTooltip
-      , r = i(203).DofusButton
+      , s = i(190)
+      , a = i(206).addTooltip
+      , r = i(204).DofusButton
       , l = i(35).getText
-      , c = i(483)
+      , c = i(485)
       , u = i(22);
     o(n, s),
     e.exports = n,
@@ -85879,16 +86281,16 @@
         return t.id = e,
         t
     }
-    i(877);
+    i(879);
     var l = i(26).inherits
       , c = i(35).getText
       , u = i(12)
-      , h = i(189)
-      , d = i(483)
-      , p = i(574)
-      , m = i(280)
-      , f = i(203)
-      , g = i(205).addTooltip
+      , h = i(190)
+      , d = i(485)
+      , p = i(576)
+      , m = i(281)
+      , f = i(204)
+      , g = i(206).addTooltip
       , _ = i(5)
       , v = {
         taxCollectorPods: 0,
@@ -86016,13 +86418,13 @@
             this.locationTable.addClassNames("spinner")
         })
     }
-    i(879);
+    i(881);
     var o = i(26).inherits
-      , s = i(203)
-      , a = i(189)
-      , r = i(205).addTooltip
+      , s = i(204)
+      , a = i(190)
+      , r = i(206).addTooltip
       , l = i(35).getText
-      , c = i(483)
+      , c = i(485)
       , u = i(22)
       , h = i(5);
     o(n, a),
@@ -86227,17 +86629,17 @@
             })
         }
     }
-    i(881);
+    i(883);
     var s = i(26).inherits
-      , a = i(189)
-      , r = i(205).addTooltip
+      , a = i(190)
+      , r = i(206).addTooltip
       , l = i(35).getText
-      , c = i(474)
-      , u = i(209)
-      , h = i(865)
-      , d = i(641)
-      , p = i(483)
-      , m = i(335)
+      , c = i(476)
+      , u = i(210)
+      , h = i(867)
+      , d = i(643)
+      , p = i(485)
+      , m = i(336)
       , f = m.entityType
       , g = m.fightingSide;
     s(n, a),
@@ -86496,14 +86898,14 @@
             window.dofus.sendMessage("SpouseGetInformationsMessage")
         })
     }
-    i(883);
+    i(885);
     var o = i(26).inherits
       , s = i(35).getText
-      , a = i(189)
-      , r = i(203)
+      , a = i(190)
+      , r = i(204)
       , l = i(36)
-      , c = i(237)
-      , u = i(278)
+      , c = i(238)
+      , u = i(279)
       , h = i(22)
       , d = i(5);
     o(n, a),
@@ -86708,13 +87110,13 @@
             t._setupDom()
         })
     }
-    i(885);
+    i(887);
     var o = i(26).inherits
       , s = i(35).getText
-      , a = i(507)
-      , r = i(189)
-      , l = i(886)
-      , c = i(888);
+      , a = i(509)
+      , r = i(190)
+      , l = i(888)
+      , c = i(890);
     o(n, r),
     e.exports = n,
     n.prototype._setupDom = function() {
@@ -86739,13 +87141,13 @@
             e._setupDom()
         })
     }
-    i(887);
-    var o = i(189)
+    i(889);
+    var o = i(190)
       , s = i(26).inherits
       , a = i(35).getText
-      , r = i(392)
-      , l = i(390)
-      , c = i(483);
+      , r = i(393)
+      , l = i(391)
+      , c = i(485);
     s(n, o),
     e.exports = n,
     n.prototype._setupDom = function() {
@@ -86784,13 +87186,13 @@
             e._setupDom()
         })
     }
-    i(889);
-    var o = i(189)
+    i(891);
+    var o = i(190)
       , s = i(26).inherits
       , a = i(35).getText
-      , r = i(392)
-      , l = i(390)
-      , c = i(483);
+      , r = i(393)
+      , l = i(391)
+      , c = i(485);
     s(n, o),
     e.exports = n,
     n.prototype._setupDom = function() {
@@ -86974,19 +87376,19 @@
             m.hide()
         })
     }
-    i(891);
+    i(893);
     var o = i(26).inherits
-      , s = i(401)
-      , a = i(203).DofusButton
-      , r = i(209)
+      , s = i(402)
+      , a = i(204).DofusButton
+      , r = i(210)
       , l = i(35).getText
-      , c = i(207)
+      , c = i(208)
       , u = i(22)
       , h = i(5)
-      , d = i(774)
-      , p = i(546)
-      , m = i(300)
-      , f = i(631)
+      , d = i(776)
+      , p = i(548)
+      , m = i(301)
+      , f = i(633)
       , g = "soft"
       , _ = "hard";
     o(n, s),
@@ -87003,10 +87405,10 @@
 , function(e, t, i) {
     function n() {
         function e(e, i) {
-            c.setMount(e, {
+            l.setMount(e, {
                 context: i || "equipped"
             }),
-            t.windowTitle.setText(c.getName())
+            t.windowTitle.setText(l.getName())
         }
         s.call(this, {
             title: "",
@@ -87022,49 +87424,66 @@
           , i = this.windowBody
           , n = window.gui.playerData
           , o = window.dofus.connectionManager
-          , c = i.appendChild(new a);
+          , l = i.appendChild(new a);
         o.on("ExchangeStartOkMountMessage", function() {
             r.close(t.id)
         }),
-        c.on("freeMount", function() {
+        l.on("freeMount", function() {
             r.close(t.id)
         }),
-        c.on("renameMount", function(e) {
+        l.on("renameMount", function(e) {
             t.windowTitle.setText(e)
         }),
         n.on("setMount", this.localizeEvent(function(t) {
             e(t.mountData)
         })),
         o.on("MountDataMessage", this.localizeEvent(function(n) {
-            var o = n.mountData;
-            t.isCertificateExpected && (o.mountLocation = "certificate",
-            e(o, "inventory"),
-            i.delClassNames("spinner"),
-            c.show())
+            if (t.isMountInfoExpected) {
+                t.isMountInfoExpected = !1;
+                var o = n.mountData;
+                o.mountLocation = "certificate",
+                e(o, "inventory"),
+                i.delClassNames("spinner"),
+                l.show()
+            }
         })),
         this.on("open", function(t) {
-            t = t || {};
+            if (t = t || {},
+            this.isMountInfoExpected)
+                return l.hide(),
+                void i.addClassNames("spinner");
             var o = t.mountData || n.equippedMount;
-            o.effectId && o.effectId === l ? (c.hide(),
-            i.addClassNames("spinner"),
-            this.isCertificateExpected = !0,
-            window.dofus.sendMessage("MountInformationRequestMessage", {
-                id: o.mountId,
-                time: o.date
-            })) : e(o)
+            e(o)
         }),
         this.on("close", function() {
             r.close("feed")
         })
     }
-    i(893);
+    i(895);
     var o = i(26).inherits
-      , s = i(401)
-      , a = i(659)
+      , s = i(402)
+      , a = i(661)
       , r = i(22)
       , l = 995;
     o(n, s),
-    e.exports = n
+    e.exports = n,
+    n.prototype.showPaddockMount = function(e) {
+        this.isMountInfoExpected = !0,
+        r.open(this.id),
+        window.dofus.sendMessage("MountInformationInPaddockRequestMessage", {
+            mapRideId: e
+        })
+    }
+    ,
+    n.prototype.showCertificateMount = function(e) {
+        var t = e.effectsMap[l];
+        t && (this.isMountInfoExpected = !0,
+        r.open(this.id),
+        window.dofus.sendMessage("MountInformationRequestMessage", {
+            id: t.mountId,
+            time: t.date
+        }))
+    }
 }
 , function(e, t) {}
 , function(e, t, i) {
@@ -87194,14 +87613,14 @@
             this._reset()
         })
     }
-    i(895);
-    var c = i(203)
+    i(897);
+    var c = i(204)
       , u = i(35).getText
       , h = i(26).inherits
-      , d = i(699)
-      , p = i(207)
-      , m = i(317)
-      , f = i(401)
+      , d = i(701)
+      , p = i(208)
+      , m = i(318)
+      , f = i(402)
       , g = [7903, 7904]
       , _ = [41, 62, 63, 64];
     h(l, f),
@@ -87351,14 +87770,14 @@
             this._inputName.focus()
         })
     }
-    i(897);
+    i(899);
     var o = i(26).inherits
-      , s = i(401)
-      , a = i(203).DofusButton
+      , s = i(402)
+      , a = i(204).DofusButton
       , r = i(35).getText
-      , l = i(211)
+      , l = i(212)
       , c = i(22)
-      , u = i(390)
+      , u = i(391)
       , h = l.MIN_RIDE_NAME_LEN
       , d = l.MAX_RIDE_NAME_LEN
       , p = 153
@@ -87412,9 +87831,9 @@
             }
         this.on("open", this._setMount)
     }
-    i(899);
+    i(901);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(35).getText
       , r = i(5);
     o(n, s),
@@ -87543,14 +87962,14 @@
             i(e.jobId)
         })
     }
-    i(901);
-    var o = i(902)
+    i(903);
+    var o = i(904)
       , s = i(26).inherits
-      , a = i(401)
-      , r = i(203).DofusButton
+      , a = i(402)
+      , r = i(204).DofusButton
       , l = i(35).getText
-      , c = i(446)
-      , u = i(392);
+      , c = i(448)
+      , u = i(393);
     s(n, a),
     e.exports = n
 }
@@ -87651,16 +88070,16 @@
             e.open ? s.openDialog("spellForget") : s.close("spellForget")
         })
     }
-    i(904);
+    i(906);
     var o = i(26).inherits
       , s = i(22)
-      , a = i(401)
-      , r = i(203).DofusButton
+      , a = i(402)
+      , r = i(204).DofusButton
       , l = i(35).getText
-      , c = i(189)
-      , u = i(483)
-      , h = i(205).addTooltip
-      , d = i(574)
+      , c = i(190)
+      , u = i(485)
+      , h = i(206).addTooltip
+      , d = i(576)
       , p = i(5);
     o(n, a),
     e.exports = n
@@ -87779,31 +88198,31 @@
             hex: C.colorArrayToHexa(n)
         })
     }
-    i(906);
+    i(908);
     var f = i(5)
       , g = i(6)
-      , _ = i(203)
+      , _ = i(204)
       , v = i(178)
-      , y = i(237)
-      , w = i(440)
-      , b = i(513)
-      , C = i(246)
-      , I = i(241)
+      , y = i(238)
+      , w = i(442)
+      , b = i(515)
+      , C = i(247)
+      , I = i(242)
       , T = i(35).getText
       , S = i(26).inherits
-      , A = i(390)
-      , E = i(322)
-      , x = i(907)
-      , M = i(211)
-      , N = i(301)
-      , R = i(209).showProgressively
+      , A = i(391)
+      , E = i(323)
+      , x = i(909)
+      , M = i(212)
+      , N = i(302)
+      , R = i(210).showProgressively
       , O = i(36)
-      , P = i(507)
+      , P = i(509)
       , D = i(32)
-      , L = i(205)
-      , B = i(401)
+      , L = i(206)
+      , B = i(402)
       , k = i(22)
-      , F = i(189)
+      , F = i(190)
       , H = [2, 1, 2, 1, 3, 2, 1, 1, 1, 3, 1, 2, 3, 2, 2]
       , G = 13518
       , U = 10860
@@ -87966,10 +88385,10 @@
         this.centeredContent || (this.centeredContent = this.createChild("div"));
         var e = this.centeredContent;
         this._createTopLabel(e),
+        this._createNameSelector(e),
         this.breedSelector = this._createSelector(e, "breedSexTabs"),
         this.headSelector = this._createSelector(e, "headSexTabs", !0),
         this._createBreedDescription(e),
-        this._createNameSelector(e),
         this._setupColorTool(e)
     }
     ,
@@ -88641,10 +89060,10 @@
             className: "plainColor"
         })
     }
-    i(908);
-    var o = i(246)
+    i(910);
+    var o = i(247)
       , s = i(26).inherits
-      , a = i(189)
+      , a = i(190)
       , r = i(32);
     s(n, a),
     e.exports = n,
@@ -88881,21 +89300,21 @@
                 })
         }
     }
-    i(910);
+    i(912);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(35).getText
-      , r = i(754)
-      , l = i(203).DofusButton
-      , c = i(461)
+      , r = i(756)
+      , l = i(204).DofusButton
+      , c = i(463)
       , u = i(22)
-      , h = i(322)
-      , d = i(911)
-      , p = i(462)
-      , m = i(699)
-      , f = i(912)
-      , g = i(914)
-      , _ = i(185);
+      , h = i(323)
+      , d = i(913)
+      , p = i(464)
+      , m = i(701)
+      , f = i(914)
+      , g = i(916)
+      , _ = i(186);
     o(n, s),
     e.exports = n,
     n.prototype._restoreMergeStopButtons = function() {
@@ -89153,15 +89572,15 @@
             })
         })
     }
-    i(913);
+    i(915);
     var o = i(26).inherits
-      , s = i(189)
+      , s = i(190)
       , a = i(35).getText
-      , r = i(200)
-      , l = i(322)
-      , c = i(565)
-      , u = i(203)
-      , h = i(185);
+      , r = i(201)
+      , l = i(323)
+      , c = i(567)
+      , u = i(204)
+      , h = i(186);
     o(n, s),
     e.exports = n,
     n.prototype.prepareItem = function(e) {
@@ -89332,12 +89751,12 @@
         for (var m = 0; m < h.MAX_CRAFT_SLOTS; m += 1)
             this._allSlots.appendChild(new s)
     }
-    i(915);
-    var o = i(185)
-      , s = i(565)
+    i(917);
+    var o = i(186)
+      , s = i(567)
       , a = i(26).inherits
-      , r = i(189)
-      , l = i(200)
+      , r = i(190)
+      , l = i(201)
       , c = i(35).getText;
     a(n, r),
     e.exports = n,
@@ -89582,8 +90001,8 @@
     }
     var o = i(26).inherits
       , s = i(35).getText
-      , a = i(909)
-      , r = i(911)
+      , a = i(911)
+      , r = i(913)
       , l = i(22);
     o(n, a),
     e.exports = n,
@@ -89741,17 +90160,17 @@
         }),
         this.on("close", y)
     }
-    i(918);
-    var o = i(902)
+    i(920);
+    var o = i(904)
       , s = i(26).inherits
-      , a = i(401)
+      , a = i(402)
       , r = i(35).getText
-      , l = i(392)
-      , c = i(483)
+      , l = i(393)
+      , c = i(485)
       , u = i(36)
       , h = i(22)
-      , d = i(203)
-      , p = i(189)
+      , d = i(204)
+      , p = i(190)
       , m = i(5);
     s(n, a),
     e.exports = n
@@ -89956,19 +90375,19 @@
         }),
         this.on("close", i)
     }
-    i(920);
-    var o = i(203).DofusButton
-      , s = i(237)
-      , a = i(902)
-      , r = i(921)
-      , l = i(278)
+    i(922);
+    var o = i(204).DofusButton
+      , s = i(238)
+      , a = i(904)
+      , r = i(923)
+      , l = i(279)
       , c = i(26).inherits
-      , u = i(401)
+      , u = i(402)
       , h = i(35).getText
-      , d = i(446)
+      , d = i(448)
       , p = i(36)
       , m = i(5)
-      , f = i(291);
+      , f = i(292);
     c(n, u),
     e.exports = n
 }
@@ -90008,19 +90427,19 @@
             this._onClose()
         })
     }
-    i(923);
-    var o = i(203).DofusButton
-      , s = i(461)
-      , a = i(911)
-      , r = i(185)
+    i(925);
+    var o = i(204).DofusButton
+      , s = i(463)
+      , a = i(913)
+      , r = i(186)
       , l = i(35).getText
       , c = i(26).inherits
-      , u = i(699)
-      , h = i(322)
-      , d = i(565)
-      , p = i(200)
-      , m = i(401)
-      , f = i(924)
+      , u = i(701)
+      , h = i(323)
+      , d = i(567)
+      , p = i(201)
+      , m = i(402)
+      , f = i(926)
       , g = s.SMITHMAGIC_RUNE_ID
       , _ = s.SMITHMAGIC_POTION_ID
       , v = s.SIGNATURE_RUNE_ID
@@ -90352,9 +90771,9 @@
     function o(e) {
         return "ObjectEffectInteger" === e._type || "EffectInstanceInteger" === e._type
     }
-    var s = i(223).createEffectInstances
+    var s = i(224).createEffectInstances
       , a = i(35).getText
-      , r = i(925);
+      , r = i(927);
     t.display = function(e, t, i) {
         var l = window.gui.chat
           , c = e.effects
@@ -90435,19 +90854,19 @@
             this._resizeIngredientSlots()
         })
     }
-    i(927);
-    var o = i(203).DofusButton
-      , s = i(446)
-      , a = i(461)
-      , r = i(922)
-      , l = i(185)
+    i(929);
+    var o = i(204).DofusButton
+      , s = i(448)
+      , a = i(463)
+      , r = i(924)
+      , l = i(186)
       , c = i(35).getText
       , u = i(26).inherits
-      , h = i(322)
-      , d = i(565)
-      , p = i(569)
+      , h = i(323)
+      , d = i(567)
+      , p = i(571)
       , m = i(22)
-      , f = i(189)
+      , f = i(190)
       , g = 40
       , _ = 40
       , v = 30
@@ -90872,17 +91291,17 @@
             t._readOnly = !1
         })
     }
-    i(929);
+    i(931);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(35).getText
-      , r = i(203).DofusButton
+      , r = i(204).DofusButton
       , l = i(22)
-      , c = i(930)
-      , u = i(932)
-      , h = i(185)
-      , d = i(200)
-      , p = i(322);
+      , c = i(932)
+      , u = i(934)
+      , h = i(186)
+      , d = i(201)
+      , p = i(323);
     o(n, s),
     e.exports = n,
     n.prototype._createDom = function() {
@@ -91054,15 +91473,15 @@
             t.emit("kamaChange", e))
         })
     }
-    i(931);
+    i(933);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(185)
-      , r = i(207)
-      , l = i(565)
+      , s = i(190)
+      , a = i(186)
+      , r = i(208)
+      , l = i(567)
       , c = i(35).getText
-      , u = i(203)
-      , h = i(932);
+      , u = i(204)
+      , h = i(934);
     o(n, s),
     e.exports = n,
     n.prototype.setKama = function(e) {
@@ -91295,16 +91714,16 @@
             e.resetDisplay()
         })
     }
-    i(934);
-    var o = i(185).setDroppable
+    i(936);
+    var o = i(186).setDroppable
       , s = i(26).inherits
-      , a = i(322)
-      , r = i(322).isEquippable
-      , l = i(401)
+      , a = i(323)
+      , r = i(323).isEquippable
+      , l = i(402)
       , c = i(35).getText
-      , u = i(200)
-      , h = i(446)
-      , d = i(461);
+      , u = i(201)
+      , h = i(448)
+      , d = i(463);
     s(n, l),
     e.exports = n
 }
@@ -91483,16 +91902,16 @@
         ,
         this.on("close", f)
     }
-    i(936);
+    i(938);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(35).getText
       , r = i(22)
-      , l = i(417)
-      , c = i(937)
-      , u = i(203).DofusButton
-      , h = i(322)
-      , d = i(463)
+      , l = i(418)
+      , c = i(939)
+      , u = i(204).DofusButton
+      , h = i(323)
+      , d = i(465)
       , p = 2;
     o(n, s),
     e.exports = n,
@@ -91630,17 +92049,17 @@
             })
         })
     }
-    i(938);
+    i(940);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(939)
-      , r = i(565)
-      , l = i(200)
-      , c = i(209)
+      , s = i(190)
+      , a = i(941)
+      , r = i(567)
+      , l = i(201)
+      , c = i(210)
       , u = i(35).getText
-      , h = i(641)
-      , d = i(205).addTooltip
-      , p = i(185);
+      , h = i(643)
+      , d = i(206).addTooltip
+      , p = i(186);
     o(n, s),
     e.exports = n,
     n.prototype.setAsRemote = function() {
@@ -91848,12 +92267,12 @@
             e.emit("kamaChange", t))
         })
     }
-    i(940);
+    i(942);
     var o = i(26).inherits
-      , s = i(189)
+      , s = i(190)
       , a = i(35).getText
-      , r = i(207)
-      , l = i(205);
+      , r = i(208)
+      , l = i(206);
     o(n, s),
     e.exports = n,
     n.prototype.getKama = function() {
@@ -91996,14 +92415,14 @@
         m.on("ExchangeObjectRemovedMessage", this.localizeEvent(o)),
         this.on("closed", l)
     }
-    i(942);
+    i(944);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(35).getText
       , r = i(22)
-      , l = i(937)
-      , c = i(203).DofusButton
-      , u = i(322)
+      , l = i(939)
+      , c = i(204).DofusButton
+      , u = i(323)
       , h = 2;
     o(n, s),
     e.exports = n,
@@ -92024,7 +92443,8 @@
             className: ["mySpace", "tradeSpace"]
         });
         this._myTradeSpace = n.appendChild(new l({
-            blinkDuration: h
+            blinkDuration: h,
+            dragInteraction: !0
         }));
         var o = t.createChild("div", {
             className: "tradeButtons"
@@ -92122,12 +92542,12 @@
             })
         })
     }
-    i(944);
+    i(946);
     var o = i(26).inherits
-      , s = i(322)
-      , a = i(401)
+      , s = i(323)
+      , a = i(402)
       , r = i(35).getText
-      , l = i(200);
+      , l = i(201);
     o(n, a),
     e.exports = n
 }
@@ -92157,10 +92577,10 @@
             e.close()
         })
     }
-    i(946);
+    i(948);
     var o = i(26).inherits
-      , s = i(401)
-      , a = i(203).DofusButton
+      , s = i(402)
+      , a = i(204).DofusButton
       , r = i(35).getText;
     o(n, s),
     e.exports = n,
@@ -92241,21 +92661,21 @@
             }
         return !1
     }
-    i(948);
-    var u = i(205)
+    i(950);
+    var u = i(206)
       , h = i(84)
-      , d = i(203).DofusButton
-      , p = i(446)
+      , d = i(204).DofusButton
+      , p = i(448)
       , m = i(35).getText
       , f = i(26).inherits
       , g = i(25)
-      , _ = i(301)
-      , v = i(392)
-      , y = i(314).SingleSelectionList
-      , w = i(949)
-      , b = i(599)
+      , _ = i(302)
+      , v = i(393)
+      , y = i(315).SingleSelectionList
+      , w = i(951)
+      , b = i(601)
       , C = i(30)
-      , I = i(401);
+      , I = i(402);
     f(n, I),
     e.exports = n,
     n.prototype._initOptionDefinitions = function() {
@@ -92578,11 +92998,11 @@
             volume: 0,
             muted: !0
         },
-        this.setPosition(e[this.channelId].volume || 0)
+        this.setPosition(e[this.channelId].volume || 0);
     }
-    i(950);
-    var o = i(189)
-      , s = i(203).DofusButton
+    i(952);
+    var o = i(190)
+      , s = i(204).DofusButton
       , a = i(26).inherits
       , r = i(30)
       , l = i(84);
@@ -92618,11 +93038,11 @@
         this.scroller = this.windowBody.appendChild(new a),
         this.scroller.content.addClassNames("overlayBox")
     }
-    i(952);
+    i(954);
     var o = i(26).inherits
-      , s = i(565)
-      , a = i(301)
-      , r = i(401);
+      , s = i(567)
+      , a = i(302)
+      , r = i(402);
     o(n, r),
     e.exports = n,
     n.prototype.updateContent = function(e, t, i) {
@@ -92654,13 +93074,13 @@
             e._createDom()
         })
     }
-    i(954);
+    i(956);
     var o = i(26).inherits
       , s = i(50)
-      , a = i(401)
-      , r = i(189)
+      , a = i(402)
+      , r = i(190)
       , l = i(22)
-      , c = i(203).DofusButton
+      , c = i(204).DofusButton
       , u = i(35).getText
       , h = i(5);
     o(n, a),
@@ -92723,16 +93143,16 @@
             }
         })
     }
-    i(956);
-    var o = i(203)
+    i(958);
+    var o = i(204)
       , s = i(35).getText
-      , a = i(209)
+      , a = i(210)
       , r = i(26).inherits
-      , l = i(546)
-      , c = i(401)
+      , l = i(548)
+      , c = i(402)
       , u = i(22)
-      , h = i(631)
-      , d = i(957);
+      , h = i(633)
+      , d = i(959);
     r(n, c),
     e.exports = n,
     n.prototype._reset = function() {
@@ -92872,13 +93292,13 @@
         var t = e._promoRate;
         return t ? t : u("tablet.shop.offer")
     }
-    i(958);
+    i(960);
     var r = i(26).inherits
-      , l = i(189)
+      , l = i(190)
       , c = i(32)
       , u = i(35).getText
-      , h = i(959)
-      , d = i(961)
+      , h = i(961)
+      , d = i(963)
       , p = 1;
     r(n, l),
     e.exports = n,
@@ -93024,11 +93444,11 @@
         e.replaceClassNames(["lowPrice"], ["bigPrice"]),
         e.disable()))
     }
-    i(960);
+    i(962);
     var a = i(26).inherits
-      , r = i(189)
-      , l = i(209)
-      , c = i(203)
+      , r = i(190)
+      , l = i(210)
+      , c = i(204)
       , u = c.DofusButton
       , h = i(35).getText
       , d = 1e6
@@ -93199,11 +93619,11 @@
         }),
         this._setupEvents()
     }
-    i(963);
+    i(965);
     var o = i(26).inherits
-      , s = i(401)
-      , a = i(964)
-      , r = i(733);
+      , s = i(402)
+      , a = i(966)
+      , r = i(735);
     o(n, s),
     e.exports = n,
     n.prototype._initTabs = function() {
@@ -93291,22 +93711,22 @@
     function s() {
         return window.gui.playerData.identification.subscriptionEndDate
     }
-    i(965);
+    i(967);
     var a = i(26).inherits
       , r = i(35).getText
-      , l = i(189)
-      , c = i(741)
+      , l = i(190)
+      , c = i(743)
       , u = i(84).playUiSound
-      , h = i(203)
+      , h = i(204)
       , d = i(32)
       , p = i(22)
-      , m = i(831)
-      , f = i(546)
-      , g = i(966)
-      , _ = i(968)
-      , v = i(970)
-      , y = i(961)
-      , w = i(631)
+      , m = i(833)
+      , f = i(548)
+      , g = i(968)
+      , _ = i(970)
+      , v = i(972)
+      , y = i(963)
+      , w = i(633)
       , b = i(158)
       , C = 500
       , I = "itemsList"
@@ -93888,8 +94308,7 @@
         }
           , n = function() {
             window.dofus.send("shopOpenCategoryRequest", i)
-        }
-        ;
+        };
         window.clearTimeout(this.requestTimeout);
         var o = Date.now()
           , s = o - this.requestTimestamp;
@@ -93921,11 +94340,11 @@
             boxHeight: t
         }
     }
-    i(967);
+    i(969);
     var s = i(26).inherits
-      , a = i(189)
-      , r = i(957)
-      , l = i(633)
+      , a = i(190)
+      , r = i(959)
+      , l = i(635)
       , c = i(32)
       , u = 6
       , h = 5
@@ -94071,13 +94490,13 @@
         this.setConstraints(w),
         this._createDom()
     }
-    i(969);
+    i(971);
     var o = i(26).inherits
       , s = i(35).getText
-      , a = i(189)
-      , r = i(301)
-      , l = i(957)
-      , c = i(633)
+      , a = i(190)
+      , r = i(302)
+      , l = i(959)
+      , c = i(635)
       , u = 2
       , h = 1
       , d = 9
@@ -94320,25 +94739,25 @@
     function o() {
         return window.gui.playerData.characterBaseInformations.entityLook
     }
-    i(971);
+    i(973);
     var s = i(26).inherits
       , a = i(35).getText
-      , r = i(189)
-      , l = i(203)
-      , c = i(237)
-      , u = i(322)
-      , h = i(957)
-      , d = i(959)
-      , p = i(278)
+      , r = i(190)
+      , l = i(204)
+      , c = i(238)
+      , u = i(323)
+      , h = i(959)
+      , d = i(961)
+      , p = i(279)
       , m = i(5)
-      , f = i(301)
-      , g = i(565)
+      , f = i(302)
+      , g = i(567)
       , _ = i(22)
-      , v = i(633)
-      , y = i(972)
-      , w = i(398)
-      , b = i(322).isEquippable
-      , C = i(221)
+      , v = i(635)
+      , y = i(974)
+      , w = i(399)
+      , b = i(323).isEquippable
+      , C = i(222)
       , I = {};
     I[C.ACTION_LADDER_ID] = !0,
     I[C.ACTION_ITEM_CHANGE_PETS_LIFE] = !0,
@@ -94479,7 +94898,7 @@
         var M = this._articleButtons = T.appendChild(new d);
         M.on("tapIAPButton", e),
         M.on("tapHardButton", t),
-        M.on("tapSoftButton", i);
+        M.on("tapSoftButton", i)
     }
     ,
     n.prototype.resize = function() {
@@ -94685,9 +95104,9 @@
         }),
         this._createDom(e)
     }
-    i(971);
+    i(973);
     var o = i(26).inherits
-      , s = i(189);
+      , s = i(190);
     o(n, s),
     e.exports = n,
     n.prototype._createDom = function(e) {
@@ -94747,14 +95166,14 @@
             e.content && e.displayError(h.NO_PACK, new Error("IAP articles are not available"))
         })
     }
-    i(974);
-    var o = i(203)
+    i(976);
+    var o = i(204)
       , s = i(35).getText
       , a = i(26).inherits
-      , r = i(401)
+      , r = i(402)
       , l = i(22)
-      , c = i(631)
-      , u = i(957)
+      , c = i(633)
+      , u = i(959)
       , h = {
         NO_PACK: 0,
         AMOUNT_TOO_HIGH: 1
@@ -94889,13 +95308,13 @@
             e._content && e.displayPurchasesList(new Error("IAP articles are not available"))
         })
     }
-    i(976);
-    var o = i(203)
+    i(978);
+    var o = i(204)
       , s = i(35).getText
       , a = i(26).inherits
-      , r = i(401)
+      , r = i(402)
       , l = i(22)
-      , c = i(631)
+      , c = i(633)
       , u = {
         PENDING: 0,
         FAILED: 1,
@@ -95068,10 +95487,10 @@
         this.autoRemoveTimeout = null ,
         this.once("show", this._createContent)
     }
-    i(978);
+    i(980);
     var o = i(35).getText
       , s = i(26).inherits
-      , a = i(189)
+      , a = i(190)
       , r = 15e3;
     s(n, a),
     e.exports = n,
@@ -95132,6 +95551,7 @@
         this._connectMethod = _.getValue("connectMethod", x, !0);
         var e = window.gui
           , t = this;
+        this._changeLangMethod = N.UPDATE_DOM,
         this.once("show", function() {
             this._createContent()
         }),
@@ -95150,33 +95570,37 @@
             e.openSimplePopup(d("ui.connection.disconnectAccount"), d("ui.popup.warning"))
         })
     }
-    i(980);
+    i(982);
     var o = i(26).inherits
-      , s = i(189)
+      , s = i(190)
       , a = i(84)
-      , r = i(203)
-      , l = i(304)
+      , r = i(204)
+      , l = i(305)
       , c = i(7)
       , u = i(24).dimensions
       , h = i(35)
       , d = h.getText
       , p = i(51)
-      , m = i(209)
+      , m = i(210)
       , f = i(50)
       , g = i(32)
       , _ = i(30)
-      , v = i(266)
+      , v = i(267)
       , y = i(22)
-      , w = i(981)
-      , b = i(986)
-      , C = i(988)
-      , I = i(990)
-      , T = i(994)
-      , S = i(997)
-      , A = i(985).connectMethod
+      , w = i(983)
+      , b = i(988)
+      , C = i(990)
+      , I = i(992)
+      , T = i(996)
+      , S = i(999)
+      , A = i(987).connectMethod
       , E = !0
       , x = A.lastCharacter
-      , M = 670;
+      , M = 670
+      , N = {
+        UPDATE_DOM: 0,
+        RELOAD_PAGE: 1
+    };
     o(n, s),
     e.exports = n,
     n.prototype._createContent = function() {
@@ -95209,6 +95633,8 @@
         }),
         this._newsBlock = this._leftColumn.appendChild(new I(this)),
         this._forumBlock = this._leftColumn.appendChild(new T(this)),
+        this._forumBlock.retractableBlock.setBoundedRetractableBlock(this._newsBlock.retractableBlock),
+        this._newsBlock.retractableBlock.expand(),
         this._loginForm = n.appendChild(new C(this)),
         this._guestForm = n.appendChild(new w(this)),
         this._tokenForm = n.appendChild(new b(this)),
@@ -95267,25 +95693,28 @@
         }),
         this._toolTip.on("action", function(i) {
             var n = i.lang;
-            n !== e.language && h.initialize({
-                language: n,
-                chaseText: e.chaseText
-            }, function(i) {
-                if (i)
-                    return console.error("LoginScreen getText init", i);
-                e.language = n,
-                t.backToLogin(),
-                _.setValue("lang", n, 1),
-                t._updateContent();
-                var o = t._toolTip.entryList.getChildren();
-                o[o.length - 1].setText(d("ui.common.cancel"))
-            })
+            if (n !== e.language)
+                return t._changeLangMethod === N.RELOAD_PAGE ? (_.setValue("lang", n),
+                _.saveNow(),
+                void window.location.reload()) : void h.initialize({
+                    language: n,
+                    chaseText: e.chaseText
+                }, function(i) {
+                    if (i)
+                        return console.error("LoginScreen getText init", i);
+                    e.language = n,
+                    t.backToLogin(),
+                    _.setValue("lang", n, 1),
+                    t._updateContent();
+                    var o = t._toolTip.entryList.getChildren();
+                    o[o.length - 1].setText(d("ui.common.cancel"))
+                })
         })
     }
     ,
     n.prototype._createBottomLinks = function() {
         function e() {
-            window.open(this.link, "_blank")
+            m.openUrlInAppBrowser(this.link)
         }
         var t = this.createChild("div", {
             className: "footer"
@@ -95345,7 +95774,7 @@
         }),
         g(a),
         a.on("tap", function() {
-            window.open(d("tablet.forum.link"), "_blank")
+            m.openUrlInAppBrowser(d("tablet.forum.link"))
         })
     }
     ,
@@ -95417,7 +95846,7 @@
                 window.gui.openSimplePopup(d("ui.popup.connectionFailed.text")))
             })
         }
-        this._langButton.hide(),
+        this._changeLangMethod = N.RELOAD_PAGE,
         window.gui.splashScreen.show(),
         e ? f.startLoginProcessWithPassword(this._connectMethod, e, t, i, n) : f.startLoginProcessWithoutPassword(this._connectMethod, n)
     }
@@ -95523,14 +95952,14 @@
             className: "greenLine"
         })
     }
-    i(982);
+    i(984);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(203)
+      , s = i(190)
+      , a = i(204)
       , r = i(35).getText
       , l = i(30)
       , c = i(51)
-      , u = i(983);
+      , u = i(985);
     o(n, s),
     e.exports = n,
     n.prototype.refresh = function() {
@@ -95600,7 +96029,7 @@
             className: "forgottenPassword"
         })),
         this._forgottenPassword.on("tap", function() {
-            window.open(this.link, "_blank")
+            l.openUrlInAppBrowser(this.link)
         })),
         this._connectionOptions = this._bottomLinks.appendChild(new a({
             className: "connectionOptions"
@@ -95629,15 +96058,15 @@
             u.setValue("connectMethod", e, null , !0)
         })
     }
-    i(984);
+    i(986);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(203)
+      , s = i(190)
+      , a = i(204)
       , r = i(35).getText
-      , l = i(209)
-      , c = i(392)
+      , l = i(210)
+      , c = i(393)
       , u = i(30)
-      , h = i(985);
+      , h = i(987);
     o(n, s),
     e.exports = n,
     n.prototype.refresh = function() {
@@ -95721,13 +96150,13 @@
             className: "greenLine"
         })
     }
-    i(987);
+    i(989);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(203)
+      , s = i(190)
+      , a = i(204)
       , r = i(35).getText
       , l = i(51)
-      , c = i(983);
+      , c = i(985);
     o(n, s),
     e.exports = n,
     n.prototype.refresh = function() {
@@ -95810,16 +96239,16 @@
             className: "greenLine"
         })
     }
-    i(989);
+    i(991);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(203)
-      , r = i(446)
+      , s = i(190)
+      , a = i(204)
+      , r = i(448)
       , l = i(35).getText
-      , c = i(390)
-      , u = i(300)
+      , c = i(391)
+      , u = i(301)
       , h = i(30)
-      , d = i(983);
+      , d = i(985);
     o(n, s),
     e.exports = n,
     n.prototype.refresh = function() {
@@ -95856,7 +96285,7 @@
         function t(e) {
             function t() {
                 var t = i._newsUrls[e];
-                t && window.open(t, "_blank")
+                t && c.openUrlInAppBrowser(t)
             }
             i._banners[e].on("tap", t),
             i._bannerTitles[e].on("tap", t)
@@ -95878,8 +96307,8 @@
         this._bannerTitles = [],
         this._date = [],
         this._dots = [],
-        this._retractableBlock = this.appendChild(new u((!0)));
-        var n = this._retractableBlock.getContainer();
+        this.retractableBlock = this.appendChild(new u((!1)));
+        var n = this.retractableBlock.getContainer();
         this._carouselMargin = n.createChild("div", {
             className: "carouselMargin"
         }),
@@ -95934,14 +96363,14 @@
             i._clearTimeout()
         })
     }
-    i(991);
+    i(993);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(203)
+      , s = i(190)
+      , a = i(204)
       , r = i(35).getText
       , l = i(51)
-      , c = i(209)
-      , u = i(992)
+      , c = i(210)
+      , u = i(994)
       , h = i(32)
       , d = 5e3
       , p = 288e5
@@ -95951,8 +96380,8 @@
     o(n, s),
     e.exports = n,
     n.prototype.refresh = function() {
-        this._retractableBlock.show(),
-        this._retractableBlock.setTitle(r("tablet.login.news")),
+        this.retractableBlock.show(),
+        this.retractableBlock.setTitle(r("tablet.login.news")),
         this._update()
     }
     ,
@@ -95969,7 +96398,7 @@
             if (i || !n)
                 return t._noNewsFallback();
             if (!n.length)
-                return t.loginScreen._forumBlock._retractableBlock.expand(),
+                return t.loginScreen._forumBlock.retractableBlock.expand(),
                 t._noNewsFallback();
             t._newsLoadedTime = Date.now();
             for (var o = 0; o < g; o++) {
@@ -96073,6 +96502,8 @@
             hidden: !1
         });
         var t = this;
+        this._isExpanded = !1,
+        this._boundedBlock = null ,
         this.createChild("div", {
             className: ["frame", "frame2"]
         });
@@ -96088,29 +96519,29 @@
         this._title = this._titleBox.createChild("div", {
             className: "title"
         }),
-        this._expandButton = this._titleBox.appendChild(new a({
+        e && (this._expandButton = this._titleBox.appendChild(new a({
             className: ["greenButton", "expandButton"]
         },function() {
-            t.expand()
+            t._isExpanded ? (t._retract(),
+            t._boundedBlock && t._boundedBlock.expand()) : t.expand()
         }
         )),
         this._expandButton.createChild("div", {
             className: "expandeButtonContent",
             text: "+"
-        }),
+        })),
         this._subTitle = this._titleBox.createChild("div", {
             className: "subTitle"
         }),
         this._retractable = i.createChild("div", {
             className: "retractable"
         }),
-        e && this._expand(),
         r.push(this)
     }
-    i(993);
+    i(995);
     var o = i(26).inherits
-      , s = i(189)
-      , a = i(203)
+      , s = i(190)
+      , a = i(204)
       , r = [];
     o(n, s),
     e.exports = n,
@@ -96134,15 +96565,22 @@
     }
     ,
     n.prototype._expand = function() {
-        this._retractable.addClassNames("expanded"),
+        this._isExpanded || (this._retractable.addClassNames("expanded"),
         this._titleBox.addClassNames("expanded"),
-        this._expandButton.addClassNames("expanded")
+        this._expandButton && (this._boundedBlock ? this._expandButton.setText("-") : this._expandButton.addClassNames("expanded")),
+        this._isExpanded = !0)
     }
     ,
     n.prototype._retract = function() {
-        this._retractable.delClassNames("expanded"),
+        this._isExpanded && (this._retractable.delClassNames("expanded"),
         this._titleBox.delClassNames("expanded"),
-        this._expandButton.delClassNames("expanded")
+        this._expandButton && (this._boundedBlock ? this._expandButton.setText("+") : this._expandButton.delClassNames("expanded")),
+        this._isExpanded = !1)
+    }
+    ,
+    n.prototype.setBoundedRetractableBlock = function(e) {
+        return this._boundedBlock || e._boundedBlock ? console.error(new Error("RetractableBlock: a block is already bounded to another one")) : (this._boundedBlock = e,
+        void (e._boundedBlock = this))
     }
 }
 , function(e, t) {}
@@ -96153,8 +96591,8 @@
             hidden: !1
         }),
         this._newsLoaded = !1,
-        this._retractableBlock = this.appendChild(new m((!1)));
-        var e = this._retractableBlock.getContainer().createChild("div", {
+        this.retractableBlock = this.appendChild(new m((!0)));
+        var e = this.retractableBlock.getContainer().createChild("div", {
             className: ["forumNewsMargin"]
         });
         this._content = e.createChild("div", {
@@ -96217,19 +96655,19 @@
     function r(e) {
         return e = e.replace(/(?:\r\n|\r|\n)/g, "<br />")
     }
-    i(995);
+    i(997);
     var l = i(26).inherits
-      , c = i(189)
-      , u = i(996)
+      , c = i(190)
+      , u = i(998)
       , h = i(35).getText
       , d = i(51)
-      , p = i(209)
-      , m = i(992);
+      , p = i(210)
+      , m = i(994);
     l(n, c),
     e.exports = n,
     n.prototype.refresh = function() {
-        this._retractableBlock.show(),
-        this._retractableBlock.setTitle(h("tablet.login.changelog")),
+        this.retractableBlock.show(),
+        this.retractableBlock.setTitle(h("tablet.login.changelog")),
         this._update()
     }
     ,
@@ -96262,7 +96700,7 @@
                 }
                 e._content.setHtml(l),
                 p.allLinksOnTargetBlank(e._content),
-                e._retractableBlock.setSubTitle(n.title)
+                e.retractableBlock.setSubTitle(n.title)
             })
         })
     }
@@ -96353,8 +96791,7 @@
                 return e = e.replace(/\[/g, "<"),
                 e = e.replace(/\]/g, ">"),
                 i(e)
-            }
-            ; e !== (e = e.replace(u, t)); )
+            }; e !== (e = e.replace(u, t)); )
                 ;
             return e
         }
@@ -97009,8 +97446,7 @@
               , u = r[i].closeTag(o, a);
             return r[i].displayContent === !1 && (a = ""),
             l + a + u
-        }
-        ;
+        };
         return m.tags = function() {
             return r
         }
@@ -97094,9 +97530,9 @@
             e.hide()
         })
     }
-    i(999);
+    i(1001);
     var o = i(26).inherits
-      , s = i(189);
+      , s = i(190);
     o(n, s),
     e.exports = n,
     n.prototype._createContent = function() {
@@ -97132,7 +97568,7 @@
             m.getValue().length < 3 || !f.isActivate() ? b.disable() : b.enable()
         }
         function i() {
-            window.open(this.link, "_blank")
+            d.openUrlInAppBrowser(this.link)
         }
         s.call(this, {
             className: "NicknameWindow",
@@ -97215,16 +97651,16 @@
             m.blur()
         })
     }
-    i(1001);
+    i(1003);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(22)
-      , r = i(390)
+      , r = i(391)
       , l = i(35).getText
-      , c = i(203)
-      , u = i(1002)
-      , h = i(446)
-      , d = i(209)
+      , c = i(204)
+      , u = i(1004)
+      , h = i(448)
+      , d = i(210)
       , p = {};
     p[u.ALREADY_USED] = "ui.nickname.alreadyUsed",
     p[u.SAME_AS_LOGIN] = "ui.nickname.equalsLogin",
@@ -97281,7 +97717,7 @@
             G.setText(r("tablet.register.confirmpwdNotSame")))
         }
         function n() {
-            window.open(this.link, "_blank")
+            g.openUrlInAppBrowser(this.link)
         }
         function o(e) {
             if (e) {
@@ -97304,8 +97740,7 @@
             noCloseButton: !0
         }),
         v && this.addClassNames("large");
-        var y, w, b = this, C = this.windowBody, I = function() {}
-        , T = I, S = C.createChild("div", {
+        var y, w, b = this, C = this.windowBody, I = function() {}, T = I, S = C.createChild("div", {
             className: "formWrapper"
         }), A = S.createChild("label", {
             className: "label"
@@ -97487,20 +97922,20 @@
             T = I
         })
     }
-    i(1004);
+    i(1006);
     var o = i(26).inherits
-      , s = i(401)
-      , a = i(390)
+      , s = i(402)
+      , a = i(391)
       , r = i(35).getText
-      , l = i(203)
+      , l = i(204)
       , c = l.DofusButton
       , u = i(51)
-      , h = i(446)
+      , h = i(448)
       , d = i(30)
       , p = i(12)
-      , m = i(300)
+      , m = i(301)
       , f = i(24).dimensions
-      , g = i(209)
+      , g = i(210)
       , _ = 3;
     o(n, s),
     e.exports = n
@@ -97525,12 +97960,12 @@
         var e = window.gui.serversData;
         return e ? e.connectedServerData : null
     }
-    i(1006);
-    var s = i(203).DofusButton
+    i(1008);
+    var s = i(204).DofusButton
       , a = i(35).getText
       , r = i(26).inherits
       , l = i(50)
-      , c = i(401)
+      , c = i(402)
       , u = i(22);
     r(n, c),
     e.exports = n,
@@ -97589,13 +98024,13 @@
         }),
         this.messageStack = []
     }
-    i(1008);
+    i(1010);
     var o = i(26).inherits
-      , s = i(401)
+      , s = i(402)
       , a = i(22)
-      , r = i(203).DofusButton
+      , r = i(204).DofusButton
       , l = i(35).getText
-      , c = i(209);
+      , c = i(210);
     o(n, s),
     e.exports = n,
     n.prototype._createContent = function() {
@@ -97686,19 +98121,19 @@
     e.exports = h
 }
 , function(e, t, i) {
-    i(1011),
-    i(1048),
-    i(1051),
-    i(1054),
+    i(1013),
+    i(1050),
+    i(1053),
     i(1056),
-    i(1057),
     i(1058),
     i(1059),
-    e.exports = i(1012)
+    i(1060),
+    i(1061),
+    e.exports = i(1014)
 }
 , function(e, t, i) {
-    var n = i(1012)
-      , o = i(623)
+    var n = i(1014)
+      , o = i(625)
       , s = o.compressPath
       , a = i(85)
       , r = i(22)
@@ -97774,7 +98209,7 @@
     n.prototype._movePlayerOnMap = function(e, t, i) {
         if (i && "function" == typeof i || (i = function() {}
         ),
-        window.gui.playerData.inventory.isOverloaded())
+        window.gui.playerData.inventory.isOverloaded() && !window.gui.playerData.isMutant())
             return void window.gui.chat.logMsg(l("tablet.inventoryFullCannotMove"));
         t = t || !1;
         var n = this.actorManager.userActor
@@ -97956,17 +98391,17 @@
     var o = i(26).inherits
       , s = i(16).EventEmitter
       , a = i(6)
-      , r = i(843)
-      , l = i(837)
-      , c = i(1013)
-      , u = i(1022)
-      , h = i(1029)
-      , d = i(1032)
+      , r = i(845)
+      , l = i(839)
+      , c = i(1015)
+      , u = i(1024)
+      , h = i(1031)
+      , d = i(1034)
       , p = i(85)
-      , m = i(249)
+      , m = i(250)
       , f = i(22)
-      , g = i(290)
-      , _ = i(1047)
+      , g = i(291)
+      , _ = i(1049)
       , v = i(25)
       , y = i(49);
     o(n, s),
@@ -98119,8 +98554,7 @@
     }
     ,
     n.prototype.updateDimensions = function(e) {
-        this.mapScene.setCanvasDimensions(e.mapWidth, e.mapHeight, e.mapLeft, e.mapTop, "absolute"),
-        this.mapScene.camera.setZoom(0),
+        this.mapScene.setCanvasDimensions(e.mapWidth, e.mapHeight, e.mapLeft, e.mapTop, "absolute") && this.mapScene.camera.setZoom(0),
         this.isInGame && this.mapScene.requireCompleteRefresh()
     }
     ,
@@ -98200,23 +98634,23 @@
         var i = this;
         q = i
     }
-    var a = i(1014)
+    var a = i(1016)
       , r = i(16).EventEmitter
       , l = i(26).inherits
-      , c = i(612)
+      , c = i(614)
       , u = i(6)
-      , h = i(1015)
+      , h = i(1017)
       , d = i(5)
-      , p = i(252)
-      , m = i(248)
-      , f = i(617)
-      , g = i(1016)
-      , _ = i(1017)
-      , v = i(1018)
-      , y = i(1019)
-      , w = i(620)
-      , b = i(623)
-      , C = i(1020)
+      , p = i(253)
+      , m = i(249)
+      , f = i(619)
+      , g = i(1018)
+      , _ = i(1019)
+      , v = i(1020)
+      , y = i(1021)
+      , w = i(622)
+      , b = i(625)
+      , C = i(1022)
       , I = u.IMG_PATH
       , T = u.BACKGROUND_PATH
       , S = u.FOREGROUND_PATH
@@ -98518,26 +98952,27 @@
     ,
     o.prototype.addObjects = function(e) {
         if (!this.isReady) {
-            var t = this;
+            var t = this
+              , i = this.mapId;
             return this.once("ready", function() {
-                t.addObjects(e)
+                t.mapId === i && t.addObjects(e)
             })
         }
-        for (var i = 0; i < e.length; i++) {
-            var n = e[i];
-            if (n.img) {
-                var o = this.getCellSceneCoordinate(n.cellId);
-                n.x = o.x - N / 2,
-                n.y = o.y - N / 2 + R,
-                n.position = n.cellId,
-                n.w = N,
-                n.h = N,
-                n.scene = this.mapScene;
-                var s = this.mapScene.createTexture(n.img, "object:" + n.objectGID)
-                  , a = new f(n,s);
-                this.objects[n.cellId] = a
+        for (var n = 0; n < e.length; n++) {
+            var o = e[n];
+            if (o.img) {
+                var s = this.getCellSceneCoordinate(o.cellId);
+                o.x = s.x - N / 2,
+                o.y = s.y - N / 2 + R,
+                o.position = o.cellId,
+                o.w = N,
+                o.h = N,
+                o.scene = this.mapScene;
+                var a = this.mapScene.createTexture(o.img, "object:" + o.objectGID)
+                  , r = new f(o,a);
+                this.objects[o.cellId] = r
             } else
-                console.error("createObjectGfx: no img for " + JSON.stringify(n))
+                console.error("createObjectGfx: no img for " + JSON.stringify(o))
         }
     }
     ,
@@ -98678,16 +99113,22 @@
     }
     ,
     o.prototype.updateObstacles = function(e) {
-        if (this.isReady)
-            for (var t = this.map.cells, i = 0, n = e.length; i < n; i++) {
-                var o = e[i]
-                  , s = o.obstacleCellId
-                  , a = t[s]
-                  , r = a.l;
-                o.state === x ? a.l |= 1 : o.state === M && (a.l &= 254),
-                this.grid.updateCellState(s, a, r),
-                b.updateCellPath(s, a)
-            }
+        if (!this.isReady) {
+            var t = this
+              , i = this.mapId;
+            return this.once("ready", function() {
+                t.mapId === i && t.updateObstacles(e)
+            })
+        }
+        for (var n = this.map.cells, o = 0, s = e.length; o < s; o++) {
+            var a = e[o]
+              , r = a.obstacleCellId
+              , l = n[r]
+              , c = l.l;
+            a.state === x ? l.l |= 1 : a.state === M && (l.l &= 254),
+            this.grid.updateCellState(r, l, c),
+            b.updateCellPath(r, l)
+        }
     }
     ,
     o.prototype.isWalkable = function(e, t) {
@@ -98759,7 +99200,7 @@
         e.bounds.splice(i, 1))
     }
     var r = i(6)
-      , l = i(624)
+      , l = i(626)
       , c = r.CELL_WIDTH
       , u = r.CELL_HEIGHT
       , h = r.HORIZONTAL_OFFSET - c
@@ -98966,7 +99407,7 @@
         this.animated = !1
     }
     var o = i(26).inherits
-      , s = i(242)
+      , s = i(243)
       , a = {
         2: !0
     };
@@ -99066,8 +99507,8 @@
         this.spriteIndex = 0
     }
     var s = i(26).inherits
-      , a = i(243)
-      , r = i(244)
+      , a = i(244)
+      , r = i(245)
       , l = i(6).NB_CELLS;
     s(n, a),
     e.exports = n,
@@ -99233,7 +99674,7 @@
         this._stopped = !0
     }
     var o = i(26).inherits
-      , s = i(242)
+      , s = i(243)
       , a = {
         id: "AnimStatique_0",
         base: "AnimStatique",
@@ -99348,12 +99789,12 @@
         }
     }
     var u = i(6)
-      , h = i(617)
+      , h = i(619)
       , d = i(26).inherits
-      , p = i(260).easing
-      , m = i(260).Tween
-      , f = i(260).Delay
-      , g = i(252)
+      , p = i(261).easing
+      , m = i(261).Tween
+      , f = i(261).Delay
+      , g = i(253)
       , _ = []
       , v = []
       , y = null
@@ -99448,8 +99889,8 @@
 }
 , function(e, t, i) {
     var n = i(6)
-      , o = i(248)
-      , s = i(247)
+      , o = i(249)
+      , s = i(248)
       , a = {
         up: 0,
         down: 180 * Math.PI / 180
@@ -99586,12 +100027,12 @@
             })
         }
     }
-    var o = i(612)
-      , s = i(1021)
+    var o = i(614)
+      , s = i(1023)
       , a = i(6)
-      , r = i(246)
-      , l = i(841)
-      , c = i(842)
+      , r = i(247)
+      , l = i(843)
+      , c = i(844)
       , u = a.GRID_ALTITUDE_OFFSET
       , h = a.CELL_WIDTH
       , d = a.CELL_HEIGHT
@@ -99645,9 +100086,9 @@
         }
         return o
     }
-    var r = i(624)
+    var r = i(626)
       , l = i(6)
-      , c = i(839)
+      , c = i(841)
       , u = l.GRID_ALTITUDE_OFFSET
       , h = l.CELL_WIDTH
       , d = l.CELL_HEIGHT
@@ -99680,17 +100121,17 @@
         return window.isoEngine.mapRenderer.getCellId(n.x, n.y)
     }
     var s = i(6)
-      , a = i(612)
+      , a = i(614)
       , r = i(26).inherits
-      , l = i(617)
-      , c = i(839)
-      , u = i(840)
-      , h = i(841)
-      , d = i(842)
-      , p = i(1023)
-      , m = i(1027)
-      , f = i(260).Tween
-      , g = i(1028)
+      , l = i(619)
+      , c = i(841)
+      , u = i(842)
+      , h = i(843)
+      , d = i(844)
+      , p = i(1025)
+      , m = i(1029)
+      , f = i(261).Tween
+      , g = i(1030)
       , _ = s.CELL_WIDTH
       , v = s.CELL_HEIGHT
       , y = s.GRID_ALTITUDE_OFFSET
@@ -99961,9 +100402,9 @@
         this._layers = new a,
         this._layersBeingRemoved = new a
     }
-    var o = i(1024)
-      , s = i(1026)
-      , a = i(251)
+    var o = i(1026)
+      , s = i(1028)
+      , a = i(252)
       , r = i(65)
       , l = i(66);
     e.exports = n,
@@ -100055,12 +100496,12 @@
         this.forceRefresh(),
         this._updated = !1
     }
-    var o = i(1025)
-      , s = i(243)
+    var o = i(1027)
+      , s = i(244)
       , a = i(26).inherits
       , r = i(6)
-      , l = i(612)
-      , c = i(840)
+      , l = i(614)
+      , c = i(842)
       , u = r.CELL_WIDTH
       , h = r.CELL_HEIGHT
       , d = u / 2
@@ -100157,8 +100598,8 @@
         }),
         this._transformState = a.empty
     }
-    var o = i(260).Tween
-      , s = i(260).easing
+    var o = i(261).Tween
+      , s = i(261).easing
       , a = i(66);
     e.exports = n,
     Object.defineProperty(n.prototype, "cellId", {
@@ -100268,7 +100709,7 @@
         this.bbox = [1 / 0, -(1 / 0), 1 / 0, -(1 / 0)],
         this._listReference = null
     }
-    var o = i(260).Delay;
+    var o = i(261).Delay;
     e.exports = n,
     n.prototype.playAnimation = function(e) {
         for (var t = -(1 / 0), i = this._gridOverlay.spriteBoxes, n = Object.keys(this.cellInfos), s = 0; s < n.length; s++) {
@@ -100324,11 +100765,11 @@
             e[2] = s.blue
         })
     }
-    var o = i(243)
+    var o = i(244)
       , s = i(26).inherits
       , a = i(6)
-      , r = i(260).Tween
-      , l = i(260).easing;
+      , r = i(261).Tween
+      , l = i(261).easing;
     s(n, o),
     e.exports = n,
     n.prototype.draw = function() {
@@ -100455,9 +100896,9 @@
         this.indexTextContext.textAlign = "center"
     }
     var o = i(6)
-      , s = i(612)
+      , s = i(614)
       , a = i(26).inherits
-      , r = i(617)
+      , r = i(619)
       , l = o.CELL_WIDTH
       , c = o.CELL_HEIGHT
       , u = o.GRID_ALTITUDE_OFFSET
@@ -100549,17 +100990,17 @@
         this.fighterIndicator = null ,
         this._onIdAdded = {}
     }
-    var o = i(608)
+    var o = i(610)
       , s = i(25)
-      , a = i(624)
-      , r = i(623)
+      , a = i(626)
+      , r = i(625)
       , l = i(85)
       , c = i(6)
-      , u = i(1030)
-      , h = i(232)
-      , d = i(612)
-      , p = i(620)
-      , m = i(1031)
+      , u = i(1032)
+      , h = i(233)
+      , d = i(614)
+      , p = i(622)
+      , m = i(1033)
       , f = .001
       , g = 1.5
       , _ = .38
@@ -100578,6 +101019,11 @@
         this.userActor.cleanupAnimations();
         for (var e in this.actors)
             this.actors[e].cleanupAnimations()
+    }
+    ,
+    n.prototype.isActorInvisible = function(e) {
+        var t = this.getActor(e);
+        return t.isInvisible
     }
     ,
     n.prototype.getActor = function(e) {
@@ -100842,10 +101288,13 @@
                   , a = this.getActor(s);
                 if (!a) {
                     if (t)
-                        continue;if (!o.cellId && 0 !== o.cellId)
-                        continue;var r = window.gui.fightManager.getFighter(s);
+                        continue;
+                    if (!o.cellId && 0 !== o.cellId)
+                        continue;
+                    var r = window.gui.fightManager.getFighter(s);
                     if (r && r.data && !r.data.alive)
-                        continue;a = this.addEmptyActor({
+                        continue;
+                    a = this.addEmptyActor({
                         contextualId: s,
                         disposition: o
                     })
@@ -100873,7 +101322,7 @@
             this.occupiedCells[t] = [e];
         else {
             var n = i.indexOf(e);
-            n === -1 ? i.push(e) : console.warn("[ActorManager.addActorOccupation] Trying to add an actor to a cell that it already belongs to", e);
+            n === -1 ? i.push(e) : console.warn("[ActorManager.addActorOccupation] Trying to add an actor to a cell that it already belongs to", e)
         }
     }
     ,
@@ -101338,10 +101787,10 @@
             n.loadIndicator()
         }).start(!0)
     }
-    var o = i(243)
+    var o = i(244)
       , s = i(26).inherits
-      , a = i(260).Tween
-      , r = i(260).easing
+      , a = i(261).Tween
+      , r = i(261).easing
       , l = 3
       , c = 5
       , u = 0;
@@ -101427,7 +101876,7 @@
           , o = i.getActor(e.targetId);
         t.push(function(t) {
             function n() {
-                !i.userActor.isDead && window.gui.fightManager.isFightersTurn(i.userActor.actorId) && window.isoEngine.displayUserMovementZone(),
+                i.userActor.isDead || !window.gui.fightManager.isFightersTurn(i.userActor.actorId) || window.gui.fightManager.getIsTurnEndRequestPending() || window.isoEngine.displayUserMovementZone(),
                 t()
             }
             return window.gui.transmitFightSequenceMessage(e),
@@ -101539,7 +101988,7 @@
             })
         }
     }
-    var f, g, _, v, y, w, b, C = i(12), I = i(85), T = i(1033), S = i(1039), A = i(1041), E = i(1043), x = i(1044), M = i(1045), N = i(1046), R = i(216).FIGHT_STATES, O = {
+    var f, g, _, v, y, w, b, C = i(12), I = i(85), T = i(1035), S = i(1041), A = i(1043), E = i(1045), x = i(1046), M = i(1047), N = i(1048), R = i(217).FIGHT_STATES, O = {
         GameMapMovementMessage: E.mapMovement,
         GameActionFightSlideMessage: E.slideMovement,
         GameActionFightTeleportOnSameMapMessage: E.teleport,
@@ -101958,15 +102407,15 @@
         }
         this.onAssetsLoaded()
     }
-    var x = i(624)
-      , M = i(612)
-      , N = i(1034)
+    var x = i(626)
+      , M = i(614)
+      , N = i(1036)
       , R = i(6)
-      , O = i(1035)
-      , P = i(1036)
-      , D = i(247)
-      , L = i(1038).getSpellEffectZone
-      , B = i(248)
+      , O = i(1037)
+      , P = i(1038)
+      , D = i(248)
+      , L = i(1040).getSpellEffectZone
+      , B = i(249)
       , k = R.ANIM_SYMETRY
       , F = "21209"
       , H = {
@@ -102100,7 +102549,7 @@
             t && 1 === g.getDistance(t.cellId, e.cellId) && (e._messageType = "GameActionFightDropCharacterMessage")
         }
     }
-    var m, f, g = i(624), _ = {
+    var m, f, g = i(626), _ = {
         GameActionFightCloseCombatMessage: d,
         GameActionFightSpellCastMessage: d,
         GameMapMovementMessage: null ,
@@ -102247,12 +102696,12 @@
         this.moving = !1
     }
     var o = i(26).inherits
-      , s = i(242)
-      , a = i(260).Tween
-      , r = i(1037).prepare(3)
-      , l = i(1035)
-      , c = i(612)
-      , u = i(624)
+      , s = i(243)
+      , a = i(261).Tween
+      , r = i(1039).prepare(3)
+      , l = i(1037)
+      , c = i(614)
+      , u = i(626)
       , h = new l
       , d = {
         base: "FX",
@@ -102526,7 +102975,7 @@
         return a
     }
     var g = i(65)
-      , _ = i(624)
+      , _ = i(626)
       , v = i(66)
       , y = 39;
     e.exports.getSpellRange = function(e, t, i) {
@@ -102651,9 +103100,9 @@
     }
 }
 , function(e, t, i) {
-    var n = i(1040)
-      , o = i(1041)
-      , s = i(260).Delay
+    var n = i(1042)
+      , o = i(1043)
+      , s = i(261).Delay
       , a = i(25)
       , r = i(12)
       , l = 17;
@@ -102728,7 +103177,7 @@
                     t())
                 }
                 r.each(e._deathMsgs, i, function() {
-                    !u.userActor.isDead && window.gui.fightManager.isFightersTurn(u.userActor.actorId) && window.isoEngine.tryDisplayUserMovementZone()
+                    u.userActor.isDead || !window.gui.fightManager.isFightersTurn(u.userActor.actorId) || window.gui.fightManager.getIsTurnEndRequestPending() || window.isoEngine.tryDisplayUserMovementZone()
                 }),
                 t()
             }),
@@ -102760,7 +103209,7 @@
         }
         ).start()
     }
-    var s = i(260).Delay
+    var s = i(261).Delay
       , a = 3;
     t.playGfx = n,
     t.playGfxTrailAnimation = function(e, t, i, n) {
@@ -102838,17 +103287,22 @@
     }
     function o(e, t, i) {
         var o = window.actorManager.getActor(e.targetId);
-        if (o && (e.shieldLoss || 0 !== e.delta && 0 !== e.loss)) {
-            var s;
-            s = e.actionId === p.ACTION_CHARACTER_DEBOOST_MOVEMENT_POINTS ? "-" + e.delta : e.delta ? e.delta > 0 ? "+" + e.delta : e.delta : "-" + e.loss,
-            n({
-                x: o.x,
-                y: o.y - 70,
-                maxRotation: .3,
-                color: t,
-                delay: i,
-                pointVariation: s
-            })
+        if (o) {
+            var s = window.gui.fightManager.isFighterOnUsersTeam(e.targetId)
+              , a = window.actorManager.isActorInvisible(e.targetId)
+              , r = e.actionId === p.ACTION_CHARACTER_MOVEMENT_POINTS_USE;
+            if ((s || !r || !a) && (e.shieldLoss || 0 !== e.delta && 0 !== e.loss)) {
+                var l;
+                l = e.actionId === p.ACTION_CHARACTER_DEBOOST_MOVEMENT_POINTS ? "-" + e.delta : e.delta ? e.delta > 0 ? "+" + e.delta : e.delta : e.shieldLoss ? "-" + e.shieldLoss : "-" + e.loss,
+                n({
+                    x: o.x,
+                    y: o.y - 70,
+                    maxRotation: .3,
+                    color: t,
+                    delay: i,
+                    pointVariation: l
+                })
+            }
         }
     }
     function s(e, t, i) {
@@ -102882,13 +103336,13 @@
             return t()
         })
     }
-    var r = i(1042)
+    var r = i(1044)
       , l = i(6)
-      , c = i(260).Tween
-      , u = i(260).easing
-      , h = i(260).Delay
+      , c = i(261).Tween
+      , u = i(261).easing
+      , h = i(261).Delay
       , d = i(25)
-      , p = i(221)
+      , p = i(222)
       , m = 10
       , f = [0, 0, 0, 0]
       , g = [.5, -.3, -.3, 0]
@@ -102988,7 +103442,7 @@
         this._createVertexBuffer(i, e.color)
     }
     var o = i(26).inherits
-      , s = i(243)
+      , s = i(244)
       , a = 0;
     o(n, s),
     e.exports = n,
@@ -103161,12 +103615,12 @@
             n(e)
         })) : void n(e)
     }
-    var s = i(1038)
-      , a = i(612)
-      , r = i(246)
-      , l = i(247)
-      , c = i(1020)
-      , u = i(248)
+    var s = i(1040)
+      , a = i(614)
+      , r = i(247)
+      , l = i(248)
+      , c = i(1022)
+      , u = i(249)
       , h = {
         base: "FX",
         direction: 0
@@ -103268,8 +103722,8 @@
         e.carriedEntity = null ,
         e.carriedActor = null
     }
-    var o = i(262)
-      , s = i(260).Delay
+    var o = i(263)
+      , s = i(261).Delay
       , a = 3;
     t.carryCharacter = function(e, t) {
         var i = window.actorManager
@@ -103469,17 +103923,17 @@
         o.start()
     }
     var a = i(6)
-      , r = i(1012)
-      , l = i(624)
+      , r = i(1014)
+      , l = i(626)
       , c = i(35).getText
       , u = i(35).getTextFailover
-      , h = i(1042)
-      , d = i(1049)
-      , p = i(608)
-      , m = i(1041)
-      , f = i(216).FIGHT_STATES
-      , g = i(1050).trueName
-      , _ = i(260)
+      , h = i(1044)
+      , d = i(1051)
+      , p = i(610)
+      , m = i(1043)
+      , f = i(217).FIGHT_STATES
+      , g = i(1052).trueName
+      , _ = i(261)
       , v = _.Delay
       , y = _.Tween
       , w = _.easing
@@ -103550,55 +104004,65 @@
     }
     ,
     r.prototype._tapInteractive = function(e, t) {
-        for (var i = this.mapRenderer.interactiveElements, n = this._getAllInteractives(), s = null , a = null , r = null , l = 0; l < n.length; l++) {
-            var c = n[l];
-            this._isElementClicked(c, e, t) && (c.actorId ? c.data && c.data.npcId ? s || (s = c) : r || (r = c) : a || (a = c))
+        for (var i = this.mapRenderer.interactiveElements, n = this._getAllInteractives(), s = window.gui.playerData.isAlive(), a = null , r = null , l = null , c = 0; c < n.length; c++) {
+            var u = n[c];
+            if (this._isElementClicked(u, e, t))
+                if (u.actorId)
+                    if (u.data && u.data.npcId) {
+                        if (!a) {
+                            var h = u.data.npcData && u.data.npcData.actions && u.data.npcData.actions.length > 0;
+                            (s || h) && (a = u)
+                        }
+                    } else
+                        l || (l = u);
+                else
+                    r || (r = u)
         }
-        var u = s || a || r;
-        if (null === u)
+        var d = a || r || l;
+        if (null === d)
             return this._lastTapId = null ,
             !1;
-        var h = !1
-          , d = u.id || u.actorId
-          , p = g([u._position, window.gui.playerData.position.mapId, d]);
-        p === this._lastTapId ? (h = !0,
-        this._lastTapId = null ) : this._lastTapId = p,
+        var p = !1
+          , m = d.id || d.actorId
+          , f = g([d._position, window.gui.playerData.position.mapId, m]);
+        f === this._lastTapId ? (p = !0,
+        this._lastTapId = null ) : this._lastTapId = f,
         this.clearHighlights(null , I.DEFAULT);
-        var m = this.actionQueue.isActive();
-        if (u.tap)
-            return m || (h && u.actorId && "GameRolePlayGroupMonsterInformations" === u.data.type ? window.isoEngine.attackActor(u.actorId) : u.tap(e, t)),
+        var _ = this.actionQueue.isActive();
+        if (d.tap)
+            return _ || (p && d.actorId && "GameRolePlayGroupMonsterInformations" === d.data.type ? window.isoEngine.attackActor(d.actorId) : d.tap(e, t)),
             !0;
-        var f = i[u.id];
-        if (!f)
+        var v = i[d.id];
+        if (!v)
             return !0;
-        var _ = f.enabledSkills[0];
-        if (1 === f.enabledSkills.length && !o(_.skillId)) {
-            var v = this
-              , y = this.actionQueue.enqueueInteractive(f.elementId, f.elementTypeId, function() {
-                var e = f.enabledSkills
+        var y = v.enabledSkills[0];
+        if (1 === v.enabledSkills.length && !o(y.skillId)) {
+            var w = this
+              , b = this.actionQueue.enqueueInteractive(v.elementId, v.elementTypeId, function() {
+                var e = v.enabledSkills
                   , t = 1 === e.length && e[0];
-                return t ? void v.queueUseInteractive(f.elementId, t.skillInstanceUid) : (v.actionQueue.clear(),
-                v.clearHighlights(null , I.QUEUE))
+                return t ? void w.queueUseInteractive(v.elementId, t.skillInstanceUid) : (w.actionQueue.clear(),
+                w.clearHighlights(null , I.QUEUE))
             });
-            return y ? (this._addHighlight(u, I.QUEUE),
-            !0) : (m || (this.instantUseInteractive(f.elementId, _.skillInstanceUid),
-            this._addHighlight(u)),
+            return b ? (this._addHighlight(d, I.QUEUE),
+            !0) : (_ || (this.instantUseInteractive(v.elementId, y.skillInstanceUid),
+            this._addHighlight(d)),
             !0)
         }
-        if (m)
+        if (_)
             return !0;
-        if (this._addHighlight(u),
-        h)
-            for (var w = 0; w < T.length; w++)
-                if (f.elementTypeId === T[w].elementTypeId)
-                    for (var b = 0; b < f.enabledSkills.length; b++)
-                        if (f.enabledSkills[b].skillId === T[w].skillId)
-                            return this.instantUseInteractive(f.elementId, _.skillInstanceUid),
+        if (this._addHighlight(d),
+        p)
+            for (var C = 0; C < T.length; C++)
+                if (v.elementTypeId === T[C].elementTypeId)
+                    for (var S = 0; S < v.enabledSkills.length; S++)
+                        if (v.enabledSkills[S].skillId === T[C].skillId)
+                            return this.instantUseInteractive(v.elementId, y.skillInstanceUid),
                             !0;
-        var C = this.mapScene.convertSceneToCanvasCoordinate(e, t);
-        return window.gui.openContextualMenu("interactive", f, {
-            x: C.x,
-            y: C.y
+        var A = this.mapScene.convertSceneToCanvasCoordinate(e, t);
+        return window.gui.openContextualMenu("interactive", v, {
+            x: A.x,
+            y: A.y
         }),
         !0
     }
@@ -103656,8 +104120,8 @@
         var i = this
           , n = this.mapRenderer.identifiedElements[e]
           , o = n.position
-          , s = this.actorManager.userActor;
-        this._movePlayerOnMap(o, !0, function() {
+          , s = this.actorManager.userActor
+          , a = function() {
             var n = l.getOrientation(s.cellId, o, !1);
             s.setDisposition(null , n),
             i._interactiveUseTrackServerAnswer(e, t),
@@ -103665,7 +104129,8 @@
                 elemId: e,
                 skillInstanceUid: t
             })
-        })
+        };
+        return l.areCellsNeighbours(s.cellId, o, !0) ? a() : void this._movePlayerOnMap(o, !0, a)
     }
     ,
     r.prototype.onInteractiveUseErrorMessage = function(e) {
@@ -104013,7 +104478,7 @@
         this._createVertexBuffer()
     }
     var o = i(26).inherits
-      , s = i(243)
+      , s = i(244)
       , a = 0;
     o(n, s),
     e.exports = n,
@@ -104168,17 +104633,17 @@
         }
         return n.path
     }
-    var r = i(1012)
-      , l = i(1052)
-      , c = i(623).compressPath
-      , u = i(1035)
-      , h = i(624)
+    var r = i(1014)
+      , l = i(1054)
+      , c = i(625).compressPath
+      , u = i(1037)
+      , h = i(626)
       , d = i(84).playUiSound
       , p = i(65)
       , m = i(66)
-      , f = i(1053)
+      , f = i(1055)
       , g = i(25)
-      , _ = i(1050).trueName
+      , _ = i(1052).trueName
       , v = null
       , y = null
       , w = !1
@@ -104568,13 +105033,14 @@
               , M = y.tackleAp + S.ap
               , N = y.distance + 1
               , R = A >= 0;
-            for (_[w] && (A = 0),
+            for (_[w] && t !== w && (A = 0),
             I = 0; I < b.length; I++) {
                 if (v = b[I],
                 m[v]) {
                     var O = m[v];
                     if (O.availableMp > A)
-                        continue;if (O.availableMp === A && O.availableAp >= E)
+                        continue;
+                    if (O.availableMp === A && O.availableAp >= E)
                         continue
                 }
                 h.isWalkable(v, !0) && (i[v] = new l(S,w,R),
@@ -104585,9 +105051,9 @@
         }
         return i
     }
-    var u = i(624)
-      , h = i(232)
-      , d = i(1032)
+    var u = i(626)
+      , h = i(233)
+      , d = i(1034)
       , p = h.INVISIBLE
       , m = h.DETECTED
       , f = 6
@@ -104610,7 +105076,7 @@
           , r = Math.sqrt(o * o + s * s);
         return r
     }
-    var s = i(624)
+    var s = i(626)
       , a = s.getMapPointFromCellId;
     e.exports.getCellDistance = n,
     e.exports.getDistance = o
@@ -104630,12 +105096,12 @@
         }
         return t
     }
-    var o = i(1012)
-      , s = i(1038)
-      , a = i(1050).trueName
-      , r = i(624)
+    var o = i(1014)
+      , s = i(1040)
+      , a = i(1052).trueName
+      , r = i(626)
       , l = r.getCellIdFromMapPoint
-      , c = i(1055)
+      , c = i(1057)
       , u = i(65)
       , h = i(66)
       , d = r.getMapPointFromCellId
@@ -104959,15 +105425,15 @@
             return t.teamId === u.TEAM_CHALLENGER ? v : y
         }
     }
-    var a = i(1012)
+    var a = i(1014)
       , r = i(6)
-      , l = i(216)
-      , c = i(500)
-      , u = i(212)
-      , h = i(728)
+      , l = i(217)
+      , c = i(502)
+      , u = i(213)
+      , h = i(730)
       , d = i(85)
-      , p = i(252)
-      , m = i(617)
+      , p = i(253)
+      , m = i(619)
       , f = l.FIGHT_OPTION_KEY_TO_ENUM
       , g = l.FIGHT_OPTION_ICON_ID
       , _ = {};
@@ -105130,15 +105596,15 @@
     }
 }
 , function(e, t, i) {
-    var n = i(1012)
+    var n = i(1014)
       , o = i(12)
-      , s = i(1033)
-      , a = i(1039)
+      , s = i(1035)
+      , a = i(1041)
       , r = i(84).playUiSound
       , l = i(6)
-      , c = i(1027)
-      , u = i(1042)
-      , h = i(260)
+      , c = i(1029)
+      , u = i(1044)
+      , h = i(261)
       , d = h.Tween
       , p = h.easing;
     n.prototype.playEmote = function(e) {
@@ -105248,7 +105714,7 @@
     }
 }
 , function(e, t, i) {
-    var n = i(1012)
+    var n = i(1014)
       , o = 14
       , s = 40;
     n.prototype._logMap = function(e) {
@@ -105295,16 +105761,16 @@
         this.hide()
     }
     var o = i(6)
-      , s = i(1012)
-      , a = i(623)
+      , s = i(1014)
+      , a = i(625)
       , r = i(5)
-      , l = i(249)
-      , c = i(260).Tween
-      , u = i(260).easing
-      , h = i(617)
-      , d = i(1017)
-      , p = i(259)
-      , m = i(258)
+      , l = i(250)
+      , c = i(261).Tween
+      , u = i(261).easing
+      , h = i(619)
+      , d = i(1019)
+      , p = i(260)
+      , m = i(259)
       , f = i(49)
       , g = 1200
       , _ = 100

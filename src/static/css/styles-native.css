@@ -1164,7 +1164,8 @@ body input {
 .ContextualMenu .contextHeader {
     position: relative;
     text-align: center;
-    padding: 5px
+    padding: 5px;
+    white-space: pre-wrap
 }
 
 .ContextualMenu .contextHeader:before {
@@ -1370,7 +1371,9 @@ body input {
     flex: 1;
     line-height: 18px;
     margin: 0 3px;
-    white-space: pre-wrap
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-width: 140px
 }
 
 .EntityBanner .nameBox .houseOwner {
@@ -2158,6 +2161,11 @@ body input {
 
 .TableV2 .tableHeader .row .col .sortBtn.noText {
     width: 100%
+}
+
+.TableV2 .tableHeader .row .col .sortBtn.noTriangle {
+    z-index: -1;
+    opacity: 0
 }
 
 .TableV2 .tableHeader .row .col.showingTriangle .headerContent {
@@ -6814,7 +6822,7 @@ body input {
     z-index: 5;
     box-sizing: border-box;
     overflow-wrap: break-word;
-    border-image: url('../ui/bubble/bubble.png') 45 15 20 fill / 22px 15px 10px;
+    border-image: url('../ui/bubble/bubble.png') 45 15 20 15 fill / 22px 15px 10px 15px;
     opacity: .9
 }
 
@@ -6900,11 +6908,21 @@ body input {
     color: black;
     min-width: 20px;
     text-align: center;
-    margin: 9px 12px 12px
+    margin: 9px 15px 11px
 }
 
 #dofusBody .speechBubble .content .link,#dofusBody .speechBubble .content .insertedLink {
     color: #6587BF
+}
+
+#dofusBody .speechBubble .nextBtn {
+    position: relative;
+    right: 11px;
+    margin-top: -17px;
+    bottom: 9px;
+    height: 21px;
+    background: url('../ui/arrows/down.png') 100% no-repeat;
+    background-size: 20px 20px
 }
 
 #dofusBody .speechBubble .arrow {
@@ -11075,14 +11093,14 @@ body input {
     top: -5px
 }
 
-.ItemBox .infoContainer .topLeftInfoContainer .itemContainer .etheralBar {
+.ItemBox .infoContainer .topLeftInfoContainer .itemContainer .durabilityBar {
     width: 100%;
     height: 8px;
     position: relative;
     bottom: 1px
 }
 
-.ItemBox .infoContainer .topLeftInfoContainer .itemContainer .etheralBar .barBg,.ItemBox .infoContainer .topLeftInfoContainer .itemContainer .etheralBar .barColor {
+.ItemBox .infoContainer .topLeftInfoContainer .itemContainer .durabilityBar .barBg,.ItemBox .infoContainer .topLeftInfoContainer .itemContainer .durabilityBar .barColor {
     border-width: 4px
 }
 
@@ -14515,14 +14533,6 @@ body input {
     border-color: transparent
 }
 
-.window .QuestsWindow .sublist .label.completed .icon {
-    background-image: url("../ui/tick_large.png")
-}
-
-.window .QuestsWindow .sublist .label.completed .text {
-    color: rgba(225,238,254,0.5)
-}
-
 .window .QuestsWindow .sublist .label .text {
     color: #ffffff;
     overflow: hidden;
@@ -14544,6 +14554,14 @@ body input {
 .window .QuestsWindow .sublist .label .icon.notFollowed {
     background-image: url("../ui/hourglass_grayscale.png");
     opacity: .5
+}
+
+.window .QuestsWindow .sublist .label.completed .icon {
+    background-image: url("../ui/tick_large.png")
+}
+
+.window .QuestsWindow .sublist .label.completed .text {
+    color: rgba(225,238,254,0.5)
 }
 
 .window .QuestsWindow .sublist .label.odd {
@@ -15315,6 +15333,10 @@ body input {
 
 .RecipeList .recipeTitle .recipeRight .recipeLevel {
     font-weight: bold
+}
+
+.RecipeList .recipeTitle .warningText {
+    color: #F90D3A
 }
 
 .RecipeList .ingredientsList {
@@ -17379,6 +17401,15 @@ body input {
     display: inline-block
 }
 
+.window.ServerSelectionWindow .windowBody .consoleButton {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background-image: url("../ui/buttons/console.png");
+    height: 60px;
+    width: 54px
+}
+
 @keyframes blinker {
     50% {
         opacity: .4
@@ -17806,8 +17837,6 @@ body input {
 }
 
 .window.tradeItemWindow .windowBody .setting .value {
-    -webkit-flex: 1;
-    flex: 1;
     text-align: right;
     padding: 0 10px
 }
@@ -21017,6 +21046,7 @@ body input {
     box-sizing: border-box;
     border-width: 9px 7px 10px 7px;
     border-image: url('../ui/buttons/btn2_black.png') 56 50 67 48 fill;
+    border-style: solid;
     color: #fff;
     font-size: 13px;
     text-align: center;
@@ -21194,7 +21224,7 @@ body input {
 .window.CharacterCreationWindow .nameSelector {
     z-index: 3;
     position: relative;
-    height: 31px;
+    height: 51px;
     margin: 0 auto;
     line-height: 16px;
     text-align: center
@@ -21204,7 +21234,7 @@ body input {
     display: inline-block;
     vertical-align: top;
     width: 300px;
-    line-height: 22px;
+    line-height: 38px;
     border-radius: 8px;
     font-size: 16px;
     background-color: rgba(0,0,0,0.5);
@@ -21217,11 +21247,11 @@ body input {
 .window.CharacterCreationWindow .nameSelector .randomiseBtn {
     display: inline-block;
     vertical-align: top;
-    position: relative;
-    top: -2px;
+    position: absolute;
+    top: 2px;
     margin-left: 6px;
-    width: 34px;
-    height: 34px
+    width: 42px;
+    height: 42px
 }
 
 .window.CharacterCreationWindow .nameSelector .randomiseBtn .btnIcon {
@@ -21362,18 +21392,17 @@ body input {
 }
 
 .window.CharacterCreationWindow .colorTool .colorPickerFooter {
-    display: -webkit-flex;
-    display: flex;
+    text-align: center;
     width: 100%;
     font-size: 12px;
-    text-align: left;
     margin: 4px 7px 6px 7px
 }
 
 .window.CharacterCreationWindow .colorTool .colorPickerFooter .resetColorBtn,.window.CharacterCreationWindow .colorTool .colorPickerFooter .randomColorBtn,.window.CharacterCreationWindow .colorTool .colorPickerFooter .resetAllColorBtn {
     display: inline-block;
+    vertical-align: middle;
     width: 120px;
-    margin-right: 8px
+    margin: 0 4px
 }
 
 .window.CharacterCreationWindow .colorTool .colorPickerFooter .randomColorBtn .btnText {
@@ -21483,7 +21512,8 @@ body input {
     border-width: 12px 11px 16px 33px;
     border-image: url('../ui/buttons/btn2_leftArrow.png') 53 43 69 120 fill;
     padding: 0 8px 0 0;
-    line-height: 16px
+    line-height: 16px;
+    min-width: 100px
 }
 
 .window.CharacterCreationWindow .nextBtn,.window.CharacterCreationWindow .createButton {
@@ -24565,10 +24595,24 @@ body input {
 }
 
 #dofusBody .loginScreen.backgroundImage {
-    background: url('../ui/login/login_bg.jpg');
+    background-image: url('../ui/login/login_bg.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 0
+}
+
+#dofusBody .loginScreen.hallouineSkin {
+    background-color: #963809;
+    background: #963809;
+    background: -webkit-linear-gradient(top, #52180d 0, #dc5904 100%);
+    background: linear-gradient(to bottom, #52180d 0, #dc5904 100%)
+}
+
+#dofusBody .loginScreen.hallouineSkin.backgroundImage {
+    background-image: url('../ui/login/login_bg_halouine.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 10% 100%
 }
 
 #dofusBody .loginScreen .webGlUnsupported {
@@ -25224,7 +25268,8 @@ body input {
     color: #4d6100;
     right: 0;
     top: 10px;
-    transition: opacity .3s
+    transition: opacity .3s;
+    padding: 0
 }
 
 #dofusBody .loginScreen .RetractableBlock .content .titleBox .expandButton .expandeButtonContent {
@@ -25309,7 +25354,8 @@ body input {
 }
 
 #dofusBody .loginScreen .ForumBlock .content .forumNewsMargin .forumNews img {
-    width: 100%
+    width: 100%;
+    height: auto
 }
 
 #dofusBody .loginScreen .ForumBlock .content .forumNewsMargin .forumNews ul {

@@ -19,6 +19,10 @@ body {
     padding-left: 0px;
 }
 
+.shortcut-remove{
+    cursor:pointer;
+}
+
 #right-menu{
     padding-left: 0px;
     padding-right: 0px;

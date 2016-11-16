@@ -41,7 +41,7 @@ export class Client {
         window['Frame'+this.id].id = this.id;
 
         // create tab object
-        this.tabs.push(new Tab(this.id, this.db));
+        this.tabs.push(new Tab(this.id, this));
 
         //click on the last tab
         if (this.$navTabs.length > 0){

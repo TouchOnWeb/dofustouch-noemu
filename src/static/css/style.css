@@ -38,15 +38,17 @@ iframe.hide {
 
 .tab2 {
     position:relative;
+
 }
 
 .tab2.active > a{
     /*background-color: #158cba!important;*/
-    border-radius: 0px;
+
 }
 
 .tab2 > a {
     padding-right: 7px!important;
+    border-radius: 0px!important;
 }
 
 .tab2 > a > span.glyphicon {

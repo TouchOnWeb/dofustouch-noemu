@@ -5,7 +5,8 @@ const {app,shell} = require('electron').remote
 const {ipcRenderer} = require('electron');
 
 export class Tab {
-    constructor(id){
+    constructor(id, client){
+        this.client = client;
         this.id = id;
         this.ig = false;
         this.window = window['Frame'+this.id];
@@ -18,10 +19,15 @@ export class Tab {
     }
 
     hideShop(){
-        
+        if(this.config.get('option.general.hidden-shop').value()){
+            $(this.window.document).find('.shopBtn.Button').parent().hide();
+        }else{
+            $(this.window.document).find('.shopBtn.Button').parent().show();
+        }
     }
 
     setEventListener(){
+
         // Resize windows
         this.window.onresize = function() {
             this.window.gui._resizeUi();
@@ -33,13 +39,25 @@ export class Tab {
             if(this.ig){
                 this.unbindShortCut();
                 this.bindShortCut();
+                this.hideShop();
             }
         });
 
         // Character IG
-        this.window.gui.playerData.on("characterSelectedSuccess", () => {
+        this.window.gui.playerData.on("characterSelectedSuccess", ()=> {
+            console.log('connect char');
             this.ig = true;
+
+            //hide shop?
+            this.hideShop();
+
+            // set character name tab
+            this.client.setCharacterName(this.window.gui.playerData.characterBaseInformations.name, this.id);
+
+            // Set shortcut
             this.bindShortCut();
+
+            // Set donate
             if(Math.random() <= 0.2){
                 setTimeout(()=>{
                     this.donateNotification();
@@ -49,8 +67,8 @@ export class Tab {
 
         // Character Disconnect
         this.window.gui.on("disconnect", () => {
-            console.log('disocnnect');
             this.unbindShortCut();
+            self.client.setCharacterName('Non connecté', this.id);
             this.ig = false;
         });
     }
