@@ -1,7 +1,7 @@
 // Node Context
 const low = require('lowdb');
 const async = require('async');
-const app = require('electron').remote.app
+const {app,shell} = require('electron').remote
 
 export class Tab {
     constructor(id){
@@ -26,10 +26,11 @@ export class Tab {
         this.window.gui.playerData.on("characterSelectedSuccess", () => {
             this.ig = true;
             this.bindShortCut();
-            setTimeout(()=>{
-                this.donateNotification();
-            }, (30000+Math.random()*60000));
-
+            //if(rand() <= 1){
+                setTimeout(()=>{
+                    this.donateNotification();
+                }, (30000+Math.random()*60000));
+            //}
         });
 
         // Character Disconnect
@@ -50,7 +51,7 @@ export class Tab {
             buttons: [{
                 label: 'Plus d\'infos',
                 action: function() {
-                    window.shell.openExternal("http://forum.no-emu.com/viewtopic.php?f=3&t=16")
+                    shell.openExternal("http://forum.no-emu.com/viewtopic.php?f=3&t=16")
                 }
             }]
         };

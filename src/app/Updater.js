@@ -76,7 +76,7 @@ class Updater {
     static execUpdate(){
 
         let options = {
-            name: 'DofusTouchNE',
+            name: 'electron',
         };
 
         switch(process.platform){
@@ -92,49 +92,55 @@ class Updater {
             break;
             case 'win32':
             console.log('start win32 update');
-            const bat = spawn('cmd.exe', ['/c', app.getAppPath()+'/update.bat', options.name,  app.getAppPath()]);
+
+            sudo.exec('cmd.exe '+app.getAppPath()+'/update.bat '+options.name+' '+app.getAppPath(), options, function(error, stdout, stderr) {
+                app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
+                app.exit(0)
+            });
+
+            /*const bat = spawn('cmd.exe', ['/c', app.getAppPath()+'/update.bat', options.name,  app.getAppPath()]);
             bat.stdout.on('data', (data) => {
-                var str = String.fromCharCode.apply(null, data);
-                console.info(str);
-            });
-            bat.stderr.on('data', (data) => {
-                var str = String.fromCharCode.apply(null, data);
-                console.error(str);
-            });
-            break;
-        }
-    }
-
-    static startUpdate (i) {
-
-        Updater.toSaveFilePath = app.getAppPath()+'/update.tar.gz';
-
-        var winUpdate = new BrowserWindow({
-            width: 700,
-            height: 150,
-            //modal: false,
-            //resizable: Emulator.devMode,
-            center: true,
-            parent: BrowserWindow.getFocusedWindow(),
-            //darkTheme: true,
-            //skipTaskbar: true,
-            //frame: false
+            var str = String.fromCharCode.apply(null, data);
+            console.info(str);
         });
+        bat.stderr.on('data', (data) => {
+        var str = String.fromCharCode.apply(null, data);
+        console.error(str);
+    });*/
+    break;
+}
+}
 
-        winUpdate.on('closed', () => {
-            winUpdate = null
-        });
+static startUpdate (i) {
 
-        winUpdate.loadURL(Emulator.dirView('updater.html'));
+    Updater.toSaveFilePath = app.getAppPath()+'/update.tar.gz';
 
-        if (Emulator.devMode)
-        winUpdate.webContents.openDevTools();
-    }
+    var winUpdate = new BrowserWindow({
+        width: 700,
+        height: 150,
+        //modal: false,
+        //resizable: Emulator.devMode,
+        center: true,
+        parent: BrowserWindow.getFocusedWindow(),
+        //darkTheme: true,
+        //skipTaskbar: true,
+        //frame: false
+    });
 
-    static init (startGame) {
-        Updater.startGame = startGame;
-        this.checkUpdate();
-    }
+    winUpdate.on('closed', () => {
+        winUpdate = null
+    });
+
+    winUpdate.loadURL(Emulator.dirView('updater.html'));
+
+    if (Emulator.devMode)
+    winUpdate.webContents.openDevTools();
+}
+
+static init (startGame) {
+    Updater.startGame = startGame;
+    this.checkUpdate();
+}
 }
 
 module.exports = Updater;

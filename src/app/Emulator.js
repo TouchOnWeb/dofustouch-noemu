@@ -26,8 +26,8 @@ class Emulator {
         require('./Updater').init( () => {
 
             this.win = new BrowserWindow({
-                width: this.config.get('option.general.resolution').value().split(';')[0],
-                height: this.config.get('option.general.resolution').value().split(';')[0],
+                width: parseInt(this.config.get('option.general.resolution').value().split(';')[0]),
+                height: parseInt(this.config.get('option.general.resolution').value().split(';')[1]),
                 title : 'DofusTouch-NE',
                 useContentSize: true,
                 center: true
