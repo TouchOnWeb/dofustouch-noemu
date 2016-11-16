@@ -20,7 +20,8 @@ builder.build({
                 "LICENCE",
                 "update.sh",
                 "update.bat",
-                "extract.vbs"
+                "extract.vbs",
+                "getadmin.vbs"
             ],
             "mac": {
                 "target" : ["default"],
