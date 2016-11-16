@@ -1,43 +1,55 @@
 @echo off
 rem --- Système d'updater de DofusTouch No-Emu ---
-rem tue le process DTNE
-taskkill /f /im DofusTouchNE.exe
+echo Installation de la Mise à jour de DofusTouch NoEmu
+echo Ne pas fermer cette fenetre
+echo (elle se fermera toute seule à la fin de l'instalation)
 
+rem parametres
+set chemin=%1
+set prog=%2
+
+echo Terminaison des instances dejà lancées
+rem tue le process DTNE
+taskkill /f /im %prog%.exe >NUL
+
+echo Demande d'élévation de privileges
 rem demande une elevation de privileges
-cd /D %~dp0
-if not exist "getadmin.vbs" (
-    mode con lines=2 cols=30
-    echo Set UAC = CreateObject^("Shell.Application"^)>getadmin.vbs
-    echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >>getadmin.vbs
-    call wscript getadmin.vbs
+if not exist "%chemin%\admin.lock" (
+    rem mode con lines=2 cols=30
+    echo a>"%chemin%\admin.lock"
+	call wscript getadmin.vbs "%chemin%" "%prog%"
+	echo fin
     exit
     )
-del getadmin.vbs
+del /s "%chemin%\admin.lock" >NUL
 
-
+echo Demande de droits admin réussie
 
 rem charge utile:
 echo Suppression des anciens fichiers
 rem Suppression des fichiers à mettre à jour
-del /s "%CD%\package.json"
-rd /s /q "%CD%\src"
-rd /s /q "%CD%\node_modules"
+del /s "%chemin%\package.json" >NUL
+echo .
+rd /s /q "%chemin%\src" >NUL
+echo ..
+rd /s /q "%chemin%\node_modules" >NUL
+echo ...
 
 rem Extraction
 echo Extraction des nouveaux fichiers
-if not exist extract.vbs (
+if not exist "%chemin%\extract.vbs" (
 	echo Erreur fichier "extract.vbs" manquant.
 	echo Veuillez retélécharger le programme depuis le site.
 	pause
 	exit
 )
-cscript extract.vbs
+cscript "%chemin%\extract.vbs"
 
 rem Suppression des fichiers temporaires
 rem del extract.vbs
 
 rem lancement du jeu
 echo Lancement du jeu
-call "%CD%/../../DofusTouchNE.exe"
+call "%chemin%\..\..\DofusTouchNE.exe"
 
 exit

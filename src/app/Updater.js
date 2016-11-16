@@ -9,6 +9,7 @@ const Emulator = require('./Emulator');
 const Sudoer = require('electron-sudo').default;
 const MessageBox = require('./MessageBox');
 const exec = require('child_process').exec;
+const spawn = require('child_process').spawn;
 
 class Updater {
 
@@ -76,7 +77,7 @@ class Updater {
     static execUpdate(){
 
         let options = {
-            name: 'electron'
+            name: 'DofusTouchNE'
         },
         sudoer = new Sudoer(options);
 
@@ -93,7 +94,7 @@ class Updater {
             break;
             case 'win32':
             console.log('start win32 update');
-            const bat = sudoer.spawn('cmd.exe', ['/c', app.getAppPath()+'/update.bat']);
+            const bat = spawn('cmd.exe', ['/c', app.getAppPath()+'/update.bat', app.getAppPath(), options.name]);
             // Handle normal output
             bat.stdout.on('data', (data) => {
                 var str = String.fromCharCode.apply(null, data);

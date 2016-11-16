@@ -11,10 +11,8 @@ export class Option {
         this.emulator = require('electron').remote.require('./Emulator');
         this.$form = $('#right-menu');
 
-        this.option.loadConfig((data) => {
-            this.data = data;
-            this.init();
-        });
+        this.data = this.option.config.value();
+        this.init();
     }
 
     init(){
@@ -33,7 +31,7 @@ export class Option {
 
             console.log(obj);
 
-            that.parse(obj);
+            that.saveConfig(obj);
 
             return false;
         });
@@ -87,51 +85,33 @@ export class Option {
         });
     }
 
-    parse(obj){
+    saveConfig(obj){
         // delete old array
-        this.data.option['shortcut']['no-emu']['tabs'] = [];
-        this.data.option['shortcut']['spell'] = [];
-        this.data.option['shortcut']['item'] = [];
+        this.option.config.set('option.shortcut.no-emu.tabs', []).value();
+        this.option.config.set('option.shortcut.spell', []).value();
+        this.option.config.set('option.shortcut.item', []).value();
 
         obj.forEach((element, index) => {
-            let tabElement = element.name.split('.');
-
-            if(tabElement.length == 3){
-                if(Array.isArray(this.data.option[tabElement[0]][tabElement[1]][tabElement[2]])){
-                    let ref = this.data.option[tabElement[0]][tabElement[1]][tabElement[2]];
-                    ref.push(element.value);
-                    this.data.option[tabElement[0]][tabElement[1]][tabElement[2]] = ref;
-
-                }else{
-                    this.data.option[tabElement[0]][tabElement[1]][tabElement[2]] = element.value;
-                }
-            }
-            else if(tabElement.length == 2){
-                if(Array.isArray(this.data.option[tabElement[0]][tabElement[1]])){
-                    let ref = this.data.option[tabElement[0]][tabElement[1]];
-                    ref.push(element.value);
-                    this.data.option[tabElement[0]][tabElement[1]]= ref;
-                }else{
-                    this.data.option[tabElement[0]][tabElement[1]] = element.value;
-                }
+            if(Array.isArray(this.option.config.get('option.'+element.name).value())){
+                this.option.config.get('option.'+element.name).push(element.value).value();
+            }else{
+                console.log(element.value);
+                this.option.config.set('option.'+element.name, element.value).value();
             }
         });
-        this.saveConfig();
-    }
 
-    saveConfig(){
-        this.option.saveConfig(this.data,() => {} );
+        this.option.save();
     }
 
     loadConfig(){
 
-        let properties = this.getPropertiesByKey(this.data.option, '');
+        let properties = this.getPropertiesByKey(this.option.config.get('option').value(), '');
 
         properties.forEach((propertie) => {
             let pathprop = propertie.split('.');
 
             // Value of option
-            let value = this.data.option;
+            let value = this.option.config.get('option').value();
             pathprop.forEach((prop) => {
                 value = value[prop];
             });

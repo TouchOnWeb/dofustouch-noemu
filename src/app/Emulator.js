@@ -24,6 +24,7 @@ class Emulator {
         this.gameWindows = [];
         this.version = pkg.version;
         this.webSite = 'http://dofustouch.no-emu.com';
+        
         require('./Updater').init( () => {
 
             this.win = new BrowserWindow({
@@ -35,7 +36,7 @@ class Emulator {
             });
 
             console.log('start game');
-            this.shortCuts = new ShortCuts(this.win);
+            this.shortCuts = new ShortCuts(this.win, this.config);
             Emulator.setMenu();
             Emulator.openGameWindow();
         });
@@ -70,7 +71,7 @@ class Emulator {
     }
 
     static setMenu  () {
-        let template = MenuTemplate.build(this.shortCuts);
+        let template = MenuTemplate.build(this.shortCuts, this.config);
         const menu = Menu.buildFromTemplate(template);
         Menu.setApplicationMenu(menu);
     }

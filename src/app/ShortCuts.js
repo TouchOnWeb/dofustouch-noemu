@@ -1,17 +1,16 @@
 const electronLocalshortcut = require('electron-localshortcut');
-const low = require('lowdb');
 const async = require('async');
 const fileAsync = require('lowdb/lib/file-async');
 const {app} = require('electron');
 
+const Emulator = require('./Emulator');
+
 class ShortCuts {
 
-    constructor(win){
+    constructor(win, config){
         this.win = win;
         this.start = false;
-        this.config = low(app.getAppPath()+'/config.json', {
-            storage: fileAsync
-        });
+        this.config = config;
     }
 
     init(){
@@ -27,8 +26,17 @@ class ShortCuts {
     }
 
     reload(){
+        console.log('reload shortcuts');
+
+        // reload shortcuts
         electronLocalshortcut.unregisterAll(this.win);
         this.init();
+
+        // reload tab shortcuts
+        this.win.webContents.send('reloadShotcuts');
+
+        // reload menu
+        Emulator.setMenu();
     }
 
     enable(){

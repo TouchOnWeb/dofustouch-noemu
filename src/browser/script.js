@@ -53550,6 +53550,7 @@
         }
         );
         this.appendChild(c);
+
         var u = this._turnReadyBtn = new r({
             text: s("tablet.fight.option.nextTurn"),
             className: "fightBtn",
@@ -53557,9 +53558,11 @@
             scaleOnPress: !0
         },function() {
             window.dofus.sendMessage("GameFightTurnFinishMessage"),
+
             n()
         }
         );
+        window.turnReady = u;
         this.appendChild(u),
         window.gui.on("GameFightJoinMessage", function(t) {
             t.canSayReady && e(!1)

@@ -13,9 +13,14 @@ const MessageBox = require('./MessageBox');
 
 class Option {
 
-    static init (winParent) {
+    static init (winParent, config) {
+        
+        if(this.winOption){
+            this.winOption.focus();
+            return;
+        }
 
-        this.config = app.getAppPath()+'/config.json';
+        this.config = config;
         this.winOption = new BrowserWindow({
             width: 710,
             height: 500,
@@ -35,24 +40,9 @@ class Option {
         }
     }
 
-    static loadConfig(cb){
-        jsonfile.readFile(this.config, function(err, obj) {
-            if (err){
-                MessageBox.error('Erreur', err.message);
-                return;
-            }
-            cb(obj);
-        });
-    }
-
-    static saveConfig(obj, cb){
-        jsonfile.writeFile(this.config, obj,{spaces: 4}, function (err) {
-            if (err){
-                MessageBox.error('Erreur', err.message);
-                return;
-            }
-            Emulator.shortCuts.reload();
-        });
+    static save(){
+        this.winOption.close();
+        Emulator.shortCuts.reload();
     }
 }
 

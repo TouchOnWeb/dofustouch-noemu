@@ -2,7 +2,7 @@ const {app, ipcMain} = require('electron');
 
 class MenuTemplate {
 
-    static build(shortCuts){
+    static build(shortCuts, config){
 
         const template = [
             {
@@ -161,7 +161,7 @@ class MenuTemplate {
                     {
                         label: 'Peference',
                         click (item, focusedWindow) {
-                            require('./Option').init(focusedWindow)
+                            require('./Option').init(focusedWindow, config)
                         }
                     }
                 ]
