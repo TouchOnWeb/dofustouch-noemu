@@ -17,7 +17,7 @@ class Option {
 
         this.config = app.getAppPath()+'/config.json';
         this.winOption = new BrowserWindow({
-            width: 700,
+            width: 710,
             height: 500,
             resizable: false,
             center: true,
@@ -51,6 +51,7 @@ class Option {
                 MessageBox.error('Erreur', err.message);
                 return;
             }
+            Emulator.shortCuts.reload();
         });
     }
 }

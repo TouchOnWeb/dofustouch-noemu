@@ -6,7 +6,7 @@ const os = require('os');
 const fs = require('fs');
 const url = require('url');
 const Emulator = require('./Emulator');
-const sudo = require('sudo-prompt');
+const Sudoer = require('electron-sudo').default;
 const MessageBox = require('./MessageBox');
 const exec = require('child_process').exec;
 
@@ -76,14 +76,15 @@ class Updater {
     static execUpdate(){
 
         let options = {
-            name: 'electron',
-        };
+            name: 'electron'
+        },
+        sudoer = new Sudoer(options);
 
         switch(process.platform){
             case 'linux':
             case 'darwin':
             console.log('start unix update');
-            exec('chmod a+x '+app.getAppPath()+'/update.sh', options, function(error, stdout, stderr) {
+            sudoer.exec('chmod a+x '+app.getAppPath()+'/update.sh', options, function(error, stdout, stderr) {
                 sudo.exec(app.getAppPath()+'/update.sh '+app.getAppPath(), options, function(error, stdout, stderr) {
                     app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
                     app.exit(0)
@@ -92,55 +93,55 @@ class Updater {
             break;
             case 'win32':
             console.log('start win32 update');
-
-            sudo.exec('cmd.exe '+app.getAppPath()+'/update.bat '+options.name+' '+app.getAppPath(), options, function(error, stdout, stderr) {
-                app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
-                app.exit(0)
+            const bat = sudoer.spawn('cmd.exe', ['/c', app.getAppPath()+'/update.bat']);
+            // Handle normal output
+            bat.stdout.on('data', (data) => {
+                var str = String.fromCharCode.apply(null, data);
+                console.info(str);
             });
 
-            /*const bat = spawn('cmd.exe', ['/c', app.getAppPath()+'/update.bat', options.name,  app.getAppPath()]);
-            bat.stdout.on('data', (data) => {
-            var str = String.fromCharCode.apply(null, data);
-            console.info(str);
+            // Handle error output
+            bat.stderr.on('data', (data) => {
+                var str = String.fromCharCode.apply(null, data);
+                console.error(str);
+            });
+
+            break;
+        }
+    }
+
+    static startUpdate (i) {
+
+        Updater.toSaveFilePath = app.getAppPath()+'/update.tar.gz';
+
+        var winUpdate = new BrowserWindow({
+            width: 700,
+            height: 150,
+            //modal: false,
+            //resizable: Emulator.devMode,
+            center: true,
+            parent: BrowserWindow.getFocusedWindow(),
+            //darkTheme: true,
+            //skipTaskbar: true,
+            //frame: false
         });
-        bat.stderr.on('data', (data) => {
-        var str = String.fromCharCode.apply(null, data);
-        console.error(str);
-    });*/
-    break;
-}
-}
 
-static startUpdate (i) {
+        winUpdate.on('closed', () => {
+            winUpdate = null
+        });
 
-    Updater.toSaveFilePath = app.getAppPath()+'/update.tar.gz';
+        winUpdate.loadURL(Emulator.dirView('updater.html'));
 
-    var winUpdate = new BrowserWindow({
-        width: 700,
-        height: 150,
-        //modal: false,
-        //resizable: Emulator.devMode,
-        center: true,
-        parent: BrowserWindow.getFocusedWindow(),
-        //darkTheme: true,
-        //skipTaskbar: true,
-        //frame: false
-    });
+        if (Emulator.devMode){
+            winUpdate.webContents.openDevTools();
+        }
 
-    winUpdate.on('closed', () => {
-        winUpdate = null
-    });
+    }
 
-    winUpdate.loadURL(Emulator.dirView('updater.html'));
-
-    if (Emulator.devMode)
-    winUpdate.webContents.openDevTools();
-}
-
-static init (startGame) {
-    Updater.startGame = startGame;
-    this.checkUpdate();
-}
+    static init (startGame) {
+        Updater.startGame = startGame;
+        this.checkUpdate();
+    }
 }
 
 module.exports = Updater;

@@ -26,11 +26,11 @@ export class Tab {
         this.window.gui.playerData.on("characterSelectedSuccess", () => {
             this.ig = true;
             this.bindShortCut();
-            //if(rand() <= 1){
+            if(Math.random() <= 0.2){
                 setTimeout(()=>{
                     this.donateNotification();
                 }, (30000+Math.random()*60000));
-            //}
+            }
         });
 
         // Character Disconnect

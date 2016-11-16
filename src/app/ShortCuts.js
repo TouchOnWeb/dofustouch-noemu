@@ -26,6 +26,11 @@ class ShortCuts {
         });
     }
 
+    reload(){
+        electronLocalshortcut.unregisterAll(this.win);
+        this.init();
+    }
+
     enable(){
         if(!this.start){
             this.init()

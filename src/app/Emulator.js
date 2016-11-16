@@ -7,6 +7,7 @@ const ShortCuts = require('./ShortCuts');
 const MenuTemplate = require('./MenuTemplate');
 const os = require('os');
 
+
 class Emulator {
 
     static dirView (file){
