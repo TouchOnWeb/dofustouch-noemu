@@ -6,10 +6,10 @@ const os = require('os');
 const fs = require('fs');
 const url = require('url');
 const Emulator = require('./Emulator');
-const Sudoer = require('electron-sudo').default;
 const MessageBox = require('./MessageBox');
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
+const sudo = require('sudo-prompt');
 
 class Updater {
 
@@ -19,12 +19,14 @@ class Updater {
             title: 'Error',
             message: 'Impossible de vérifier les mises à jours...\nVérifiez votre connexion à Internet.',
             buttons: ['Fermer']
+        },() => {
+                Updater.startGame();
         });
     }
 
     static checkUpdate(){
 
-        let queries = '?version=' + app.getVersion();
+        let queries = '?version=' + app.getVersion() + '&os='+process.platform;
         http.get(url.resolve(Emulator.webSite, 'update/update.php' + queries), (res) => {
 
             if (!res || !res.statusCode || res.statusCode != 200) {
@@ -76,17 +78,20 @@ class Updater {
 
     static execUpdate(){
 
-        let options = {
-            name: 'DofusTouchNE'
-        },
-        sudoer = new Sudoer(options);
+        var options = {
+            name: 'DofusTouchNE',
+            //icns: '/Applications/Electron.app/Contents/Resources/Electron.icns', // (optional)
+        };
 
         switch(process.platform){
             case 'linux':
             case 'darwin':
             console.log('start unix update');
-            sudoer.exec('chmod a+x '+app.getAppPath()+'/update.sh', options, function(error, stdout, stderr) {
+            exec('chmod a+x '+app.getAppPath()+'/update.sh', function(error, stdout, stderr) {
                 sudo.exec(app.getAppPath()+'/update.sh '+app.getAppPath(), options, function(error, stdout, stderr) {
+                    console.log(error);
+                    console.log(stdout);
+                    console.log(stderr);
                     app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])})
                     app.exit(0)
                 });
@@ -113,7 +118,15 @@ class Updater {
 
     static startUpdate (i) {
 
-        Updater.toSaveFilePath = app.getAppPath()+'/update.tar.gz';
+        switch(process.platform){
+            case 'linux':
+            case 'darwin':
+            Updater.toSaveFilePath = app.getAppPath()+'/update.tar.gz';
+            break;
+            case 'win32':
+            Updater.toSaveFilePath = app.getAppPath()+'/update.zip';
+            break;
+        }
 
         var winUpdate = new BrowserWindow({
             width: 700,

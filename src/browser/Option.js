@@ -39,6 +39,11 @@ export class Option {
 
     keyBinder(){
         var that = this;
+
+        $( '.shortcut-remove' ).click(function(){
+            $(this).closest('.input-group').find('.shortcut').val("");
+        })
+
         var keys = [];
 
         var keyPressed = function(keyCode) {

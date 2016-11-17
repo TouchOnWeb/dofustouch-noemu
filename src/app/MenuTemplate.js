@@ -1,8 +1,9 @@
 const {app, ipcMain} = require('electron');
+const ShortCuts = require('./ShortCuts');
 
 class MenuTemplate {
 
-    static build(shortCuts, config){
+    static build(config, Emulator){
 
         const template = [
             {
@@ -10,14 +11,14 @@ class MenuTemplate {
                 submenu: [
                     {
                         label: 'Nouvelle Fenetre',
-                        accelerator: shortCuts.get('option.shortcut.no-emu.new-window'),
+                        accelerator: ShortCuts.convert(config.get('option.shortcut.no-emu.new-window').value()),
                         click (item, focusedWindow) {
                             Emulator.openGameWindow();
                         }
                     },
                     {
                         label: 'Nouveau Onglet',
-                        accelerator: shortCuts.get('option.shortcut.no-emu.new-tab'),
+                        accelerator: ShortCuts.convert(config.get('option.shortcut.no-emu.new-tab').value()),
                         click (item, focusedWindow) {
                             focusedWindow.webContents.send('newTab', {});
                         }
@@ -117,14 +118,14 @@ class MenuTemplate {
                 submenu: [
                     {
                         label: 'Montret Onglet Précédent',
-                        accelerator: shortCuts.get('option.shortcut.no-emu.prev-tab'),
+                        accelerator: ShortCuts.convert(config.get('option.shortcut.no-emu.prev-tab').value()),
                         click (item, focusedWindow) {
                             focusedWindow.webContents.send('switchTab', 'prev');
                         }
                     },
                     {
                         label: 'Montret Onglet Suivant',
-                        accelerator: shortCuts.get('option.shortcut.no-emu.next-tab'),
+                        accelerator: ShortCuts.convert(config.get('option.shortcut.no-emu.next-tab').value()),
                         click (item, focusedWindow) {
                             focusedWindow.webContents.send('switchTab', 'next');
                         }
@@ -156,10 +157,10 @@ class MenuTemplate {
                 ]
             },
             {
-                label:'Option',
+                label:'Paramètres',
                 submenu: [
                     {
-                        label: 'Peference',
+                        label: 'Options',
                         click (item, focusedWindow) {
                             require('./Option').init(focusedWindow, config)
                         }

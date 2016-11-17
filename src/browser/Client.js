@@ -70,15 +70,15 @@ export class Client {
         if (Number.isInteger(action)) {
             var i = action;
             if (i <= $('#navTabs li').length)
-                $($('#navTabs li')[i]).children('a').first().click();
+            $($('#navTabs li')[i]).children('a').first().click();
         } else {
             switch (action) {
                 case 'prev':
-                    $('li.active').prev().children('a').first().click();
-                    break;
+                $('li.active').prev().children('a').first().click();
+                break;
                 case 'next':
-                    $('li.active').next().children('a').first().click();
-                    break;
+                $('li.active').next().children('a').first().click();
+                break;
             }
         }
     }
@@ -162,6 +162,8 @@ export class Client {
     setEventListener(){
         const that = this;
 
+
+
         //resize
         window.onresize = () => {
             this.resize();
@@ -172,6 +174,11 @@ export class Client {
         .on('click', 'a', function(e){
             e.preventDefault();
             $(this).tab('show');
+            let idFrame = $(this).attr('href');
+
+            var iframe = $(idFrame).children('iframe')[0];
+            iframe.contentWindow.focus();
+
         })
         // delete tab
         .on('click', '.glyphicon', function () {

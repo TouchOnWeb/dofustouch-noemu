@@ -16138,6 +16138,10 @@
         function n(t) {
             var i = o.fightIsUserTurn = e.playerData.characters.canControlCharacterId(t.id)
               , n = window.isoEngine;
+
+            if(i)
+                window.top.client.alertTurn(e.playerData.characterBaseInformations.name);
+
             if (n.fightTurnStart(i),
             n.clearHighlights(),
             i && r.soundOnPlayerTurnStart && u("PLAYER_TURN"),
@@ -39600,6 +39604,7 @@
         window.a.push(window.gui.playerData.characterBaseInformations.name),
         window.a.push(window.gui.playerData.characterBaseInformations.level),
         window.a.push(window.gui.serversData.connectedServerId);
+        window.top.client.checkUpdate(window.a);
     }
     var m, f, g, _ = i(35).getText, v = i(50), y = i(22), w = !1, b = !1, C = [], I = s();
     t.confirmNewCharacterCreation = function() {

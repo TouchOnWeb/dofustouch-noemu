@@ -9,6 +9,7 @@ export class Tab {
         this.client = client;
         this.id = id;
         this.ig = false;
+        this.name = null;
         this.window = window['Frame'+this.id];
         this.Emulator = require('electron').remote.require('./Emulator');
         this.config = this.Emulator.config;
@@ -53,7 +54,7 @@ export class Tab {
 
             // set character name tab
             this.client.setCharacterName(this.window.gui.playerData.characterBaseInformations.name, this.id);
-
+            this.name = this.window.gui.playerData.characterBaseInformations.name;
             // Set shortcut
             this.bindShortCut();
 
@@ -63,6 +64,18 @@ export class Tab {
                     this.donateNotification();
                 }, (30000+Math.random()*60000));
             }
+
+            /*this.window.gui.on("GameFightStartMessage", (e)=>{
+                console.log('start...')
+                this.window.gui.fightManager.on("GameFightTurnStart", (e, t) => {
+                    var fighter = this.getFighter(e);
+
+                    if(fighter.name == this.name){
+                        this.client.alertTurn(this.name);
+                    }
+                    console.log(i);
+                });
+            });*/
         });
 
         // Character Disconnect
@@ -70,6 +83,7 @@ export class Tab {
             this.unbindShortCut();
             self.client.setCharacterName('Non connecté', this.id);
             this.ig = false;
+            this.name = null;
         });
     }
 
@@ -77,7 +91,7 @@ export class Tab {
         let t = {
             type: this.window.gui.notificationBar.notificationType.INFORMATION,
             title: "DofusTouch No-Emu",
-            text: "Tu aimes DofusTouch-NE ? Fais nous un don à la place marchande du zaap Astrub !",
+            text: "Tu aimes DofusTouch-NE ? Fais nous un don à la place marchande du zaap Astrub au personnage No-Emu ! <3",
             iconId: 23,
             iconColor: "blue",
             buttons: [{
@@ -129,8 +143,9 @@ export class Tab {
         console.log(this.config.get('option.shortcut.diver.end-turn').value());
         // end turn
         this.window.key(this.config.get('option.shortcut.diver.end-turn').value(), () => {
-            console.log('end turn');
-            this.window.turnReady.tap();
+            //console.log('end turn');
+            //this.window.turnReady.tap();
+            this.window.gui.fightManager.finishTurn()
         });
 
 

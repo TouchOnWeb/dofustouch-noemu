@@ -1,4 +1,4 @@
-@echo off
+﻿@echo off
 rem --- Système d'updater de DofusTouch No-Emu ---
 echo Installation de la Mise à jour de DofusTouch NoEmu
 echo Ne pas fermer cette fenetre
@@ -8,24 +8,23 @@ rem parametres
 set chemin=%1
 set prog=%2
 
-echo Terminaison des instances dejà lancées
-rem tue le process DTNE
-taskkill /f /im %prog%.exe >NUL
-
 echo Demande d'élévation de privileges
 rem demande une elevation de privileges
 if not exist "%chemin%\admin.lock" (
-    rem mode con lines=2 cols=30
-    echo a>"%chemin%\admin.lock"
-	call wscript getadmin.vbs "%chemin%" "%prog%"
+  rem mode con lines=2 cols=30
+  echo a>"%chemin%\admin.lock"
+	echo Appel du script de demande de droits admin
+	call wscript "%chemin%\getadmin.vbs" "%chemin%" "%prog%"
 	echo fin
-    exit
-    )
+  exit
+  )
 del /s "%chemin%\admin.lock" >NUL
 
 echo Demande de droits admin réussie
+rem tue le process DTNE
+echo Terminaison des instances dejà lancées
+taskkill /f /im %prog%.exe >NUL
 
-rem charge utile:
 echo Suppression des anciens fichiers
 rem Suppression des fichiers à mettre à jour
 del /s "%chemin%\package.json" >NUL
@@ -43,13 +42,13 @@ if not exist "%chemin%\extract.vbs" (
 	pause
 	exit
 )
-cscript "%chemin%\extract.vbs"
+cscript "%chemin%\extract.vbs" "%chemin%"
 
 rem Suppression des fichiers temporaires
 rem del extract.vbs
 
 rem lancement du jeu
 echo Lancement du jeu
-call "%chemin%\..\..\DofusTouchNE.exe"
+start "" "%chemin%\..\..\%prog%.exe"
 
 exit

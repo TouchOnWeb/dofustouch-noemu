@@ -4,7 +4,7 @@ const Platform = builder.Platform
 
 // Promise is returned
 builder.build({
-    platform: "win",
+    platform: ["linux","darwin","win"],
     arch: "all",
     devMetadata: {
         "build":{
@@ -33,7 +33,7 @@ builder.build({
                 "maintainer" : "Daniel LEFEVBRE",
             },
             "win": {
-                "target" : "zip",
+                "target" : ["zip"],
                 "iconUrl": "http://dofustouch.no-emu.com/icon.ico"
             }
         }

@@ -2,8 +2,8 @@
   "option": {
     "general": {
       "hidden-shop": false,
-      "developer-mode": true,
-      "resolution": "940;540"
+      "developer-mode": false,
+      "resolution": "800;660"
     },
     "shortcut": {
       "no-emu": {
@@ -26,7 +26,7 @@
         ]
       },
       "diver": {
-        "end-turn": "space"
+        "end-turn": "backspace"
       },
       "spell": [
         "1",
@@ -35,10 +35,10 @@
         "4",
         "5",
         "6",
-        "",
-        "",
-        "",
-        "",
+        "7",
+        "8",
+        "9",
+        "0",
         "",
         "",
         "",
@@ -61,16 +61,16 @@
         ""
       ],
       "item": [
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
+        "ctrl+1",
+        "ctrl+2",
+        "ctrl+3",
+        "ctrl+4",
+        "ctrl+5",
+        "ctrl+6",
+        "ctrl+7",
+        "ctrl+8",
+        "ctrl+9",
+        "ctrl+0",
         "",
         "",
         "",
@@ -94,27 +94,27 @@
       ],
       "interface": {
         "carac": "c",
-        "spell": "k",
+        "spell": "s",
         "bag": "i",
-        "bidhouse": "",
+        "bidhouse": "h",
         "map": "m",
         "friend": "f",
         "book": "q",
         "guild": "g",
-        "conquest": "",
+        "conquest": "k",
         "goutine": "",
-        "job": "",
-        "alliance": "c",
+        "job": "j",
+        "alliance": "",
         "mount": "n",
         "directory": "",
         "alignement": "",
-        "bestiary": "",
-        "title": "",
-        "achievement": "",
-        "almanax": "",
-        "spouse": "",
-        "shop": "s",
-        "goultine": ""
+        "bestiary": "b",
+        "title": "n",
+        "achievement": "u",
+        "almanax": "x",
+        "spouse": "l",
+        "shop": "v",
+        "goultine": "r"
       }
     }
   }

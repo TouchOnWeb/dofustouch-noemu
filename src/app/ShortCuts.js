@@ -17,7 +17,7 @@ class ShortCuts {
         // tabs
         async.forEachOf(this.config.get('option.shortcut.no-emu.tabs').value(), (shortcut, index, callback) => {
             if(shortcut){
-                electronLocalshortcut.register(this.win, this.convert(shortcut), (e) => {
+                electronLocalshortcut.register(this.win, ShortCuts.convert(shortcut), (e) => {
                     this.win.webContents.send('switchTab', index);
                 });
             }
@@ -34,9 +34,6 @@ class ShortCuts {
 
         // reload tab shortcuts
         this.win.webContents.send('reloadShotcuts');
-
-        // reload menu
-        Emulator.setMenu();
     }
 
     enable(){
@@ -51,13 +48,9 @@ class ShortCuts {
         electronLocalshortcut.disableAll(this.win);
     }
 
-    convert(value){
+    static convert(value){
         value = value.replace('ctrl', 'CmdOrCtrl');
         return value;
-    }
-
-    get(prop){
-        return this.convert(this.config.get(prop).value());
     }
 
 }

@@ -14,7 +14,7 @@ const MessageBox = require('./MessageBox');
 class Option {
 
     static init (winParent, config) {
-        
+
         if(this.winOption){
             this.winOption.focus();
             return;
@@ -42,7 +42,7 @@ class Option {
 
     static save(){
         this.winOption.close();
-        Emulator.shortCuts.reload();
+        Emulator.reloadConfig();
     }
 }
 
