@@ -1,0 +1,68 @@
+html,
+body {
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+}
+
+iframe {
+    display:inline-flex;
+    width:100%;
+    height:100%;
+    border: 0;
+}
+
+iframe.hide {
+    visibility: hidden;
+}
+
+@keyframes blink {
+  0% {
+      color: white;
+      background: #ff9245;
+   }
+  50% {
+      color: #555;
+      background: white;
+  }
+  100% {
+      color: white;
+      background: #ff9245;
+   }
+}
+
+.blink {
+  animation: blink 1.5s linear infinite;
+}
+
+.tab2 {
+    position:relative;
+
+}
+
+.tab2.active > a{
+    /*background-color: #158cba!important;*/
+
+}
+
+.tab2 > a {
+    padding-right: 7px!important;
+    border-radius: 0px!important;
+}
+
+.tab2 > a > span.glyphicon {
+    top:2px;
+    margin-left: 3px;
+    visibility: hidden;
+    cursor:pointer;
+    color: #ce3d3d;
+}
+
+.tab2:hover > a > span.glyphicon {
+    visibility: visible;
+}
+
+#addTab > span {
+    cursor:pointer;
+}

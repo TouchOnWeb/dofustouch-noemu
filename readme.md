@@ -13,7 +13,9 @@ DofusTouch No-Emu fonctionne sur :
 ## Installation :
 ```sh
 $ git clone https://github.com/scapain/dofustouch-noemu.git
+$ cd dofustouch-noemu
 $ npm install
+$ bower install
 ```
 
 ## Lancement :
